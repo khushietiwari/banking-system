@@ -10,6 +10,8 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 from .utils import create_account
+from .models import Account
+
 
 def role_required(required_role):
     def decorator(view_func):
@@ -23,26 +25,35 @@ def role_required(required_role):
 def home(request):
     return render(request, "home.html")
 def register(request):
+
     if request.method == "POST":
 
         username = request.POST['username']
-        email = request.POST['email']   # ⭐ ADD THIS
         password = request.POST['password']
+        email = request.POST['email']
         role = request.POST['role']
 
         user = User.objects.create_user(
             username=username,
-            email=email,   # ⭐ ADD THIS
-            password=password
+            password=password,
+            email=email
         )
 
         user.userprofile.role = role
         user.userprofile.save()
 
+        # 💳 CREATE ACCOUNT ONLY FOR CUSTOMER 😏🔥
+        if role == "Customer":
+            create_account(user)
+
         return redirect('login')
 
     return render(request, "register.html")
 
+@login_required
+@role_required("Admin")
+def admin_dashboard(request):
+    return render(request, "admin_dashboard.html")
 def login_view(request):
 
     if request.method == "POST":
@@ -50,52 +61,23 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        try:
-            user_obj = User.objects.get(username=username)
-            profile = user_obj.userprofile
-
-            if profile.is_locked:
-                return render(request, "login.html", {
-                    "error": "Account Locked 🔒 Contact Bank"
-                })
-
-        except User.DoesNotExist:
-            return render(request, "login.html", {
-                "error": "Invalid Credentials"
-            })
-
         user = authenticate(username=username, password=password)
 
         if user:
 
-            profile.failed_attempts = 0
-            profile.save()
-
             login(request, user)
 
-            otp = generate_otp(user)
-            print("OTP:", otp)
+            generate_otp(user)
 
             return redirect('verify_otp')
 
         else:
 
-            profile.failed_attempts += 1
-
-            if profile.failed_attempts >= 3:
-                profile.is_locked = True
-
-            profile.save()
-
             return render(request, "login.html", {
-                "error": f"Invalid Credentials ({profile.failed_attempts}/3)"
+                "error": "Invalid Credentials ❌"
             })
 
     return render(request, "login.html")
-@login_required
-@role_required("Admin")
-def admin_dashboard(request):
-    return render(request, "admin_dashboard.html")
 
 
 @login_required
@@ -107,7 +89,12 @@ def employee_dashboard(request):
 @login_required
 @role_required("Customer")
 def customer_dashboard(request):
-    return render(request, "customer_dashboard.html")
+
+    account = Account.objects.get(user=request.user)
+
+    return render(request, "customer_dashboard.html", {
+        "account": account
+    })
 
 def generate_otp(user):
 
@@ -146,9 +133,8 @@ def verify_otp(request):
                 })
 
             if str(otp_obj.otp_code) == str(entered_otp):
-                if not hasattr(request.user, 'account'):
-                    create_account(request.user)
-                return redirect('customer_dashboard')
+                otp_obj.delete()  # 🔥 Prevent OTP reuse
+            return redirect('customer_dashboard')
 
 
     return render(request, "verify_otp.html")
