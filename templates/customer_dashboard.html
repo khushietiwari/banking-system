@@ -1,2 +1,33 @@
-<h1>Customer Dashboard</h1>
-<p>Welcome Customer 💳</p>
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-3">💳 Customer Dashboard</h2>
+
+<div class="card shadow p-4">
+
+    <h4 class="mb-3">🏦 Account Details</h4>
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-2">
+            <strong>Account Number:</strong>
+            <span class="text-primary">{{ account.account_number }}</span>
+        </div>
+
+        <div class="col-md-6 mb-2">
+            <strong>Status:</strong>
+            <span class="badge bg-success">{{ account.status }}</span>
+        </div>
+
+        <div class="col-md-6 mt-2">
+            <strong>Available Balance:</strong>
+            <h4 class="text-success">₹ {{ account.balance }}</h4>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

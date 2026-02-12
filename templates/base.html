@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iBanking System</title>
+
+    <!-- Bootstrap 😏🔥 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-brand">🏦 iBanking System</span>
+
+    <div>
+        {% if user.is_authenticated %}
+            <span class="text-white me-3">Hello, {{ user.username }}</span>
+            <a href="/login/" class="btn btn-sm btn-outline-light">Logout</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>
