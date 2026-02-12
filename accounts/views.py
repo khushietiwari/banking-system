@@ -9,6 +9,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
+from .utils import create_account
 
 def role_required(required_role):
     def decorator(view_func):
@@ -145,7 +146,10 @@ def verify_otp(request):
                 })
 
             if str(otp_obj.otp_code) == str(entered_otp):
+                if not hasattr(request.user, 'account'):
+                    create_account(request.user)
                 return redirect('customer_dashboard')
 
-    return render(request, "verify_otp.html")
 
+    return render(request, "verify_otp.html")
+    
