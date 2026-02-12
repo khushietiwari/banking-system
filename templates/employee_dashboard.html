@@ -1,2 +1,13 @@
-<h1>Employee Dashboard</h1>
-<p>Welcome Employee 👨‍💼</p>
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Employee Dashboard</h2>
+
+<div>
+    <h4>Total Customers: {{ total_customers }}</h4>
+    <h4>Pending KYC: {{ pending_kyc }}</h4>
+</div>
+
+<a href="{% url 'verify_kyc' %}">Verify KYC</a>
+
+{% endblock %}

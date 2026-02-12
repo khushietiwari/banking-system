@@ -13,7 +13,19 @@ from .utils import create_account
 from .models import Account
 from django.contrib.auth.decorators import login_required
 from .models import KYC
+from .models import Loan
+from .decorators import employee_required
 
+@employee_required
+def employee_dashboard(request):
+    total_customers = User.objects.filter(groups__name='Customer').count()
+    pending_kyc = KYC.objects.filter(is_approved=False).count()
+
+    context = {
+        'total_customers': total_customers,
+        'pending_kyc': pending_kyc,
+    }
+    return render(request, 'employee_dashboard.html', context)
 @login_required
 def verify_kyc(request):
     pending_kyc = KYC.objects.filter(is_approved=False)
@@ -49,7 +61,7 @@ def register(request):
         user.userprofile.role = role
         user.userprofile.save()
 
-        # 💳 CREATE ACCOUNT ONLY FOR CUSTOMER 😏🔥
+        
         if role == "Customer":
             create_account(user)
 
@@ -145,4 +157,26 @@ def verify_otp(request):
 
 
     return render(request, "verify_otp.html")
-    
+@employee_required
+def verify_kyc(request):
+    kyc_list = KYC.objects.filter(is_approved=False)
+    return render(request, 'verify_kyc.html', {'kyc_list': kyc_list})
+
+
+@employee_required
+def approve_kyc(request, kyc_id):
+    kyc = KYC.objects.get(id=kyc_id)
+    kyc.is_approved = True
+    kyc.save()
+    return redirect('verify_kyc')
+
+def loan_list(request):
+    loans = Loan.objects.filter(is_approved=False)
+    return render(request, 'loan_list.html', {'loans': loans})
+
+@employee_required
+def approve_loan(request, loan_id):
+    loan = Loan.objects.get(id=loan_id)
+    loan.is_approved = True
+    loan.save()
+    return redirect('employee_dashboard')

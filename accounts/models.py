@@ -46,3 +46,11 @@ class KYC(models.Model):
 
     def __str__(self):
         return f"KYC - {self.user.username}"
+class Loan(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    is_approved = models.BooleanField(default=False)
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Pending Loan Requests</h2>
+
+{% for loan in loans %}
+    <p>
+        {{ loan.user.username }} - ₹{{ loan.amount }}
+        <a href="{% url 'approve_loan' loan.id %}">Approve</a>
+    </p>
+{% endfor %}
+
+{% endblock %}
