@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Pending KYC Requests</h2>
+
+{% for kyc in kyc_list %}
+    <p>{{ kyc.user.username }} - {{ kyc.document_type }}</p>
+{% endfor %}
+
+{% endblock %}

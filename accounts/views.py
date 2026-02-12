@@ -11,6 +11,13 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .utils import create_account
 from .models import Account
+from django.contrib.auth.decorators import login_required
+from .models import KYC
+
+@login_required
+def verify_kyc(request):
+    pending_kyc = KYC.objects.filter(is_approved=False)
+    return render(request, 'verify_kyc.html', {'kyc_list': pending_kyc})
 
 
 def role_required(required_role):
