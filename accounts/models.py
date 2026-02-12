@@ -6,8 +6,8 @@ class UserProfile(models.Model):
     role = models.CharField(max_length=20)
     phone = models.CharField(max_length=15)
 
-    failed_attempts = models.IntegerField(default=0)
-    is_locked = models.BooleanField(default=False)
+    def __str__(self):
+        return self.user.username
 class OTP(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     otp_code = models.CharField(max_length=6)
@@ -15,4 +15,16 @@ class OTP(models.Model):
 
     def __str__(self):
         return self.user.username
+class Account(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    account_number = models.IntegerField(unique=True)
+    balance = models.FloatField(default=0)
+    status = models.CharField(default="Active", max_length=20)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.account_number)
 
