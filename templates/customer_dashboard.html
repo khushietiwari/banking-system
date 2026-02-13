@@ -1,71 +1,72 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
 {% block content %}
 
-<h2 class="mb-4">💳 Customer Dashboard</h2>
+<div class="dashboard-container">
 
-<div class="card shadow p-4">
-
-    <h4 class="mb-3">🏦 Account Details</h4>
-    <hr>
-
-    <div class="row">
-
-        <div class="col-md-6 mb-2">
-            <strong>Account Number:</strong>
-            <span class="text-primary">{{ account.account_number }}</span>
-        </div>
-
-        <div class="col-md-6 mb-2">
-            <strong>Status:</strong>
-            <span class="badge 
-                {% if account.status == 'Active' %}
-                    bg-success
-                {% else %}
-                    bg-danger
-                {% endif %}
-            ">
-                {{ account.status }}
-            </span>
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <strong>Available Balance:</strong>
-            <h4 class="text-success">₹ {{ account.balance }}</h4>
-        </div>
-
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3 class="brand">PrimeTrust</h3>
+        <a href="#">🏠 Dashboard</a>
+        <a href="#">💰 Deposit</a>
+        <a href="#">💳 Withdraw</a>
+        <a href="#">🔁 Transfer</a>
+        <a href="#">📄 Transactions</a>
+        <a href="#">⚙ Settings</a>
+        <a href="#">🚪 Logout</a>
     </div>
 
-</div>
+    <!-- Main Content -->
+    <div class="main-content">
 
-<!-- Quick Actions Section -->
+        <!-- Top Greeting -->
+        <div class="top-bar">
+            <h2>Welcome Back, {{ user.username }} 👋</h2>
+            <div class="profile-circle">
+                {{ user.username|first|upper }}
+            </div>
+        </div>
 
-<div class="card shadow-sm mt-4 p-4">
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div>
+                <p>Total Balance</p>
+                <h1>₹ {{ balance }}</h1>
+                <small>Account No: {{ account_number }}</small>
+            </div>
+        </div>
 
-    <h5 class="mb-3">⚡ Quick Actions</h5>
-    <hr>
+        <!-- Action Grid -->
+        <div class="action-grid">
 
-    <div class="d-flex flex-wrap gap-2">
+            <div class="action-box green">
+                💰
+                <h5>Deposit</h5>
+            </div>
 
-        <a href="{% url 'deposit' %}" class="btn btn-success">
-            💰 Deposit
-        </a>
+            <div class="action-box yellow">
+                💳
+                <h5>Withdraw</h5>
+            </div>
 
-        <a href="{% url 'withdraw' %}" class="btn btn-warning">
-            💸 Withdraw
-        </a>
+            <div class="action-box blue">
+                🔁
+                <h5>Transfer</h5>
+            </div>
 
-        <a href="{% url 'transfer' %}" class="btn btn-primary">
-            🔁 Transfer
-        </a>
+            <div class="action-box purple">
+                👤
+                <h5>Beneficiary</h5>
+            </div>
 
-        <a href="{% url 'add_beneficiary' %}" class="btn btn-info text-white">
-            👤 Add Beneficiary
-        </a>
+        </div>
 
-        <a href="{% url 'transaction_history' %}" class="btn btn-dark">
-            📄 Transactions
-        </a>
+        <!-- Recent Activity -->
+        <div class="recent-section">
+            <h4>Recent Transactions</h4>
+            <div class="recent-card">
+                No recent transactions yet.
+            </div>
+        </div>
 
     </div>
 

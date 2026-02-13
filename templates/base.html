@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,75 +7,332 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f2f4f8;
-        }
+  <style>
 
-        /* Top Alert */
-        .top-alert {
-            background: #e6f2ff;
-            padding: 8px;
-            text-align: center;
-            font-size: 14px;
-            color: #003366;
-        }
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f6f9;
+        color: #333;
+    }
 
-        /* Navbar */
-        .navbar-custom {
-            background: #003366;
-        }
+    /* ===== TOP ALERT ===== */
+    .top-alert {
+        background: #e6f2ff;
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+        color: #003366;
+        font-weight: 500;
+        border-bottom: 1px solid #d0e2ff;
+    }
 
-        .navbar-custom a {
-            color: white !important;
-            font-weight: 500;
-        }
+    /* ===== NAVBAR ===== */
+    .navbar-custom {
+        background: #003366;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        padding: 14px 0;
+    }
 
-        /* Login Panels */
-        .login-box {
-            background: white;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+    .navbar-brand span {
+        letter-spacing: 1px;
+    }
 
-        .section-title {
-            font-weight: bold;
-            color: #003366;
-            margin-bottom: 20px;
-        }
+    .navbar-brand img {
+        transition: 0.3s ease;
+    }
 
-        /* Service links */
-        .service-link {
-            padding: 10px;
-            display: block;
-            color: #003366;
-            text-decoration: none;
-        }
+    .navbar-brand img:hover {
+        transform: scale(1.05);
+    }
 
-        .service-link:hover {
-            background: #e6f2ff;
-        }
+    /* ===== HERO SECTION ===== */
+    .hero {
+        background: linear-gradient(rgba(0,51,102,0.85), rgba(0,51,102,0.85)),
+                    url('https://images.unsplash.com/photo-1563013544-824ae1b704d3');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 0;
+    }
 
-        /* Banner */
-        .banner {
-            background: linear-gradient(90deg,#4e54c8,#8f94fb);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-            margin-top: 40px;
-        }
+    .hero h1 {
+        font-weight: 700;
+    }
 
-        footer {
-            background: #003366;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            margin-top: 40px;
-        }
-    </style>
+    .hero p {
+        font-size: 18px;
+        opacity: 0.95;
+    }
+
+    /* ===== SECTION SPACING ===== */
+    section {
+        padding: 80px 0;
+    }
+
+    /* ===== SERVICE CARDS ===== */
+    .service-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: 0.3s ease;
+        height: 100%;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+
+    .service-card img {
+        margin-bottom: 15px;
+    }
+
+    /* ===== STATS SECTION ===== */
+    .stats-section {
+        background: #003366;
+        color: white;
+    }
+
+    .stats-section h2 {
+        font-weight: 700;
+    }
+
+    /* ===== BUTTON STYLING ===== */
+    .btn-primary {
+        background: #ffcc00;
+        border: none;
+        color: #003366;
+        font-weight: 600;
+    }
+
+    .btn-primary:hover {
+        background: #e6b800;
+        color: #003366;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid #ffcc00;
+        color: #ffcc00;
+        font-weight: 600;
+    }
+
+    .btn-outline-primary:hover {
+        background: #ffcc00;
+        color: #003366;
+    }
+
+    /* ===== MOBILE SECTION ===== */
+    .mobile-section {
+        background: #f8f9fc;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+        background: #003366;
+        color: white;
+        padding: 25px;
+        text-align: center;
+        font-size: 14px;
+    }
+    /* Register Page Design */
+
+.register-wrapper {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,#e6f0ff,#ffffff);
+    padding: 40px 15px;
+}
+
+.register-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+}
+
+.register-card:hover {
+    transform: translateY(-5px);
+}
+
+.custom-input {
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #d9e2f3;
+    transition: 0.3s;
+}
+
+.custom-input:focus {
+    border-color: #003366;
+    box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
+}
+
+.register-btn {
+    background: #003366;
+    color: white;
+    border-radius: 10px;
+    height: 48px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.register-btn:hover {
+    background: #0056b3;
+}
+
+.login-link {
+    text-decoration: none;
+    font-weight: 600;
+    color: #003366;
+}
+/* Security Note Styling */
+
+.security-note {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #6c757d;
+    letter-spacing: 0.3px;
+}
+
+.security-note::before {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: #003366;
+    margin: 12px auto;
+    opacity: 0.3;
+}
+/* ====== MODERN FINTECH DASHBOARD ====== */
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f4f7fc;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    background: #0f3057;
+    padding: 30px 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .brand {
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    margin: 12px 0;
+    padding: 8px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Main */
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+/* Top bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-circle {
+    width: 45px;
+    height: 45px;
+    background: #003366;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Balance Card */
+.balance-card {
+    background: linear-gradient(135deg, #003366, #0056b3);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    margin: 30px 0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.balance-card h1 {
+    font-size: 42px;
+    margin: 10px 0;
+}
+
+/* Actions */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.action-box {
+    padding: 30px;
+    border-radius: 20px;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.action-box h5 {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.action-box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.green { background: #28a745; }
+.yellow { background: #ffc107; }
+.blue { background: #17a2b8; }
+.purple { background: #6f42c1; }
+
+/* Recent */
+.recent-section {
+    margin-top: 40px;
+}
+
+.recent-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+
+</style>
+
+  
 </head>
 
 <body>
@@ -84,8 +342,14 @@
 </div>
 
 <nav class="navbar navbar-expand-lg navbar-custom px-4">
-    <a class="navbar-brand text-white" href="#">🏦 PrimeTrust Bank</a>
+    <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="{% static 'images/primetrust-logo.png' %}" 
+             alt="PrimeTrust Logo"
+             style="height:50px; margin-right:12px;">
+        <span class="text-white fw-bold fs-4">PrimeTrust Bank</span>
+    </a>
 </nav>
+
 
 {% block content %}
 {% endblock %}
