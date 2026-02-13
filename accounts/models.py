@@ -20,10 +20,15 @@ class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     account_number = models.IntegerField(unique=True)
-    balance = models.FloatField(default=0)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     status = models.CharField(default="Active", max_length=20)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    daily_transfer_used = models.DecimalField(
+    max_digits=12,
+    decimal_places=2,
+    default=0
+)
 
     def __str__(self):
         return str(self.account_number)

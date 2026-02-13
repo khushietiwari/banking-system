@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2 class="mb-3">💳 Customer Dashboard</h2>
+<h2 class="mb-4">💳 Customer Dashboard</h2>
 
 <div class="card shadow p-4">
 
@@ -18,13 +18,54 @@
 
         <div class="col-md-6 mb-2">
             <strong>Status:</strong>
-            <span class="badge bg-success">{{ account.status }}</span>
+            <span class="badge 
+                {% if account.status == 'Active' %}
+                    bg-success
+                {% else %}
+                    bg-danger
+                {% endif %}
+            ">
+                {{ account.status }}
+            </span>
         </div>
 
-        <div class="col-md-6 mt-2">
+        <div class="col-md-6 mt-3">
             <strong>Available Balance:</strong>
             <h4 class="text-success">₹ {{ account.balance }}</h4>
         </div>
+
+    </div>
+
+</div>
+
+<!-- Quick Actions Section -->
+
+<div class="card shadow-sm mt-4 p-4">
+
+    <h5 class="mb-3">⚡ Quick Actions</h5>
+    <hr>
+
+    <div class="d-flex flex-wrap gap-2">
+
+        <a href="{% url 'deposit' %}" class="btn btn-success">
+            💰 Deposit
+        </a>
+
+        <a href="{% url 'withdraw' %}" class="btn btn-warning">
+            💸 Withdraw
+        </a>
+
+        <a href="{% url 'transfer' %}" class="btn btn-primary">
+            🔁 Transfer
+        </a>
+
+        <a href="{% url 'add_beneficiary' %}" class="btn btn-info text-white">
+            👤 Add Beneficiary
+        </a>
+
+        <a href="{% url 'transaction_history' %}" class="btn btn-dark">
+            📄 Transactions
+        </a>
 
     </div>
 
