@@ -1,6 +1,5 @@
 from django.db import models
-from accounts.models import Account
-
+from accounts.models import Account , User
 import uuid
 
 class Transaction(models.Model):
@@ -24,3 +23,10 @@ class Beneficiary(models.Model):
 
     def __str__(self):
         return self.nickname
+
+class Account(models.Model):
+    user = models.OneToOneField(
+    User,
+    on_delete=models.CASCADE,
+    related_name="corebank_account"
+)

@@ -15,6 +15,20 @@ from django.contrib.auth.decorators import login_required
 from .models import KYC
 from .models import Loan
 from .decorators import employee_required
+from accounts.models import UserProfile
+def wrapper(view_func):
+    def inner(request, *args, **kwargs):
+        profile = UserProfile.objects.filter(user=request.user).first()
+
+        if not profile:
+            return redirect('login')
+
+        if profile.role != "customer":
+            return redirect('login')
+
+        return view_func(request, *args, **kwargs)
+
+    return inner
 
 @employee_required
 def employee_dashboard(request):
@@ -35,7 +49,7 @@ def verify_kyc(request):
 def role_required(required_role):
     def decorator(view_func):
         def wrapper(request, *args, **kwargs):
-            if request.user.userprofile.role != required_role:
+            if request.user.profile_account.role != required_role:
                 raise PermissionDenied
             return view_func(request, *args, **kwargs)
         return wrapper
@@ -124,7 +138,7 @@ def generate_otp(user):
         otp_code=otp
     )
 
-    print("Sending OTP to:", user.email)   # DEBUG LINE 🔥
+    print("Sending OTP to:", user.email)   
 
     send_mail(
         'Your OTP Code',
@@ -152,7 +166,7 @@ def verify_otp(request):
                 })
 
             if str(otp_obj.otp_code) == str(entered_otp):
-                otp_obj.delete()  # 🔥 Prevent OTP reuse
+                otp_obj.delete()  
             return redirect('customer_dashboard')
 
 

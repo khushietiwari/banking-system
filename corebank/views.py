@@ -124,3 +124,17 @@ def add_beneficiary(request):
         "beneficiaries": beneficiaries,
         "message": message
     })
+
+
+def customer_dashboard(request):
+    try:
+        account = Account.objects.get(user=request.user)
+    except Account.DoesNotExist:
+        account = None
+
+    context = {
+        'balance': account.balance if account else 0,
+        'account_number': account.account_number if account else 'Not Available',
+    }
+
+    return render(request, 'customer_dashboard.html', context)
