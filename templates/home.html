@@ -1,145 +1,86 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- HERO SECTION -->
-<div class="hero">
-    <div class="circle circle1"></div>
-    <div class="circle circle2"></div>
 
-    <div class="container text-center">
-        <h1 class="display-3 fw-bold">Next-Gen Digital Banking</h1>
-        <p class="lead mt-3">
-            Secure • Intelligent • Real-Time Banking Experience
-        </p>
+<div class="container mt-5">
 
-        <div class="mt-4">
-            <a href="{% url 'login' %}" class="btn btn-primary-custom me-3">
-                Login
-            </a>
-            <a href="{% url 'register' %}" class="btn btn-outline-custom">
-                Open Account
-            </a>
+    <div class="row">
+
+        <!-- PERSONAL BANKING -->
+        <div class="col-md-6">
+            <div class="login-box">
+                <h4 class="section-title">PERSONAL BANKING</h4>
+
+                <a href="{% url 'login' %}" class="btn btn-primary w-100 mb-3">
+                    LOGIN
+                </a>
+
+                <a href="#" class="service-link">New User Registration</a>
+                <a href="#" class="service-link">How Do I?</a>
+                <a href="#" class="service-link">Customer Care</a>
+                <a href="#" class="service-link">Lock & Unlock User</a>
+
+                <p class="mt-3 text-muted">
+                    PrimeTrust internet banking provides complete control over your personal banking needs online.
+                </p>
+            </div>
+        </div>
+
+        <!-- CORPORATE BANKING -->
+        <div class="col-md-6">
+            <div class="login-box">
+                <h4 class="section-title">CORPORATE BANKING</h4>
+
+                <a href="{% url 'login' %}" class="btn btn-primary w-100 mb-3">
+                    LOGIN
+                </a>
+
+                <a href="#" class="service-link">New Corporate Registration</a>
+                <a href="#" class="service-link">How Do I?</a>
+                <a href="#" class="service-link">Customer Care</a>
+
+                <p class="mt-3 text-muted">
+                    Corporate banking platform to administer and manage business accounts securely.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SERVICE LINKS SECTION -->
+    <div class="row mt-5">
+        <div class="col-md-3">
+            <a href="#" class="service-link">Banking Forms</a>
+            <a href="#" class="service-link">Salary Account</a>
+            <a href="#" class="service-link">Express Remit</a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="#" class="service-link">Doorstep Banking</a>
+            <a href="#" class="service-link">NRI Services</a>
+            <a href="#" class="service-link">Mutual Fund</a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="#" class="service-link">Insurance</a>
+            <a href="#" class="service-link">Securities</a>
+            <a href="#" class="service-link">Credit Cards</a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="#" class="service-link">Cyber Crime Helpline</a>
+            <a href="#" class="service-link">Block ATM Card</a>
+            <a href="#" class="service-link">Complaints</a>
         </div>
     </div>
+
 </div>
 
-<!-- FEATURES -->
-<section class="container text-center mt-5">
-    <h2 class="mb-5 fw-bold">Powerful Features</h2>
-
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="glass-card h-100">
-                <h4>🔐 Advanced Security</h4>
-                <p>OTP, 2FA & encrypted transactions.</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="glass-card h-100">
-                <h4>⚡ Instant Transfers</h4>
-                <p>NEFT, RTGS, IMPS with real-time updates.</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="glass-card h-100">
-                <h4>📊 Smart Analytics</h4>
-                <p>Track expenses & financial insights.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="container text-center mt-5">
-    <h2 class="mb-5 fw-bold">How It Works</h2>
-
-    <div class="row g-4">
-        <div class="col-md-3">
-            <div class="glass-card">
-                <h4>1️⃣ Register</h4>
-                <p>Create your account in minutes.</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="glass-card">
-                <h4>2️⃣ Complete KYC</h4>
-                <p>Upload documents for verification.</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="glass-card">
-                <h4>3️⃣ Add Funds</h4>
-                <p>Deposit money securely.</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="glass-card">
-                <h4>4️⃣ Start Banking</h4>
-                <p>Transfer, invest & manage easily.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- STATS -->
-<section class="container text-center mt-5">
-    <div class="row">
-        <div class="col-md-4">
-            <h1 class="fw-bold">75K+</h1>
-            <p>Active Customers</p>
-        </div>
-        <div class="col-md-4">
-            <h1 class="fw-bold">₹500Cr+</h1>
-            <p>Transactions Processed</p>
-        </div>
-        <div class="col-md-4">
-            <h1 class="fw-bold">99.99%</h1>
-            <p>System Uptime</p>
-        </div>
-    </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="container text-center mt-5">
-    <h2 class="mb-5 fw-bold">What Our Users Say</h2>
-
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="glass-card">
-                <p>"Fastest banking experience I’ve ever used!"</p>
-                <h6>- Rahul Sharma</h6>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="glass-card">
-                <p>"Super secure and very easy to manage loans."</p>
-                <h6>- Priya Mehta</h6>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="glass-card">
-                <p>"Professional dashboard & smooth transactions."</p>
-                <h6>- Amit Verma</h6>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="container text-center mt-5 mb-5">
-    <div class="glass-card p-5">
-        <h2 class="fw-bold">Ready to Experience Smart Banking?</h2>
-        <p class="mt-3">Join thousands of customers using iBanking today.</p>
-        <a href="{% url 'register' %}" class="btn btn-primary-custom mt-3">
-            Get Started Now
-        </a>
-    </div>
-</section>
+<!-- Announcement Banner -->
+<div class="banner">
+    <h2>1600 Means It's a Genuine Call</h2>
+    <p>
+        Always pick and respond to calls prefixed with 1600 and help protect yourself from fraud.
+    </p>
+</div>
 
 {% endblock %}
