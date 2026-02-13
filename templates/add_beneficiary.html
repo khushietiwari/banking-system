@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>👤 Add Beneficiary</h2>
+
+<div class="card p-4 shadow mb-4">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Receiver Account Number</label>
+            <input type="number" name="receiver" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Nickname</label>
+            <input type="text" name="nickname" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-warning">Add Beneficiary</button>
+    </form>
+
+    {% if message %}
+        <div class="mt-3 alert alert-info">
+            {{ message }}
+        </div>
+    {% endif %}
+
+</div>
+
+<h4>📋 Your Beneficiaries</h4>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nickname</th>
+            <th>Account Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in beneficiaries %}
+        <tr>
+            <td>{{ b.nickname }}</td>
+            <td>{{ b.beneficiary_account.account_number }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No beneficiaries added yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
