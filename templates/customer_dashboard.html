@@ -7,56 +7,55 @@
     <div class="sidebar">
         <h3 class="brand">PrimeTrust</h3>
         <a href="#">🏠 Dashboard</a>
-        <a href="#">💰 Deposit</a>
-        <a href="#">💳 Withdraw</a>
-        <a href="#">🔁 Transfer</a>
+        <a href="{% url 'deposit' %}">💰 Deposit</a>
+        <a href="{% url 'withdraw' %}">💳 Withdraw</a>
+        <a href="{% url 'transfer' %}">🔁 Transfer</a>
         <a href="#">📄 Transactions</a>
         <a href="#">⚙ Settings</a>
-        <a href="#">🚪 Logout</a>
+        <a href="{% url 'logout' %}">🚪 Logout</a>
     </div>
 
-    <!-- Main Content -->
+    <!-- ✅ MAIN CONTENT (YOU MISSED THIS 😏🔥) -->
     <div class="main-content">
-
-        <!-- Top Greeting -->
-        <div class="top-bar">
-            <h2>Welcome Back, {{ user.username }} 👋</h2>
-            <div class="profile-circle">
-                {{ user.username|first|upper }}
-            </div>
-        </div>
-
-        <!-- Balance Card -->
         <div class="balance-card">
-            <div>
-                <p>Total Balance</p>
-                <h1>₹ {{ balance }}</h1>
-                <small>Account No: {{ account_number }}</small>
-            </div>
-        </div>
-
-        <!-- Action Grid -->
+    <div>
+        <p>Welcome Back</p>
+        <h4>{{ name }}</h4>
+        <h1>₹ {{ balance }}</h1>
+        <small>Account No: {{ account_number }}</small>
+        <br>
+        <small>IFSC Code: {{ ifsc }}</small>
+    </div>
+</div>
         <div class="action-grid">
 
-            <div class="action-box green">
-                💰
-                <h5>Deposit</h5>
-            </div>
+            <a href="{% url 'deposit' %}">
+                <div class="action-box green">
+                    💰
+                    <h5>Deposit</h5>
+                </div>
+            </a>
 
-            <div class="action-box yellow">
-                💳
-                <h5>Withdraw</h5>
-            </div>
+            <a href="{% url 'withdraw' %}">
+                <div class="action-box yellow">
+                    💳
+                    <h5>Withdraw</h5>
+                </div>
+            </a>
 
-            <div class="action-box blue">
-                🔁
-                <h5>Transfer</h5>
-            </div>
+            <a href="{% url 'transfer' %}">
+                <div class="action-box blue">
+                    🔁
+                    <h5>Transfer</h5>
+                </div>
+            </a>
 
-            <div class="action-box purple">
-                👤
-                <h5>Beneficiary</h5>
-            </div>
+            <a href="{% url 'add_beneficiary' %}">
+                <div class="action-box purple">
+                    👤
+                    <h5>Beneficiary</h5>
+                </div>
+            </a>
 
         </div>
 

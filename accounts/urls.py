@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', views.home, name="home"),
@@ -15,5 +16,6 @@ urlpatterns = [
     path('approve-kyc/<int:kyc_id>/', views.approve_kyc, name='approve_kyc'),
     path('loans/', views.loan_list, name='loan_list'),
     path('approve-loan/<int:loan_id>/', views.approve_loan, name='approve_loan'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 
 ]
