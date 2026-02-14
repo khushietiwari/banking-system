@@ -21,7 +21,8 @@ def deposit(account, amount):
         return "Invalid Amount"
 
     with transaction.atomic():
-        account.balance += amount
+
+        account.balance += float(amount)   # ✅ FIX
         account.save()
 
         Transaction.objects.create(
@@ -47,11 +48,12 @@ def withdraw(account, amount):
     if amount <= 0:
         return "Invalid Amount"
 
-    if account.balance < amount:
+    if Decimal(account.balance) < amount:   # ✅ SAFE CHECK
         return "Insufficient Balance ❌"
 
     with transaction.atomic():
-        account.balance -= amount
+
+        account.balance -= float(amount)   # ✅ FIX
         account.save()
 
         Transaction.objects.create(
@@ -71,45 +73,37 @@ def transfer(sender, receiver_account_number, amount, otp_verified=True):
 
     amount = Decimal(amount)
 
-    # 1️⃣ OTP check
     if not otp_verified:
         return "OTP Verification Required"
 
-    # 2️⃣ Account status
     if sender.status != "Active":
         return "Account Blocked"
 
-    # 3️⃣ Amount validation
     if amount <= 0:
         return "Invalid Amount"
 
-    # 4️⃣ Get receiver account
     try:
         receiver = Account.objects.get(account_number=receiver_account_number)
     except Account.DoesNotExist:
         return "Receiver Account Not Found"
 
-    # 5️⃣ Beneficiary validation
     if not Beneficiary.objects.filter(
         account=sender,
         beneficiary_account=receiver
     ).exists():
         return "Beneficiary Not Registered"
 
-    # 6️⃣ Balance check
-    if sender.balance < amount:
+    if Decimal(sender.balance) < amount:   # ✅ SAFE CHECK
         return "Insufficient Balance"
 
-    # 7️⃣ Daily limit check
-    if sender.daily_transfer_used + amount > DAILY_LIMIT:
+    if Decimal(sender.daily_transfer_used) + amount > DAILY_LIMIT:
         return "Daily Transfer Limit Exceeded"
 
-    # 8️⃣ Atomic banking operation
     with transaction.atomic():
 
-        sender.balance -= amount
-        receiver.balance += amount
-        sender.daily_transfer_used += amount
+        sender.balance -= float(amount)   # ✅ FIX
+        receiver.balance += float(amount)
+        sender.daily_transfer_used += float(amount)
 
         sender.save()
         receiver.save()

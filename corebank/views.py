@@ -138,3 +138,12 @@ def customer_dashboard(request):
     }
 
     return render(request, 'customer_dashboard.html', context)
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+
+@login_required
+def pay_bills(request):
+    return render(request, "pay_bills.html")
+@login_required
+def manage_profile(request):
+    return render(request, "manage_profile.html")
