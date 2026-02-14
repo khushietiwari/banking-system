@@ -137,3 +137,6 @@ RECAPTCHA_PRIVATE_KEY = '6Lfk3GgsAAAAAP5cMt4_p9Rqjv5W2brWynGkp4Ci'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/customer-dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'

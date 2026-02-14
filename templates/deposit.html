@@ -1,72 +1,122 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Deposit Money</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            text-align: center;
-            padding-top: 60px;
-        }
-        .box {
-            background: white;
-            width: 400px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 15px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #2c5364;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #203a43;
-        }
-        .message {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        a {
-            display: block;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<div class="box">
-    <h2>Deposit Money</h2>
+<div class="container mt-5">
 
-    <p><strong>Current Balance:</strong> ₹ {{ account.balance }}</p>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
 
-    <form method="POST">
-        {% csrf_token %}
-        <input type="number" name="amount" step="0.01" placeholder="Enter Amount" required>
-        <br>
-        <button type="submit">Deposit</button>
-    </form>
+            <div class="card shadow-lg border-0 rounded-4">
 
-    {% if message %}
-        <div class="message">
-            {{ message }}
+                <!-- Header -->
+                <div class="card-header text-white rounded-top-4"
+                     style="background: linear-gradient(135deg,#003366,#0056b3);">
+                    <h4 class="mb-0">💰 Deposit Money</h4>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-4">
+
+                    <!-- Balance Display -->
+                    <div class="balance-box mb-4">
+                        <p class="mb-1 text-muted">Available Balance</p>
+                        <h2 class="fw-bold text-primary">
+                            ₹ {{ account.balance }}
+                        </h2>
+                    </div>
+
+                    <!-- Deposit Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Enter Amount
+                            </label>
+
+                            <input type="number"
+                                   name="amount"
+                                   step="0.01"
+                                   class="form-control modern-input"
+                                   placeholder="₹ 0.00"
+                                   required>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 modern-btn">
+                            ✅ Deposit Funds
+                        </button>
+                    </form>
+
+                    {% if message %}
+                        <div class="mt-3 alert alert-info rounded-3">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Back Button -->
+                    <div class="text-center mt-3">
+                        <a href="{% url 'customer_dashboard' %}"
+                           class="back-link">
+                            ← Back to Dashboard
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
-    {% endif %}
+    </div>
 
-    <a href="/customer-dashboard/">Back to Dashboard</a>
 </div>
 
-</body>
-</html>
+<style>
+
+/* Balance Box */
+.balance-box {
+    background: #f8f9fc;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Input Styling */
+.modern-input {
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #d9e2f3;
+    transition: 0.3s;
+}
+
+.modern-input:focus {
+    border-color: #003366;
+    box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
+}
+
+/* Button */
+.modern-btn {
+    height: 48px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: #5698da;
+    border: none;
+}
+
+.modern-btn:hover {
+    background: #0056b3;
+}
+
+/* Back Link */
+.back-link {
+    text-decoration: none;
+    font-weight: 600;
+    color: #003366;
+}
+
+.back-link:hover {
+    color: #0056b3;
+}
+
+</style>
+
+{% endblock %}

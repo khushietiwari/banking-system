@@ -118,6 +118,11 @@ def login_view(request):
 def employee_dashboard(request):
     return render(request, "employee_dashboard.html")
 
+from django.contrib.auth import logout
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 @login_required
 @role_required("Customer")

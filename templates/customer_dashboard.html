@@ -6,54 +6,89 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h3 class="brand">PrimeTrust</h3>
-        <a href="#">🏠 Dashboard</a>
-        <a href="{% url 'deposit' %}">💰 Deposit</a>
-        <a href="{% url 'withdraw' %}">💳 Withdraw</a>
-        <a href="{% url 'transfer' %}">🔁 Transfer</a>
-        <a href="#">📄 Transactions</a>
-        <a href="#">⚙ Settings</a>
-        <a href="{% url 'logout' %}">🚪 Logout</a>
+
+        <a href="{% url 'customer_dashboard' %}">Dashboard</a>
+        <a href="{% url 'transaction_history' %}">Statements</a>
+        <a href="{% url 'transfer' %}">Transfer Funds</a>
+        <a href="{% url 'pay_bills' %}">Pay Bills</a>
+        <a href="{% url 'manage_profile' %}">Manage Profile</a>
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">
+                 Logout
+            </button>
+        </form>
     </div>
 
-    <!-- ✅ MAIN CONTENT (YOU MISSED THIS 😏🔥) -->
+    <!-- Main Content -->
     <div class="main-content">
-        <div class="balance-card">
-    <div>
-        <p>Welcome Back</p>
-        <h4>{{ name }}</h4>
-        <h1>₹ {{ balance }}</h1>
-        <small>Account No: {{ account_number }}</small>
-        <br>
-        <small>IFSC Code: {{ ifsc }}</small>
-    </div>
-</div>
+
+        <!-- Greeting Bar -->
+        <div class="top-bar">
+            <div>
+                <h2>Welcome Back, {{ name }} 👋</h2>
+                <small class="text-muted">Here's your account overview</small>
+            </div>
+
+            <div class="profile-circle">
+                {{ name|first|upper }}
+            </div>
+        </div>
+
+        <!-- Balance Card -->
+<div class="balance-card" id="balance-card">
+            <div>
+                <p class="balance-label">Available Balance</p>
+                <h1>₹ {{ balance }}</h1>
+
+                <div class="account-details">
+                    <small>Account No: {{ account_number }}</small>
+                    <small>IFSC Code: {{ ifsc }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section-title">
+            <h4>Quick Actions</h4>
+        </div>
+
         <div class="action-grid">
 
-            <a href="{% url 'deposit' %}">
-                <div class="action-box green">
-                    💰
-                    <h5>Deposit</h5>
-                </div>
-            </a>
+            <a href="#balance-card">
+    <div class="action-box blue">
+        💰
+        <h5>View Balance</h5>
+    </div>
+</a>
 
-            <a href="{% url 'withdraw' %}">
-                <div class="action-box yellow">
-                    💳
-                    <h5>Withdraw</h5>
+
+            <a href="{% url 'transaction_history' %}">
+                <div class="action-box purple">
+                    📜
+                    <h5>Statements</h5>
                 </div>
             </a>
 
             <a href="{% url 'transfer' %}">
-                <div class="action-box blue">
+                <div class="action-box green">
                     🔁
-                    <h5>Transfer</h5>
+                    <h5>Transfer Funds</h5>
                 </div>
             </a>
 
-            <a href="{% url 'add_beneficiary' %}">
-                <div class="action-box purple">
-                    👤
-                    <h5>Beneficiary</h5>
+            <a href="{% url 'pay_bills' %}">
+                <div class="action-box yellow">
+                    🧾
+                    <h5>Pay Bills</h5>
+                </div>
+            </a>
+
+            <a href="{% url 'manage_profile' %}">
+                <div class="action-box blue">
+                    ⚙
+                    <h5>Manage Profile</h5>
                 </div>
             </a>
 
@@ -62,8 +97,12 @@
         <!-- Recent Activity -->
         <div class="recent-section">
             <h4>Recent Transactions</h4>
+
             <div class="recent-card">
-                No recent transactions yet.
+                <p>No recent transactions yet.</p>
+                <small class="text-muted">
+                    Your latest transactions will appear here.
+                </small>
             </div>
         </div>
 

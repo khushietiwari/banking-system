@@ -2,14 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('deposit/', views.deposit_view, name='deposit'),
-    path('withdraw/', views.withdraw_view, name='withdraw'),
-    path('transfer/', views.transfer_view, name='transfer'),
-    path('transactions/', views.transaction_history, name='transaction_history'),
-    path('add-beneficiary/', views.add_beneficiary, name='add_beneficiary'),
 
+    path('transfer/', views.transfer_view, name="transfer"),
+    path('transactions/', views.transaction_history, name="transaction_history"),
 
-
-    
-
+    path('pay-bills/', views.pay_bills, name="pay_bills"),
+    path('manage-profile/', views.manage_profile, name="manage_profile"),
 ]
