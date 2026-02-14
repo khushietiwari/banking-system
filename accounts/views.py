@@ -125,10 +125,14 @@ def customer_dashboard(request):
 
     account = Account.objects.get(user=request.user)
 
-    return render(request, "customer_dashboard.html", {
-        "account": account
-    })
+    context = {
+        "name": request.user.username,
+        "account_number": account.account_number,
+        "balance": account.balance,
+        "ifsc": account.ifsc_code,
+    }
 
+    return render(request, "customer_dashboard.html", context)
 def generate_otp(user):
 
     otp = random.randint(100000, 999999)

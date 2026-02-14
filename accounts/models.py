@@ -20,10 +20,12 @@ class Account(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name="accounts_account"   # ✅ FIX HERE
+        related_name="accounts_account"
     )
     account_number = models.IntegerField(unique=True)
     balance = models.FloatField(default=0)
+    ifsc_code = models.CharField(max_length=20, default="PRIME0001234")
+
     status = models.CharField(default="Active", max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
 
