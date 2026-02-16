@@ -1,7 +1,8 @@
 from decimal import Decimal
 from django.db import transaction
 from .models import Transaction, Beneficiary
-from accounts.models import Account
+from .models import Account
+
 import uuid
 
 DAILY_LIMIT = Decimal("50000")

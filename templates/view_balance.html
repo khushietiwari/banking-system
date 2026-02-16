@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2>Account Summary</h2>
+
+    <div class="balance-card">
+        <h4>Available Balance</h4>
+        <h1>₹ {{ balance }}</h1>
+
+        <p>Account No: {{ account_number }}</p>
+        <p>IFSC: {{ ifsc }}</p>
+    </div>
+
+    <hr>
+
+    <h4>Recent Transactions</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Transaction</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for txn in transactions %}
+            <tr>
+                <td>{{ txn.description }}</td>
+                <td>₹ {{ txn.amount }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No transactions yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

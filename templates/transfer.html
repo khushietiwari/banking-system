@@ -29,13 +29,33 @@
                     <form method="POST">
                         {% csrf_token %}
 
-                        <label class="form-label">Receiver Account Number</label>
-                        <input type="number"
-                               name="receiver"
-                               class="form-control custom-input mb-3"
-                               placeholder="Enter Account Number"
-                               required>
+                        <!-- Beneficiary Selection -->
+                        <label class="form-label">Select Beneficiary</label>
 
+                        <div class="d-flex mb-3">
+
+                            <select name="beneficiary"
+                                    class="form-control custom-input me-2"
+                                    required>
+
+                                <option value="">Select Beneficiary</option>
+
+                                {% for b in beneficiaries %}
+                                    <option value="{{ b.id }}">
+                                        {{ b.name }} - ****{{ b.account_number|slice:"-4:" }}
+                                    </option>
+                                {% endfor %}
+
+                            </select>
+
+                            <a href="{% url 'add_beneficiary' %}"
+                               class="btn btn-outline-primary rounded-3">
+                                +
+                            </a>
+
+                        </div>
+
+                        <!-- Amount -->
                         <label class="form-label">Transfer Amount</label>
                         <input type="number"
                                name="amount"
@@ -47,13 +67,16 @@
                         <button type="submit" class="btn transfer-btn w-100">
                             Transfer Funds 💳
                         </button>
+
                     </form>
 
                     <!-- Message -->
-                    {% if message %}
-                        <div class="mt-4 alert alert-info text-center">
-                            {{ message }}
-                        </div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="mt-4 alert alert-info text-center">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
                     {% endif %}
 
                 </div>

@@ -16,7 +16,7 @@
         <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit" class="logout-button">
-                 Logout
+                Logout
             </button>
         </form>
     </div>
@@ -37,7 +37,7 @@
         </div>
 
         <!-- Balance Card -->
-<div class="balance-card" id="balance-card">
+        <div class="balance-card" id="balance-card">
             <div>
                 <p class="balance-label">Available Balance</p>
                 <h1>₹ {{ balance }}</h1>
@@ -56,13 +56,13 @@
 
         <div class="action-grid">
 
-            <a href="#balance-card">
-    <div class="action-box blue">
-        💰
-        <h5>View Balance</h5>
-    </div>
-</a>
-
+            <!-- FIXED VIEW BALANCE -->
+            <a href="{% url 'view_balance' %}">
+                <div class="action-box blue">
+                    💰
+                    <h5>View Balance</h5>
+                </div>
+            </a>
 
             <a href="{% url 'transaction_history' %}">
                 <div class="action-box purple">

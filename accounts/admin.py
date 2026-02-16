@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import Employee, KYC
+from .models import OTP
 
-admin.site.register(Employee)
-admin.site.register(KYC)
+admin.site.register(OTP)
