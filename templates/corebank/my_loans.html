@@ -1,18 +1,76 @@
-<h2>My Loans</h2>
+{% extends 'base.html' %}
 
-<table border="1">
-<tr>
-    <th>Amount</th>
-    <th>Reason</th>
-    <th>Status</th>
-</tr>
+{% block content %}
 
-{% for loan in loans %}
-<tr>
-    <td>₹ {{ loan.amount }}</td>
-    <td>{{ loan.reason }}</td>
-    <td>{{ loan.status }}</td>
-</tr>
-{% endfor %}
+<div class="container mt-5">
 
-</table>
+    <!-- Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">My Loans</h2>
+        <small class="text-muted">
+            View the status of your loan applications
+        </small>
+    </div>
+
+    <!-- Loan Table Card -->
+    <div class="card border-0 shadow-lg" style="border-radius:12px;">
+        <div class="card-body p-0">
+
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background:#003366;color:white;">
+                    <tr>
+                        <th class="ps-4">Amount</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for loan in loans %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-success">
+                            ₹ {{ loan.amount }}
+                        </td>
+
+                        <td>
+                            {{ loan.reason }}
+                        </td>
+
+                        <td>
+                            {% if loan.status == "Approved" %}
+                                <span class="badge bg-success px-3 py-2">
+                                    Approved
+                                </span>
+                            {% elif loan.status == "Pending" %}
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    Pending
+                                </span>
+                            {% elif loan.status == "Rejected" %}
+                                <span class="badge bg-danger px-3 py-2">
+                                    Rejected
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary px-3 py-2">
+                                    {{ loan.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-muted">
+                            You have not applied for any loans yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

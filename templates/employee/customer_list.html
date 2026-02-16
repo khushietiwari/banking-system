@@ -3,56 +3,78 @@
 
 <div class="container mt-5">
 
+    <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>Customer List</h3>
-        <a href="{% url 'create_customer' %}" class="btn btn-primary">
+        <div>
+            <h3 class="fw-bold mb-1">Customer List</h3>
+            <small class="text-muted">Manage and monitor all registered customers</small>
+        </div>
+
+        <a href="{% url 'create_customer' %}" 
+           class="btn btn-primary px-4">
             + Create Customer
         </a>
     </div>
 
-    <div class="card shadow">
-        <div class="card-body">
+    <!-- Card Wrapper -->
+    <div class="card border-0 shadow-lg" style="border-radius:12px;">
+        <div class="card-body p-0">
 
-            <table class="table table-bordered table-hover">
-                <thead class="table-dark">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background:#003366;color:white;">
                     <tr>
-                        <th>Username</th>
+                        <th class="ps-4">Username</th>
                         <th>Email</th>
                         <th>Account No</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
                 {% for customer in customers %}
-                    <tr>
-                        <td>{{ customer.username }}</td>
-                        <td>{{ customer.email }}</td>
+                    <tr style="transition:0.2s ease;">
+                        <td class="ps-4 fw-semibold">
+                            {{ customer.username }}
+                        </td>
+
+                        <td class="text-muted">
+                            {{ customer.email }}
+                        </td>
+
                         <td>
                             {% if customer.account %}
-                                {{ customer.account.account_number }}
+                                <span class="fw-medium">
+                                    {{ customer.account.account_number }}
+                                </span>
                             {% else %}
-                                -
+                                <span class="text-muted">-</span>
                             {% endif %}
                         </td>
+
                         <td>
                             {% if customer.account.status == "Active" %}
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success px-3 py-2">
+                                    Active
+                                </span>
                             {% else %}
-                                <span class="badge bg-danger">Frozen</span>
+                                <span class="badge bg-danger px-3 py-2">
+                                    Frozen
+                                </span>
                             {% endif %}
                         </td>
-                        <td>
+
+                        <td class="text-center">
                             <a href="{% url 'update_customer' customer.id %}" 
-                               class="btn btn-sm btn-warning">
+                               class="btn btn-sm btn-outline-warning px-3">
                                 Edit
                             </a>
                         </td>
                     </tr>
+
                 {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center">
+                        <td colspan="5" class="text-center py-4 text-muted">
                             No customers found.
                         </td>
                     </tr>

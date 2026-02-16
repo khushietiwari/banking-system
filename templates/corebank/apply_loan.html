@@ -1,8 +1,62 @@
-<h2>Apply for Loan</h2>
+{% extends 'base.html' %}
 
-<form method="post">
-    {% csrf_token %}
-    <input type="number" name="amount" placeholder="Enter Amount" required><br><br>
-    <textarea name="reason" placeholder="Reason" required></textarea><br><br>
-    <button type="submit">Apply</button>
-</form>
+{% block content %}
+
+<div class="container mt-5">
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Apply for Loan</h2>
+        <small class="text-muted">
+            Submit your loan request for review and approval
+        </small>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card border-0 shadow-lg mx-auto" 
+         style="max-width:600px;border-radius:16px;">
+        <div class="card-body p-5">
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Loan Amount -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Loan Amount (₹)
+                    </label>
+                    <input type="number" 
+                           name="amount" 
+                           class="form-control form-control-lg"
+                           placeholder="Enter Amount"
+                           required>
+                </div>
+
+                <!-- Reason -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Reason
+                    </label>
+                    <textarea name="reason" 
+                              class="form-control"
+                              rows="4"
+                              placeholder="Reason for applying loan"
+                              required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" 
+                            class="btn btn-primary btn-lg">
+                        Apply for Loan
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
