@@ -1,0 +1,8 @@
+<h2>KYC Status</h2>
+
+{% if kyc %}
+    <p>Status: <strong>{{ kyc.status }}</strong></p>
+    <p>Document: <a href="{{ kyc.document.url }}">View Document</a></p>
+{% else %}
+    <p>No KYC submitted yet.</p>
+{% endif %}

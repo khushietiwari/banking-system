@@ -1,0 +1,8 @@
+<h2>Apply for Loan</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="number" name="amount" placeholder="Enter Amount" required><br><br>
+    <textarea name="reason" placeholder="Reason" required></textarea><br><br>
+    <button type="submit">Apply</button>
+</form>

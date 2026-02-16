@@ -11,60 +11,47 @@ DAILY_LIMIT = Decimal("50000")
 # ==========================
 # 💰 DEPOSIT
 # ==========================
+from decimal import Decimal
+
 def deposit(account, amount):
+    try:
+        amount = Decimal(amount)
 
-    amount = Decimal(amount)
+        if amount <= 0:
+            return "Amount must be greater than zero."
 
-    if account.status != "Active":
-        return "Account Blocked"
-
-    if amount <= 0:
-        return "Invalid Amount"
-
-    with transaction.atomic():
-
-        account.balance += float(amount)   # ✅ FIX
+        account.balance += amount
         account.save()
 
-        Transaction.objects.create(
-            account=account,
-            transaction_type="Deposit",
-            amount=amount,
-            reference_id=str(uuid.uuid4())[:10]
-        )
+        return "Deposit successful."
 
-    return "Deposit Successful ✅"
+    except Exception:
+        return "Invalid amount."
+
 
 
 # ==========================
 # 💸 WITHDRAW
 # ==========================
+
 def withdraw(account, amount):
+    try:
+        amount = Decimal(amount)
 
-    amount = Decimal(amount)
+        if amount <= 0:
+            return "Amount must be greater than zero."
 
-    if account.status != "Active":
-        return "Account Blocked"
+        if amount > account.balance:
+            return "Insufficient balance."
 
-    if amount <= 0:
-        return "Invalid Amount"
-
-    if Decimal(account.balance) < amount:   # ✅ SAFE CHECK
-        return "Insufficient Balance ❌"
-
-    with transaction.atomic():
-
-        account.balance -= float(amount)   # ✅ FIX
+        account.balance -= amount
         account.save()
 
-        Transaction.objects.create(
-            account=account,
-            transaction_type="Withdrawal",
-            amount=amount,
-            reference_id=str(uuid.uuid4())[:10]
-        )
+        return "Withdrawal successful."
 
-    return "Withdrawal Successful ✅"
+    except Exception:
+        return "Invalid amount."
+
 
 
 # ==========================

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- Employee Sidebar -->
+    <div class="sidebar">
+        <h4 class="brand">Employee Panel</h4>
+
+        <a href="{% url 'employee_dashboard' %}">Dashboard</a>
+        <a href="{% url 'customer_list' %}">Customers</a>
+        <a href="{% url 'view_transactions' %}">Transactions</a>
+        <a href="{% url 'view_loans' %}">Loans</a>
+        <a href="{% url 'view_kyc' %}">KYC Requests</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <div class="top-bar">
+            <div>
+                <h2>Employee Dashboard 👨‍💼</h2>
+                <small>Manage Banking Operations</small>
+            </div>
+        </div>
+
+        <div class="action-grid">
+
+            <div class="action-box blue">
+                👥
+                <h5>Total Customers</h5>
+                <p>{{ total_customers }}</p>
+            </div>
+
+            <div class="action-box green">
+                💰
+                <h5>Total Accounts</h5>
+                <p>{{ total_accounts }}</p>
+            </div>
+
+            <div class="action-box yellow">
+                ⏳
+                <h5>Pending Transactions</h5>
+                <p>{{ pending_transactions }}</p>
+            </div>
+
+            <div class="action-box purple">
+                📄
+                <h5>Pending Loans</h5>
+                <p>{{ pending_loans }}</p>
+            </div>
+
+            <div class="action-box blue">
+                🪪
+                <h5>Pending KYC</h5>
+                <p>{{ pending_kyc }}</p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

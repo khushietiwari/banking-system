@@ -20,19 +20,30 @@ class Account(models.Model):
 
 
 class Transaction(models.Model):
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+    ]
+
     account = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
         related_name="transactions"
     )
+
     transaction_type = models.CharField(max_length=50)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    reference_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     method = models.CharField(max_length=20, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.transaction_type} - {self.amount}"
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Beneficiary(models.Model):
@@ -51,3 +62,32 @@ class Beneficiary(models.Model):
 
     def __str__(self):
         return self.nickname
+class Loan(models.Model):
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="loans")
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - ₹{self.amount} - {self.status}"
+class KYC(models.Model):
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="kyc")
+    document = models.FileField(upload_to="kyc_documents/")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.status}"

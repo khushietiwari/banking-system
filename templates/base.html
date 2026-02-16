@@ -202,6 +202,39 @@
     color: #6c757d;
     letter-spacing: 0.3px;
 }
+.sidebar {
+    width: 230px;
+    background: #0f3057;
+    padding: 30px 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: 0.3s ease;
+}
+
+.sidebar a,
+.sidebar .sidebar-link {
+    color: white;
+    text-decoration: none;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+    display: block;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+.sidebar a:hover,
+.sidebar .sidebar-link:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.logout-link {
+    color: #ff6b6b;
+    font-weight: 500;
+}
 
 .security-note::before {
     content: "";
@@ -259,6 +292,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    <button onclick="toggleSidebar()" 
+        style="border:none;background:#003366;color:white;padding:8px 12px;border-radius:6px;">
+    ☰
+</button>
+
 }
 
 .profile-circle {

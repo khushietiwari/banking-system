@@ -34,7 +34,6 @@ def register(request):
             messages.error(request, "Username already exists.")
             return redirect("register")
 
-        # Split full name into first & last
         name_parts = full_name.strip().split(" ", 1)
         first_name = name_parts[0]
         last_name = name_parts[1] if len(name_parts) > 1 else ""
@@ -46,6 +45,11 @@ def register(request):
             first_name=first_name,
             last_name=last_name
         )
+
+        # ✅ SET ROLE PROPERLY
+        if role == "employee":
+            user.is_staff = True
+            user.save()
 
         # Create bank account only for customer
         if role == "customer":
@@ -59,6 +63,7 @@ def register(request):
         return redirect("login")
 
     return render(request, "register.html")
+
 
 
 def login_view(request):
@@ -113,8 +118,12 @@ def verify_otp(request):
 
             if otp_obj.otp_code == entered_otp:
                 otp_obj.delete()
-                return redirect('customer_dashboard')
 
+                # ✅ Role-based redirection
+                if request.user.is_staff:
+                    return redirect('employee_dashboard')
+                else:
+                    return redirect('customer_dashboard')
 
         return render(request, "verify_otp.html", {
             "error": "Invalid OTP"

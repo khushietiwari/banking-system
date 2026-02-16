@@ -4,21 +4,54 @@ from django.contrib import messages
 from decimal import Decimal
 from .models import Account, Transaction, Beneficiary
 from .services import deposit, withdraw
+from .models import Loan
+from decimal import Decimal
+
+
+@login_required
+def apply_loan(request):
+    if request.method == "POST":
+        amount = request.POST.get("amount")
+        reason = request.POST.get("reason")
+
+        Loan.objects.create(
+            user=request.user,
+            amount=amount,
+            reason=reason
+        )
+
+        return redirect("my_loans")
+
+    return render(request, "corebank/apply_loan.html")
+
+
+@login_required
+def my_loans(request):
+    loans = Loan.objects.filter(user=request.user)
+    return render(request, "corebank/my_loans.html", {"loans": loans})
+
 
 
 # ---------------- DASHBOARD ---------------- #
 
+from .models import Account, KYC
+
+from .models import KYC, Loan
+
 @login_required
 def customer_dashboard(request):
-    account = Account.objects.filter(user=request.user).first()
+    account = request.user.account
+    kyc = KYC.objects.filter(user=request.user).first()
+    loans = Loan.objects.filter(user=request.user)
 
-    context = {
-        "name": request.user.get_full_name(),   # ✅ Full Name
-        "balance": account.balance if account else 0,
-        "account_number": account.account_number if account else "Not Available",
-    }
-
-    return render(request, "customer_dashboard.html", context)
+    return render(request, "customer_dashboard.html", {
+        "name": request.user.first_name,
+        "balance": account.balance,
+        "account_number": account.account_number,
+        "ifsc": account.ifsc_code,
+        "kyc": kyc,
+        "loans": loans
+    })
 
 
 # ---------------- BALANCE ---------------- #
@@ -41,45 +74,6 @@ def view_balance(request):
     }
 
     return render(request, "view_balance.html", context)
-
-
-# ---------------- DEPOSIT ---------------- #
-
-@login_required
-def deposit_view(request):
-    account = Account.objects.get(user=request.user)
-
-    if request.method == "POST":
-        amount = request.POST.get("amount")
-        message = deposit(account, amount)
-        account.refresh_from_db()
-
-        return render(request, "deposit.html", {
-            "account": account,
-            "message": message
-        })
-
-    return render(request, "deposit.html", {"account": account})
-
-
-# ---------------- WITHDRAW ---------------- #
-
-@login_required
-def withdraw_view(request):
-    account = Account.objects.get(user=request.user)
-
-    if request.method == "POST":
-        amount = request.POST.get("amount")
-        message = withdraw(account, amount)
-        account.refresh_from_db()
-
-        return render(request, "withdraw.html", {
-            "account": account,
-            "message": message
-        })
-
-    return render(request, "withdraw.html", {"account": account})
-
 
 # ---------------- TRANSFER ---------------- #
 
@@ -191,3 +185,87 @@ def view_balance(request):
         "balance": account.balance,
         "account_number": account.account_number
     })
+from .models import KYC
+
+@login_required
+def upload_kyc(request):
+    if request.method == "POST":
+        document = request.FILES.get("document")
+
+        KYC.objects.update_or_create(
+            user=request.user,
+            defaults={"document": document, "status": "Pending"}
+        )
+
+        return redirect("kyc_status")
+
+    return render(request, "upload_kyc.html")
+
+
+@login_required
+def kyc_status(request):
+    kyc = KYC.objects.filter(user=request.user).first()
+    return render(request, "kyc_status.html", {"kyc": kyc})
+from .models import Account, Transaction, KYC
+from django.contrib import messages
+
+
+from decimal import Decimal
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Account, Transaction, KYC
+
+
+# ---------------- DEPOSIT ---------------- #
+
+@login_required
+def deposit_view(request):
+    account = request.user.account
+
+    if request.method == "POST":
+        amount = Decimal(request.POST.get("amount"))
+
+        if amount <= 0:
+            messages.error(request, "Invalid amount.")
+            return redirect("deposit")
+
+        Transaction.objects.create(
+            account=account,
+            transaction_type="Deposit",
+            amount=amount,
+            method="Self",
+            status="Pending"
+        )
+
+        messages.success(request, "Deposit request submitted. Waiting for approval.")
+        return redirect("customer_dashboard")
+
+    return render(request, "deposit.html")
+
+
+# ---------------- WITHDRAW ---------------- #
+
+@login_required
+def withdraw_view(request):
+    account = request.user.account
+
+    if request.method == "POST":
+        amount = Decimal(request.POST.get("amount"))
+
+        if amount <= 0:
+            messages.error(request, "Invalid amount.")
+            return redirect("withdraw")
+
+        Transaction.objects.create(
+            account=account,
+            transaction_type="Withdrawal",
+            amount=amount,
+            method="Self",
+            status="Pending"
+        )
+
+        messages.success(request, "Withdrawal request submitted. Waiting for approval.")
+        return redirect("customer_dashboard")
+
+    return render(request, "withdraw.html")
