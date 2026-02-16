@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3 class="mb-4">Loan Requests</h3>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for loan in loans %}
+                    <tr>
+                        <td>{{ loan.user.username }}</td>
+                        <td>₹ {{ loan.amount }}</td>
+                        <td>{{ loan.reason }}</td>
+                        <td>
+                            {% if loan.status == "Pending" %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif loan.status == "Approved" %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if loan.status == "Pending" %}
+                                <a href="{% url 'update_loan' loan.id 'approve' %}" 
+                                   class="btn btn-success btn-sm">
+                                    Approve
+                                </a>
+                                <a href="{% url 'update_loan' loan.id 'reject' %}" 
+                                   class="btn btn-danger btn-sm">
+                                    Reject
+                                </a>
+                            {% else %}
+                                <span class="text-muted">No Action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            No loan requests found.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <h3 class="mb-4">Pending Transactions</h3>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for txn in transactions %}
+                    <tr>
+                        <td>{{ txn.account.user.username }}</td>
+                        <td>{{ txn.transaction_type }}</td>
+                        <td>₹ {{ txn.amount }}</td>
+                        <td>
+                            <a href="{% url 'update_transaction' txn.id 'approve' %}" class="btn btn-success btn-sm">
+                                Approve
+                            </a>
+                            <a href="{% url 'update_transaction' txn.id 'reject' %}" class="btn btn-danger btn-sm">
+                                Reject
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No pending transactions</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

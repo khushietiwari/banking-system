@@ -1,0 +1,18 @@
+<h2>My Loans</h2>
+
+<table border="1">
+<tr>
+    <th>Amount</th>
+    <th>Reason</th>
+    <th>Status</th>
+</tr>
+
+{% for loan in loans %}
+<tr>
+    <td>₹ {{ loan.amount }}</td>
+    <td>{{ loan.reason }}</td>
+    <td>{{ loan.status }}</td>
+</tr>
+{% endfor %}
+
+</table>

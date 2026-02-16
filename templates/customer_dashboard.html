@@ -4,25 +4,35 @@
 <div class="dashboard-container">
 
     <!-- Sidebar -->
-    <div class="sidebar">
-        <h3 class="brand">PrimeTrust</h3>
+    <div class="sidebar" id="sidebar">
+    <h3 class="brand">PrimeTrust</h3>
 
-        <a href="{% url 'customer_dashboard' %}">Dashboard</a>
-        <a href="{% url 'transaction_history' %}">Statements</a>
-        <a href="{% url 'transfer' %}">Transfer Funds</a>
-        <a href="{% url 'pay_bills' %}">Pay Bills</a>
-        <a href="{% url 'manage_profile' %}">Manage Profile</a>
+    <a href="{% url 'customer_dashboard' %}">🏠 Dashboard</a>
+    <a href="{% url 'transaction_history' %}">📜 Statements</a>
+    <a href="{% url 'transfer' %}">🔁 Transfer Funds</a>
+    <a href="{% url 'pay_bills' %}">🧾 Pay Bills</a>
+    <a href="{% url 'manage_profile' %}">⚙ Manage Profile</a>
+    <a href="{% url 'deposit' %}">➕ Deposit</a>
+    <a href="{% url 'withdraw' %}">➖ Withdraw</a>
 
-        <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="logout-button">
-                Logout
-            </button>
-        </form>
-    </div>
+    <!-- Styled Logout -->
+    <form method="POST" action="{% url 'logout' %}" class="mt-4">
+        {% csrf_token %}
+        <button type="submit" class="sidebar-link logout-link">
+            🚪 Logout
+        </button>
+    </form>
+</div>
 
     <!-- Main Content -->
     <div class="main-content">
+
+        <!-- KYC Warning Banner -->
+        {% if not kyc or kyc.status != "Approved" %}
+        <div style="background:#ffe5e5;padding:12px;border-radius:6px;margin-bottom:20px;">
+            ⚠ Please complete KYC verification to unlock full banking features.
+        </div>
+        {% endif %}
 
         <!-- Greeting Bar -->
         <div class="top-bar">
@@ -37,7 +47,7 @@
         </div>
 
         <!-- Balance Card -->
-        <div class="balance-card" id="balance-card">
+        <div class="balance-card">
             <div>
                 <p class="balance-label">Available Balance</p>
                 <h1>₹ {{ balance }}</h1>
@@ -56,13 +66,25 @@
 
         <div class="action-grid">
 
-            <!-- FIXED VIEW BALANCE -->
             <a href="{% url 'view_balance' %}">
                 <div class="action-box blue">
                     💰
                     <h5>View Balance</h5>
                 </div>
             </a>
+            <a href="{% url 'deposit' %}">
+    <div class="action-box green">
+        ➕
+        <h5>Deposit</h5>
+    </div>
+</a>
+
+<a href="{% url 'withdraw' %}">
+    <div class="action-box red">
+        ➖
+        <h5>Withdraw</h5>
+    </div>
+</a>
 
             <a href="{% url 'transaction_history' %}">
                 <div class="action-box purple">
@@ -94,6 +116,67 @@
 
         </div>
 
+        <!-- KYC Section -->
+        <div class="section-title">
+            <h4>KYC Verification</h4>
+        </div>
+
+        <div class="action-grid">
+
+            {% if not kyc %}
+                <a href="{% url 'upload_kyc' %}">
+                    <div class="action-box yellow">
+                        🪪
+                        <h5>Upload KYC</h5>
+                    </div>
+                </a>
+
+            {% elif kyc.status == "Pending" %}
+                <div class="action-box purple">
+                    ⏳
+                    <h5>KYC Pending</h5>
+                </div>
+
+            {% elif kyc.status == "Rejected" %}
+                <a href="{% url 'upload_kyc' %}">
+                    <div class="action-box red">
+                        ❌
+                        <h5>KYC Rejected - Reupload</h5>
+                    </div>
+                </a>
+
+            {% elif kyc.status == "Approved" %}
+                <div class="action-box green">
+                    ✅
+                    <h5>KYC Approved</h5>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Loan Section -->
+        <div class="section-title">
+            <h4>Loans</h4>
+        </div>
+
+        <div class="action-grid">
+
+            <a href="{% url 'apply_loan' %}">
+                <div class="action-box blue">
+                    💳
+                    <h5>Apply Loan</h5>
+                </div>
+            </a>
+
+            <a href="{% url 'my_loans' %}">
+                <div class="action-box purple">
+                    📋
+                    <h5>My Loans</h5>
+                </div>
+            </a>
+
+        </div>
+
         <!-- Recent Activity -->
         <div class="recent-section">
             <h4>Recent Transactions</h4>
@@ -109,5 +192,16 @@
     </div>
 
 </div>
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+
+    if (sidebar.style.display === "none") {
+        sidebar.style.display = "flex";
+    } else {
+        sidebar.style.display = "none";
+    }
+}
+</script>
 
 {% endblock %}

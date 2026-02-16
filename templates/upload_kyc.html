@@ -1,0 +1,7 @@
+<h2>Upload KYC Document</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="document" required>
+    <button type="submit">Upload</button>
+</form>

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3 class="mb-4">KYC Verification Requests</h3>
+
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Document</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for kyc in kyc_requests %}
+                    <tr>
+                        <td>{{ kyc.user.username }}</td>
+                        <td>
+                            <a href="{{ kyc.document.url }}" 
+                               target="_blank"
+                               class="btn btn-outline-primary btn-sm">
+                                View Document
+                            </a>
+                        </td>
+                        <td>
+                            {% if kyc.status == "Pending" %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif kyc.status == "Approved" %}
+                                <span class="badge bg-success">Approved</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if kyc.status == "Pending" %}
+                                <a href="{% url 'update_kyc' kyc.user.id 'approve' %}" 
+                                   class="btn btn-success btn-sm">
+                                    Approve
+                                </a>
+                                <a href="{% url 'update_kyc' kyc.user.id 'reject' %}" 
+                                   class="btn btn-danger btn-sm">
+                                    Reject
+                                </a>
+                            {% else %}
+                                <span class="text-muted">No Action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No KYC requests found.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

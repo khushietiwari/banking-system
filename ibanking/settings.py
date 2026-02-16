@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'corebank',
+    'employee',
 ]
 
 
@@ -148,3 +150,5 @@ CSRF_TRUSTED_ORIGINS = [
 
 RECAPTCHA_PUBLIC_KEY = '6Lfk3GgsAAAAAM7XPSxS3MJukw3AJrLQTZfCSrMn'
 RECAPTCHA_PRIVATE_KEY = '6Lfk3GgsAAAAAP5cMt4_p9Rqjv5W2brWynGkp4Ci'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

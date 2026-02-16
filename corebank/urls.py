@@ -10,4 +10,11 @@ urlpatterns = [
     path('pay-bills/', views.pay_bills, name="pay_bills"),
     path('manage-profile/', views.manage_profile, name="manage_profile"),
     path('add-beneficiary/', views.add_beneficiary, name="add_beneficiary"),
+    path('apply-loan/', views.apply_loan, name="apply_loan"),
+path('my-loans/', views.my_loans, name="my_loans"),
+path('upload-kyc/', views.upload_kyc, name="upload_kyc"),
+path('kyc-status/', views.kyc_status, name="kyc_status"),
+path('deposit/', views.deposit_view, name="deposit"),
+path('withdraw/', views.withdraw_view, name="withdraw"),
+
 ]
