@@ -57,6 +57,10 @@ def withdraw(account, amount):
 # ==========================
 # 🔁 TRANSFER
 # ==========================
+from decimal import Decimal
+from django.db import transaction
+import uuid
+
 def transfer(sender, receiver_account_number, amount, otp_verified=True):
 
     amount = Decimal(amount)
@@ -81,17 +85,17 @@ def transfer(sender, receiver_account_number, amount, otp_verified=True):
     ).exists():
         return "Beneficiary Not Registered"
 
-    if Decimal(sender.balance) < amount:   # ✅ SAFE CHECK
+    if sender.balance < amount:
         return "Insufficient Balance"
 
-    if Decimal(sender.daily_transfer_used) + amount > DAILY_LIMIT:
+    if sender.daily_transfer_used + amount > DAILY_LIMIT:
         return "Daily Transfer Limit Exceeded"
 
     with transaction.atomic():
 
-        sender.balance -= float(amount)   # ✅ FIX
-        receiver.balance += float(amount)
-        sender.daily_transfer_used += float(amount)
+        sender.balance -= amount
+        receiver.balance += amount
+        sender.daily_transfer_used += amount
 
         sender.save()
         receiver.save()

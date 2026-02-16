@@ -77,41 +77,74 @@ def view_balance(request):
 
 # ---------------- TRANSFER ---------------- #
 
+from decimal import Decimal
+from django.db import transaction
+
 @login_required
 def transfer_view(request):
-    account = Account.objects.get(user=request.user)
+    account = request.user.account
     beneficiaries = Beneficiary.objects.filter(account=account)
+
+    if account.status == "Frozen":
+        messages.error(request, "Account is frozen.")
+        return redirect("customer_dashboard")
+
+    if not KYC.objects.filter(user=request.user, status="Approved").exists():
+        messages.error(request, "Complete KYC to transfer funds.")
+        return redirect("customer_dashboard")
 
     if request.method == "POST":
         beneficiary_id = request.POST.get("beneficiary")
         amount = Decimal(request.POST.get("amount"))
 
-        beneficiary = Beneficiary.objects.get(id=beneficiary_id)
+        if amount <= 0:
+            messages.error(request, "Invalid amount.")
+            return redirect("transfer")
 
-        if account.balance < amount:
+        try:
+            beneficiary = Beneficiary.objects.get(id=beneficiary_id)
+        except Beneficiary.DoesNotExist:
+            messages.error(request, "Invalid beneficiary.")
+            return redirect("transfer")
+
+        receiver = beneficiary.beneficiary_account
+
+        if amount > account.balance:
             messages.error(request, "Insufficient balance.")
-            return redirect("corebank:transfer")
+            return redirect("transfer")
 
-        account.balance -= amount
-        beneficiary.beneficiary_account.balance += amount
+        with transaction.atomic():
 
-        account.save()
-        beneficiary.beneficiary_account.save()
+            account.balance -= amount
+            receiver.balance += amount
 
-        Transaction.objects.create(
-            account=account,
-            transaction_type="Transfer",
-            amount=amount,
-            method="Online"
-        )
+            account.save()
+            receiver.save()
 
-        messages.success(request, "Transfer Successful!")
-        return redirect('customer_dashboard')
+            reference = str(uuid.uuid4())[:10]
 
+            Transaction.objects.create(
+                account=account,
+                transaction_type="Transfer Sent",
+                amount=amount,
+                reference_id=reference,
+                method="IMPS"
+            )
+
+            Transaction.objects.create(
+                account=receiver,
+                transaction_type="Transfer Received",
+                amount=amount,
+                reference_id=reference,
+                method="IMPS"
+            )
+
+        messages.success(request, "Transfer successful.")
+        return redirect("customer_dashboard")
 
     return render(request, "transfer.html", {
-        "beneficiaries": beneficiaries,
-        "balance": account.balance
+        "account": account,
+        "beneficiaries": beneficiaries
     })
 
 
@@ -219,36 +252,67 @@ from .models import Account, Transaction, KYC
 
 # ---------------- DEPOSIT ---------------- #
 
+from decimal import Decimal
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Account, Transaction, KYC
+
 @login_required
 def deposit_view(request):
     account = request.user.account
 
+    if account.status == "Frozen":
+        messages.error(request, "Account is frozen.")
+        return redirect("customer_dashboard")
+
+    if not KYC.objects.filter(user=request.user, status="Approved").exists():
+        messages.error(request, "Complete KYC to deposit funds.")
+        return redirect("customer_dashboard")
+
     if request.method == "POST":
         amount = Decimal(request.POST.get("amount"))
 
-        if amount <= 0:
-            messages.error(request, "Invalid amount.")
-            return redirect("deposit")
+        account.balance += amount
+        account.save()
 
         Transaction.objects.create(
             account=account,
             transaction_type="Deposit",
             amount=amount,
-            method="Self",
-            status="Pending"
+            method="Self Deposit"
         )
 
-        messages.success(request, "Deposit request submitted. Waiting for approval.")
+        messages.success(request, "Deposit successful.")
         return redirect("customer_dashboard")
 
-    return render(request, "deposit.html")
+    return render(request, "deposit.html", {
+        "account": account,
+        "balance": account.balance   # ✅ THIS WAS MISSING
+    })
 
 
 # ---------------- WITHDRAW ---------------- #
 
+from decimal import Decimal
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Account, Transaction, KYC
+
 @login_required
 def withdraw_view(request):
     account = request.user.account
+
+    # Block if frozen
+    if account.status == "Frozen":
+        messages.error(request, "Account is frozen.")
+        return redirect("customer_dashboard")
+
+    # Block if KYC not approved
+    if not KYC.objects.filter(user=request.user, status="Approved").exists():
+        messages.error(request, "Complete KYC to withdraw funds.")
+        return redirect("customer_dashboard")
 
     if request.method == "POST":
         amount = Decimal(request.POST.get("amount"))
@@ -257,15 +321,23 @@ def withdraw_view(request):
             messages.error(request, "Invalid amount.")
             return redirect("withdraw")
 
+        if amount > account.balance:
+            messages.error(request, "Insufficient balance.")
+            return redirect("withdraw")
+
+        account.balance -= amount
+        account.save()
+
         Transaction.objects.create(
             account=account,
             transaction_type="Withdrawal",
             amount=amount,
-            method="Self",
-            status="Pending"
+            method="Self Withdrawal"
         )
 
-        messages.success(request, "Withdrawal request submitted. Waiting for approval.")
+        messages.success(request, "Withdrawal successful.")
         return redirect("customer_dashboard")
 
-    return render(request, "withdraw.html")
+    return render(request, "withdraw.html", {
+        "account": account
+    })
