@@ -231,12 +231,41 @@
         <div class="recent-section mt-5">
             <h4 class="fw-semibold mb-3">Recent Transactions</h4>
 
-            <div class="recent-card text-center py-4">
-                <p class="mb-1">No recent transactions yet.</p>
-                <small class="text-muted">
-                    Your latest transactions will appear here.
-                </small>
+            {% if recent_transactions %}
+    <div class="recent-card p-3 rounded-4">
+
+        {% for txn in recent_transactions %}
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+
+                <div>
+                    <strong>{{ txn.transaction_type }}</strong><br>
+                    <small class="text-muted">
+                        {{ txn.created_at|date:"d M Y, H:i" }}
+                    </small>
+                </div>
+
+                <div class="text-end">
+                    <span class="{% if 'Sent' in txn.transaction_type or 'Withdrawal' in txn.transaction_type %}text-danger{% else %}text-success{% endif %}">
+                        ₹ {{ txn.amount }}
+                    </span><br>
+                    <small class="text-muted">
+                        Ref: {{ txn.reference_id|default:"—" }}
+                    </small>
+                </div>
+
             </div>
+        {% endfor %}
+
+    </div>
+{% else %}
+    <div class="recent-card text-center py-4">
+        <p class="mb-1">No recent transactions yet.</p>
+        <small class="text-muted">
+            Your latest transactions will appear here.
+        </small>
+    </div>
+{% endif %}
+
         </div>
 
     </div>

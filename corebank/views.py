@@ -7,6 +7,8 @@ from .services import deposit, withdraw
 from .models import Loan
 from decimal import Decimal
 from django.contrib.messages import get_messages
+import uuid
+from django.db import transaction
 
 
 @login_required
@@ -45,13 +47,16 @@ def customer_dashboard(request):
     kyc = KYC.objects.filter(user=request.user).first()
     loans = Loan.objects.filter(user=request.user)
 
+    recent_transactions = account.transactions.order_by("-created_at")[:5]
+
     return render(request, "customer_dashboard.html", {
         "name": request.user.first_name,
         "balance": account.balance,
         "account_number": account.account_number,
         "ifsc": account.ifsc_code,
         "kyc": kyc,
-        "loans": loans
+        "loans": loans,
+        "recent_transactions": recent_transactions
     })
 
 

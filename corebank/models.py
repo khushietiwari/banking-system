@@ -37,13 +37,23 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     method = models.CharField(max_length=20, blank=True, null=True)
 
+    # ✅ NEW FIELD (Fix for your error)
+    reference_id = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="Pending"
+        default="Approved"   # For transfers we usually auto-approve
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transaction_type} | ₹{self.amount} | {self.account.account_number}"
 
 
 class Beneficiary(models.Model):

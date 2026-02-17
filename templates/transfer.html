@@ -44,8 +44,10 @@
 
                                     {% for b in beneficiaries %}
                                         <option value="{{ b.id }}">
-                                            {{ b.name }} - ****{{ b.account_number|slice:"-4:" }}
+                                            {{ b.nickname }} - ****{{ b.beneficiary_account.account_number|slice:"-4:" }}
                                         </option>
+                                    {% empty %}
+                                        <option disabled>No beneficiaries added</option>
                                     {% endfor %}
 
                                 </select>
@@ -66,6 +68,7 @@
                             <input type="number"
                                    name="amount"
                                    step="0.01"
+                                   min="1"
                                    class="form-control custom-input"
                                    placeholder="Enter Amount"
                                    required>
