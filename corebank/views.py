@@ -6,6 +6,7 @@ from .models import Account, Transaction, Beneficiary
 from .services import deposit, withdraw
 from .models import Loan
 from decimal import Decimal
+from django.contrib.messages import get_messages
 
 
 @login_required
@@ -90,7 +91,8 @@ def transfer_view(request):
         return redirect("customer_dashboard")
 
     if not KYC.objects.filter(user=request.user, status="Approved").exists():
-        messages.error(request, "Complete KYC to transfer funds.")
+        list(get_messages(request))  # clears old messages instantly
+        messages.error(request, "Please complete KYC verification first.")
         return redirect("customer_dashboard")
 
     if request.method == "POST":
