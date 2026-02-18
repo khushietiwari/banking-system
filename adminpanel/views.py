@@ -17,14 +17,20 @@ def admin_dashboard(request):
     pending_loans = Loan.objects.filter(status="Pending").count()
     pending_kyc = KYC.objects.filter(status="Pending").count()
     
+    # Fetch recent data for "Live" feel
+    recent_users = User.objects.filter(is_superuser=False).order_by('-date_joined')[:5]
+    recent_transactions = Transaction.objects.all().order_by('-created_at')[:5]
+
     context = {
         "total_users": total_users,
         "total_accounts": total_accounts,
         "total_balance": total_balance,
         "pending_loans": pending_loans,
         "pending_kyc": pending_kyc,
+        "recent_users": recent_users,
+        "recent_transactions": recent_transactions,
     }
-    return render(request, "adminpanel/dashboard.html", context)
+    return render(request, "admin_dashboard.html", context)
 
 @login_required
 @user_passes_test(is_superuser)
@@ -139,3 +145,21 @@ def system_reports(request):
         "rejected_loans": rejected_loans,
     }
     return render(request, "adminpanel/reports.html", context)
+@login_required
+@user_passes_test(is_superuser)
+def manage_staff(request):
+    staff_members = User.objects.filter(is_staff=True, is_superuser=False)
+    return render(request, "adminpanel/manage_staff.html", {"staff_members": staff_members})
+
+@login_required
+@user_passes_test(is_superuser)
+def update_staff_status(request, user_id, action):
+    user = get_object_or_404(User, id=user_id)
+    if action == "promote":
+        user.is_staff = True
+        messages.success(request, f"{user.username} promoted to Staff.")
+    elif action == "demote":
+        user.is_staff = False
+        messages.success(request, f"{user.username} demoted from Staff.")
+    user.save()
+    return redirect('manage_staff')

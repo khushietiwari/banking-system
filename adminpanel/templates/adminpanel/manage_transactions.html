@@ -1,63 +1,110 @@
-{% extends 'adminpanel/base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Transaction Ledger | Banking Operations{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Manage Transactions</h2>
+<div class="elite-container">
+    <!-- Header -->
+    <header class="elite-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="elite-subtitle">Operations Hub</span>
+            <h1 class="elite-title">Financial Ledger</h1>
+            <p class="text-muted mb-0">Complete audit trail of all capital flows across the banking substrate.</p>
+        </div>
+        <div class="d-flex gap-3">
+            <button class="elite-btn elite-btn-outline"><i class="fas fa-filter me-2"></i> Filter Logs</button>
+            <button class="elite-btn elite-btn-primary"><i class="fas fa-download me-2"></i> Export CSV</button>
+        </div>
+    </header>
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Reference ID</th>
-                        <th>Account</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for txn in transactions %}
-                    <tr>
-                        <td>{{ txn.created_at|date:"M d, Y H:i" }}</td>
-                        <td>{{ txn.reference_id|default:"-" }}</td>
-                        <td>{{ txn.account.account_number }}</td>
-                        <td>{{ txn.transaction_type }}</td>
-                        <td>₹{{ txn.amount }}</td>
-                        <td>
-                            {% if txn.status == 'Approved' %}
-                            <span class="badge bg-success">Approved</span>
-                            {% elif txn.status == 'Pending' %}
-                            <span class="badge bg-warning text-dark">Pending</span>
+    <!-- Ledger Table -->
+    <div class="elite-table-container">
+        <table class="elite-table">
+            <thead>
+                <tr>
+                    <th class="ps-4">Transaction Reference</th>
+                    <th>Account Holder</th>
+                    <th>Amount</th>
+                    <th>Date & Time</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Command</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for txn in transactions %}
+                <tr>
+                    <td class="ps-4">
+                        <span class="font-monospace fw-bold text-primary">#{{ txn.id|stringformat:"05d" }}</span>
+                        <div class="small text-muted font-monospace">REF-{{ txn.id|add:"10000" }}</div>
+                    </td>
+                    <td>
+                        <div class="fw-bold text-dark">
+                            {{ txn.account.user.username|title }}
+                        </div>
+                        <small class="text-muted">
+                            Account: {{ txn.account.account_number|default:"N/A" }}
+                        </small>
+                    </td>
+                    <td>
+                        <span class="fw-bold 
+                            {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Credit' %}
+                                text-success
                             {% else %}
-                            <span class="badge bg-danger">Rejected</span>
+                                text-danger
+                            {% endif %}">
+                            {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Credit' %}
+                            +
+                            {% else %}
+                            -
                             {% endif %}
-                        </td>
-                        <td>
-                            {% if txn.status == 'Pending' %}
+                            ₹{{ txn.amount }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="text-dark fw-medium">{{ txn.created_at|date:"M d, Y" }}</div>
+                        <small class="text-muted">{{ txn.created_at|date:"H:i:s" }}</small>
+                    </td>
+                    <td>
+                        <span class="small fw-bold text-muted uppercase ls-1">{{ txn.transaction_type }}</span>
+                    </td>
+                    <td>
+                        {% if txn.status == 'Approved' or txn.status == 'Completed' %}
+                        <span class="elite-badge badge-success-elite">Successful</span>
+                        {% elif txn.status == 'Pending' %}
+                        <span class="elite-badge badge-pending-elite">Under Review</span>
+                        {% else %}
+                        <span class="elite-badge badge-danger-elite">Rejected</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        {% if txn.status == 'Pending' %}
+                        <div class="btn-group border rounded-pill overflow-hidden shadow-sm bg-white">
                             <a href="{% url 'update_transaction_status' txn.id 'approve' %}"
-                                class="btn btn-sm btn-success">
+                                class="btn btn-sm btn-outline-success border-0 px-3" title="Approve">
                                 <i class="fas fa-check"></i>
                             </a>
                             <a href="{% url 'update_transaction_status' txn.id 'reject' %}"
-                                class="btn btn-sm btn-danger">
+                                class="btn btn-sm btn-outline-danger border-0 px-3" title="Reject">
                                 <i class="fas fa-times"></i>
                             </a>
-                            {% else %}
-                            <span class="text-muted">-</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center">No transactions found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                        </div>
+                        {% else %}
+                        <span class="text-muted small font-monospace">PROCESSED</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="fas fa-inbox fa-3x mb-3 opacity-20"></i>
+                        <h6 class="fw-bold">No transactions found.</h6>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

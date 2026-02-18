@@ -1,46 +1,84 @@
 {% extends 'employee/base.html' %}
+{% load static %}
+
+{% block page_title %}Loan Underwriting{% endblock %}
 
 {% block content %}
-<h2 class="mb-4 fw-bold text-primary-custom">Loan Applications</h2>
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h5 class="fw-bold text-primary-custom mb-1">Credit Assessment Queue</h5>
+        <p class="text-muted small">Evaluate and approve customer loan requests based on submitted reasoning.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="btn-group">
+            <button class="btn btn-sm btn-outline-primary-custom active">All Requests</button>
+            <button class="btn btn-sm btn-outline-primary-custom">Pending Only</button>
+        </div>
+    </div>
+</div>
 
 <div class="row g-4">
     {% for loan in loans %}
     <div class="col-md-6 col-lg-4">
-        <div class="card-custom h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h5 class="fw-bold mb-1">{{ loan.user.get_full_name|default:loan.user.username }}</h5>
-                        <small class="text-muted">Account: {{ loan.user.account.account_number }}</small>
+        <div class="card-custom h-100 border-0 shadow-sm position-relative overflow-hidden group-hover">
+            <!-- Status Ribbon -->
+            <div class="position-absolute top-0 end-0 p-3 z-1">
+                {% if loan.status == 'Approved' %}
+                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Approved</span>
+                {% elif loan.status == 'Pending' %}
+                <span class="badge bg-warning bg-opacity-10 text-dark rounded-pill px-3">Under Review</span>
+                {% else %}
+                <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Rejected</span>
+                {% endif %}
+            </div>
+
+            <div class="card-body p-4 pt-5">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary-custom text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                        style="width: 48px; height: 48px; font-weight: 700;">
+                        {{ loan.user.username|slice:":2"|upper }}
                     </div>
-                    <span
-                        class="badge {% if loan.status == 'Approved' %}bg-success{% elif loan.status == 'Pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
-                        {{ loan.status }}
-                    </span>
+                    <div>
+                        <h6 class="fw-bold text-dark mb-0">
+                            {{ loan.user.get_full_name|default:loan.user.username }}
+                        </h6>
+                        <small class="text-muted">
+                            Acc: {{ loan.user.account.account_number }}
+                        </small>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <div class="text-uppercase text-muted small fw-bold">Amount Requested</div>
-                    <div class="fs-4 fw-bold text-primary-custom">₹{{ loan.amount|floatformat:2 }}</div>
+                <div class="bg-light rounded-3 p-3 mb-4 border border-light">
+                    <div class="text-uppercase text-muted fw-bold mb-1"
+                        style="font-size: 0.65rem; letter-spacing: 1px;">Request Amount</div>
+                    <div class="h3 fw-bold text-primary-custom mb-0">₹{{ loan.amount|floatformat:2 }}</div>
                 </div>
 
                 <div class="mb-4">
-                    <div class="text-uppercase text-muted small fw-bold">Purpose</div>
-                    <p class="text-secondary small mb-0">{{ loan.reason }}</p>
+                    <div class="text-uppercase text-muted fw-bold mb-1"
+                        style="font-size: 0.65rem; letter-spacing: 1px;">Application Reason</div>
+                    <p class="text-secondary small mb-0 lh-base"
+                        style="height: 4.5em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
+                        {{ loan.reason }}
+                    </p>
                 </div>
 
-                <div class="border-top pt-3 text-muted small d-flex justify-content-between">
-                    <span>Applied: {{ loan.applied_at|date:"M d, Y" }}</span>
+                <div class="d-flex justify-content-between align-items-center py-2 border-top border-light mt-auto">
+                    <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ loan.applied_at|date:"M d, Y"
+                        }}</small>
+                    <a href="#" class="text-primary-custom fw-bold small text-decoration-none">Details &rarr;</a>
                 </div>
             </div>
 
             {% if loan.status == 'Pending' %}
-            <div class="card-footer bg-white border-top-0 pb-3 d-flex gap-2">
-                <a href="{% url 'update_loan' loan.id 'approve' %}" class="btn btn-success flex-grow-1">
-                    <i class="fas fa-check-circle me-1"></i> Approve
+            <div class="card-footer bg-white border-top-0 p-4 pt-0 d-flex gap-2">
+                <a href="{% url 'update_loan' loan.id 'approve' %}"
+                    class="btn btn-success flex-grow-1 fw-bold btn-sm py-2">
+                    <i class="fas fa-check me-1"></i> Approve
                 </a>
-                <a href="{% url 'update_loan' loan.id 'reject' %}" class="btn btn-outline-danger flex-grow-1">
-                    <i class="fas fa-times-circle me-1"></i> Reject
+                <a href="{% url 'update_loan' loan.id 'reject' %}"
+                    class="btn btn-outline-danger flex-grow-1 fw-bold btn-sm py-2">
+                    <i class="fas fa-times me-1"></i> Reject
                 </a>
             </div>
             {% endif %}
@@ -48,7 +86,11 @@
     </div>
     {% empty %}
     <div class="col-12 text-center py-5">
-        <p class="text-muted">No loan applications found.</p>
+        <div class="opacity-25 mb-3">
+            <i class="fas fa-hand-holding-usd fa-4x"></i>
+        </div>
+        <h5 class="text-muted">No Credit Applications</h5>
+        <p class="text-muted small">There are currently no loan requests pending in the system.</p>
     </div>
     {% endfor %}
 </div>

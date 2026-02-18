@@ -1,114 +1,207 @@
 {% extends 'employee/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h2 class="fw-bold text-primary-custom">Employee Workspace</h2>
-        <p class="text-muted">Overview of pending tasks and daily metrics.</p>
-    </div>
-</div>
-
-<!-- Metrics Cards -->
-<div class="row g-4 mb-4">
-    <div class="col-md-4">
-        <div class="card-custom h-100 border-start border-4 border-warning">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted text-uppercase small ls-1">Pending KYC</h6>
-                        <h2 class="mb-0 fw-bold">{{ pending_kyc }}</h2>
-                    </div>
-                    <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle">
-                        <i class="fas fa-id-card fa-2x"></i>
-                    </div>
-                </div>
-                <a href="{% url 'view_kyc' %}" class="small text-decoration-none mt-3 d-block">Review Queue <i
-                        class="fas fa-arrow-right ms-1"></i></a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card-custom h-100 border-start border-4 border-info">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted text-uppercase small ls-1">Loan Apps</h6>
-                        <h2 class="mb-0 fw-bold">{{ pending_loans }}</h2>
-                    </div>
-                    <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle">
-                        <i class="fas fa-file-invoice-dollar fa-2x"></i>
-                    </div>
-                </div>
-                <a href="{% url 'view_loans' %}" class="small text-decoration-none mt-3 d-block">Review Applications <i
-                        class="fas fa-arrow-right ms-1"></i></a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card-custom h-100 border-start border-4 border-success">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted text-uppercase small ls-1">Transactions</h6>
-                        <h2 class="mb-0 fw-bold">{{ pending_transactions }}</h2>
-                    </div>
-                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
-                        <i class="fas fa-exchange-alt fa-2x"></i>
-                    </div>
-                </div>
-                <a href="{% url 'view_transactions' %}" class="small text-decoration-none mt-3 d-block">Verify
-                    Transactions <i class="fas fa-arrow-right ms-1"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Customer Quick Lookup -->
-<div class="row">
+<!-- Header Section -->
+<div class="row mb-4 align-items-end">
     <div class="col-md-8">
-        <div class="card-custom h-100">
-            <div class="card-header-custom">
-                <i class="fas fa-search me-2"></i> Customer Lookup
-            </div>
-            <div class="card-body">
-                <div class="input-group input-group-lg mb-3">
-                    <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" class="form-control border-start-0 ps-0"
-                        placeholder="Search by Account Number, Name, or Phone...">
-                    <button class="btn btn-primary-custom" type="button">Search</button>
+        <small class="text-uppercase text-muted fw-bold ls-1">Workspace</small>
+        <h2 class="fw-bold text-primary-custom mb-0">Employee Dashboard</h2>
+        <p class="text-muted mb-0">Manage customer requests and banking operations.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="d-inline-block bg-white px-3 py-2 rounded-pill shadow-sm border">
+            <i class="far fa-calendar-alt text-primary-custom me-2"></i>
+            <span class="fw-bold text-dark small">{% now "l, F jS Y" %}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Task Overview Cards -->
+<div class="row g-4 mb-5">
+    <!-- KYC Pending -->
+    <div class="col-md-4">
+        <div
+            class="card-custom h-100 p-4 border-start border-4 border-warning position-relative overflow-hidden group-hover">
+            <div class="d-flex justify-content-between align-items-start z-1 position-relative">
+                <div>
+                    <h6 class="text-muted text-uppercase small fw-bold ls-1">KYC Requests</h6>
+                    <h1 class="display-5 fw-bold text-dark mb-0">{{ pending_kyc }}</h1>
+                    <small class="text-warning fw-bold"><i class="fas fa-clock me-1"></i> Pending Review</small>
                 </div>
-                <div class="alert alert-light text-center text-muted">
-                    Enter a query to find customer details.
+                <div class="icon-box-admin bg-warning bg-opacity-10 text-warning">
+                    <i class="fas fa-id-card"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'view_kyc' %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Process
+                    Queue</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Applications -->
+    <div class="col-md-4">
+        <div
+            class="card-custom h-100 p-4 border-start border-4 border-info position-relative overflow-hidden group-hover">
+            <div class="d-flex justify-content-between align-items-start z-1 position-relative">
+                <div>
+                    <h6 class="text-muted text-uppercase small fw-bold ls-1">Loan Applications</h6>
+                    <h1 class="display-5 fw-bold text-dark mb-0">{{ pending_loans }}</h1>
+                    <small class="text-info fw-bold"><i class="fas fa-file-invoice me-1"></i> New Requests</small>
+                </div>
+                <div class="icon-box-admin bg-info bg-opacity-10 text-info">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'view_loans' %}" class="btn btn-sm btn-outline-info rounded-pill px-3">View
+                    Applications</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Transactions -->
+    <div class="col-md-4">
+        <div
+            class="card-custom h-100 p-4 border-start border-4 border-success position-relative overflow-hidden group-hover">
+            <div class="d-flex justify-content-between align-items-start z-1 position-relative">
+                <div>
+                    <h6 class="text-muted text-uppercase small fw-bold ls-1">Transactions</h6>
+                    <h1 class="display-5 fw-bold text-dark mb-0">{{ pending_transactions }}</h1>
+                    <small class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i> Needs Approval</small>
+                </div>
+                <div class="icon-box-admin bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'view_transactions' %}" class="btn btn-sm btn-outline-success rounded-pill px-3">Verify
+                    Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Center Panel: Customer Search & Recent Activity -->
+    <div class="col-lg-8">
+        <!-- Search Section -->
+        <div class="card-custom border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <label class="form-label fw-bold small text-uppercase text-muted ls-1">Find Customer</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0 bg-light"
+                        placeholder="Search by Account No, Name, or ID...">
+                    <button class="btn btn-primary-custom px-4">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="card-custom border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-primary-custom">Live Activity Feed</h6>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light rounded-circle" type="button"><i
+                            class="fas fa-ellipsis-v"></i></button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <!-- Mix of recent items -->
+                    {% for loan in recent_loans %}
+                    <div class="list-group-item px-4 py-3 border-light">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary-custom bg-opacity-10 text-primary-custom rounded-circle p-2 me-3">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold text-dark small">Loan Application</span>
+                                    <small class="text-muted">{{ loan.applied_at|timesince }} ago</small>
+                                </div>
+                                <p class="mb-0 small text-muted">
+                                    <span class="fw-semibold text-dark">
+                                        {{ loan.user.get_full_name|default:loan.user.username }}
+                                    </span>
+                                    applied for ₹{{ loan.amount }}
+                                </p>
+                            </div>
+                            <span class="badge bg-light text-dark border ms-2">{{ loan.status }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% for kyc in recent_kyc %}
+                    <div class="list-group-item px-4 py-3 border-light">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold text-dark small">KYC Submission</span>
+                                    <small class="text-muted">{{ kyc.submitted_at|timesince }} ago</small>
+                                </div>
+                                <p class="mb-0 small text-muted">
+                                    <span class="fw-semibold text-dark">
+                                        {{ kyc.user.get_full_name|default:kyc.user.username }}
+                                    </span>
+                                    updated identity docs.
+                                </p>
+                            </div>
+                            <span class="badge bg-light text-dark border ms-2">{{ kyc.status }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if not recent_loans and not recent_kyc %}
+                    <div class="text-center py-4 text-muted small">No recent activity to show.</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card-custom h-100">
-            <div class="card-header-custom">
-                <i class="fas fa-users me-2"></i> Quick Stats
+    <!-- Right Panel: Quick Stats -->
+    <div class="col-lg-4">
+        <div class="card-custom bg-primary-custom text-white h-100 p-4 position-relative overflow-hidden">
+            <div class="position-absolute start-0 top-0 p-3 opacity-10">
+                <i class="fas fa-chart-pie fa-10x"></i>
             </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                        Total Customers
-                        <span class="badge bg-primary rounded-pill">{{ total_customers }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                        Active Accounts
-                        <span class="badge bg-success rounded-pill">{{ total_accounts }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-                        Total Deposits
-                        <span class="fw-bold">₹{{ total_balance|floatformat:0 }}</span>
-                    </li>
-                </ul>
-                <div class="d-grid mt-3">
-                    <a href="{% url 'create_customer' %}" class="btn btn-outline-custom btn-sm">
-                        <i class="fas fa-plus me-1"></i> Register New Customer
-                    </a>
+
+            <h5 class="fw-bold mb-4 position-relative">Branch Overview</h5>
+
+            <div class="mb-4 position-relative">
+                <small class="text-white-50 text-uppercase ls-1">Total Customers</small>
+                <h2 class="display-6 fw-bold mb-0">{{ total_customers }}</h2>
+                <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.1);">
+                    <div class="progress-bar bg-gold" style="width: 75%"></div>
                 </div>
+            </div>
+
+            <div class="mb-4 position-relative">
+                <small class="text-white-50 text-uppercase ls-1">Active Accounts</small>
+                <h2 class="display-6 fw-bold mb-0">{{ total_accounts }}</h2>
+                <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.1);">
+                    <div class="progress-bar bg-success" style="width: 60%"></div>
+                </div>
+            </div>
+
+            <div class="mb-5 position-relative">
+                <small class="text-white-50 text-uppercase ls-1">Total Vault</small>
+                <h2 class="display-6 fw-bold mb-0">₹{{ total_balance|floatformat:0 }}</h2>
+                <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.1);">
+                    <div class="progress-bar bg-info" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <div class="d-grid position-relative">
+                <a href="{% url 'create_customer' %}" class="btn btn-light fw-bold text-primary-custom">
+                    <i class="fas fa-user-plus me-2"></i> Register New Customer
+                </a>
             </div>
         </div>
     </div>

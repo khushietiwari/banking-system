@@ -1,65 +1,104 @@
-{% extends 'adminpanel/base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Citizen Registry | Account Oversight{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Manage Customers</h2>
-
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Account No.</th>
-                        <th>Balance</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for customer in customers %}
-                    <tr>
-                        <td>{{ customer.username }}</td>
-                        <td>{{ customer.first_name }} {{ customer.last_name }}</td>
-                        <td>{{ customer.email }}</td>
-                        <td>
-                            {% if customer.account %}
-                            {{ customer.account.account_number }}
-                            {% else %}
-                            <span class="badge bg-warning">No Account</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if customer.account %}
-                            ₹{{ customer.account.balance }}
-                            {% else %}
-                            -
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if customer.is_active %}
-                            <span class="badge bg-success">Active</span>
-                            {% else %}
-                            <span class="badge bg-danger">Inactive</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'delete_customer' customer.id %}" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Are you sure you want to delete this customer?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center">No customers found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="elite-container">
+    <!-- Header -->
+    <header class="elite-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="elite-subtitle">Account Management</span>
+            <h1 class="elite-title">Client Directory</h1>
+            <p class="text-muted mb-0">System-wide registry of all provisioned banking accounts and their status.</p>
         </div>
+        <div class="d-flex gap-3">
+            <button class="elite-btn elite-btn-outline"><i class="fas fa-search me-2"></i> Query Registry</button>
+        </div>
+    </header>
+
+    <!-- Accounts Table -->
+    <div class="elite-table-container">
+        <table class="elite-table">
+            <thead>
+                <tr>
+                    <th class="ps-4">Client Profile</th>
+                    <th>Account Identifier</th>
+                    <th>Capital Balance</th>
+                    <th>Identity Tier</th>
+                    <th>Node Status</th>
+                    <th class="text-end pe-4">Permissions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td class="ps-4">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 40px; height: 40px; font-weight: 700;">
+                                {{ customer.username|slice:":2"|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark">
+                                    {{ customer.get_full_name|default:customer.username|title }}
+                                </div>
+                                <small class="text-muted">
+                                    {{ customer.email }}
+                                </small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="font-monospace text-primary fw-bold">
+                            {{ customer.account.account_number|default:"UNPROVISIONED" }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="fw-bold text-dark">
+                            ₹{{ customer.account.balance|default:"0.00"|floatformat:2 }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if customer.kyc.status == 'Approved' %}
+                        <span class="elite-badge badge-success-elite">Verified (Tier 1)</span>
+                        {% elif customer.kyc.status == 'Pending' %}
+                        <span class="elite-badge badge-pending-elite">Review Pending</span>
+                        {% else %}
+                        <span class="elite-badge badge-danger-elite">Tier 0 (Limited)</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if customer.is_active %}
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="elite-pulse-dot"></span>
+                            <span class="small fw-bold text-success uppercase">Active</span>
+                        </div>
+                        {% else %}
+                        <span class="small fw-bold text-danger uppercase">Suspended</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        {% if not customer.is_staff %}
+                        <a href="{% url 'update_staff_status' customer.id 'promote' %}"
+                            class="elite-btn elite-btn-outline py-1 px-3" style="font-size: 0.75rem;">
+                            <i class="fas fa-user-shield me-1"></i> Provision Staff
+                        </a>
+                        {% else %}
+                        <span class="elite-badge bg-primary bg-opacity-10 text-primary">STAFF OFFICER</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="fas fa-users-slash fa-3x mb-3 opacity-20"></i>
+                        <h6 class="fw-bold">No citizens found in registry.</h6>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

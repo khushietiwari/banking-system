@@ -1,0 +1,100 @@
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Security Council | Personnel Command{% endblock %}
+
+{% block content %}
+<div class="elite-container">
+    <!-- Header -->
+    <header class="elite-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="elite-subtitle">Internal Security</span>
+            <h1 class="elite-title">Personnel Command</h1>
+            <p class="text-muted mb-0">Management of authorized banking officials, clearance levels, and security
+                tokens.</p>
+        </div>
+        <div class="d-flex gap-3">
+            <a href="{% url 'manage_customers' %}" class="elite-btn elite-btn-primary text-decoration-none">
+                <i class="fas fa-user-plus me-2"></i> Provision Official
+            </a>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        {% for staff in staff_members %}
+        <div class="col-xl-4 col-md-6">
+            <div class="elite-card h-100">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                        style="width: 54px; height: 54px; font-size: 20px; font-weight: 800;">
+                        {{ staff.username|slice:":2"|upper }}
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 text-dark">
+                            {{ staff.get_full_name|default:staff.username|title }}
+                        </h5>
+                        <span class="text-primary small fw-bold uppercase ls-1">Clearance: Level 4</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-light border rounded-3 mb-4">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted small uppercase fw-bold">Node Identifier</span>
+                        <span class="text-dark font-monospace small">#BHQ-{{ staff.id|add:"4000" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted small uppercase fw-bold">Authority Level</span>
+                        <span class="text-success small fw-bold">ADMINISTRATIVE</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-auto">
+                    <a href="{% url 'update_staff_status' staff.id 'demote' %}"
+                        class="elite-btn elite-btn-outline w-100 justify-content-center py-2"
+                        style="font-size: 0.8rem;">
+                        <i class="fas fa-user-minus me-2"></i> Revoke Access
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="elite-card text-center py-5 opacity-50">
+                <i class="fas fa-user-shield fa-4x mb-3 text-muted"></i>
+                <h4 class="fw-bold">No Personnel Detected</h4>
+                <p class="text-muted">Promote trusted citizens to staff status from the Registry.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Info Footer -->
+    <div class="elite-card mt-5 bg-light border-dashed">
+        <div class="row align-items-center">
+            <div class="col-md-9 text-center text-md-start">
+                <h5 class="fw-bold mb-1">Security Protocol Notice</h5>
+                <p class="text-muted mb-0 small uppercase ls-1">Personnel audits are recorded in the central compliance
+                    ledger. Revoking access will immediately isolate the target node ID.</p>
+            </div>
+            <div class="col-md-3 text-center text-md-end mt-3 mt-md-0">
+                <a href="{% url 'manage_customers' %}" class="elite-btn elite-btn-outline">Open Registry</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+        border-width: 2px !important;
+    }
+
+    .ls-1 {
+        letter-spacing: 1px;
+    }
+
+    .uppercase {
+        text-transform: uppercase;
+    }
+</style>
+{% endblock %}

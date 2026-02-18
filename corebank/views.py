@@ -5,10 +5,12 @@ from decimal import Decimal
 from .models import Account, Transaction, Beneficiary
 from .services import deposit, withdraw
 from .models import Loan
-from decimal import Decimal
 from django.contrib.messages import get_messages
 import uuid
 from django.db import transaction
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
+from .forms import UserProfileForm
 
 
 @login_required
@@ -41,9 +43,20 @@ from .models import Account, KYC
 
 from .models import KYC, Loan
 
+import random
+
 @login_required
 def customer_dashboard(request):
-    account = request.user.account
+    try:
+        account = request.user.account
+    except Account.DoesNotExist:
+        # Auto-create account if missing (Fix for 500 Error)
+        account = Account.objects.create(
+            user=request.user,
+            account_number=str(random.randint(1000000000, 9999999999)),
+            balance=0.0
+        )
+
     kyc = KYC.objects.filter(user=request.user).first()
     loans = Loan.objects.filter(user=request.user)
 
@@ -216,15 +229,32 @@ def pay_bills(request):
 
 @login_required
 def manage_profile(request):
-    return render(request, "manage_profile.html")
-@login_required
-def view_balance(request):
-    account = Account.objects.get(user=request.user)
-
-    return render(request, "view_balance.html", {
-        "balance": account.balance,
-        "account_number": account.account_number
+    kyc = KYC.objects.filter(user=request.user).first()
+    account = Account.objects.filter(user=request.user).first()
+    return render(request, "manage_profile.html", {
+        "kyc": kyc,
+        "account": account
     })
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully! ✅")
+            return redirect('manage_profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, "edit_profile.html", {'form': form})
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'password_change.html'
+    success_url = reverse_lazy('manage_profile')
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Password changed successfully! 🔐")
+        return super().form_valid(form)
 from .models import KYC
 
 @login_required

@@ -1,71 +1,89 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="auth-card">
+<div class="auth-container p-4">
+    <div class="auth-split">
+        <!-- Form Side (Left for Register) -->
+        <div class="auth-right">
+            <div class="w-100" style="max-width: 450px; margin: 0 auto;">
                 <div class="text-center mb-4">
-                    <h3 class="fw-bold text-primary-custom">Open an Account</h3>
-                    <p class="text-muted small">Join PrimeTrust Bank in minutes.</p>
+                    <h3 class="fw-bold text-primary-custom">Create Account</h3>
+                    <p class="text-muted">Join PrimeTrust Bank today</p>
                 </div>
 
                 <form method="POST">
                     {% csrf_token %}
-
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} text-center small">{{ message }}</div>
-                    {% endfor %}
-                    {% endif %}
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Full Name</label>
-                        <input type="text" class="form-control" name="full_name" placeholder="John Doe" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Username</label>
-                        <input type="text" class="form-control" name="username" placeholder="johndoe123" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Email Address</label>
-                        <input type="email" class="form-control" name="email" placeholder="john@example.com" required>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label fw-bold small">Password</label>
-                            <input type="password" class="form-control" name="password1" placeholder="••••••••"
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Full Name</label>
+                            <input type="text" name="full_name" class="form-control" placeholder="John Doe" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="john@example.com"
                                 required>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label fw-bold small">Confirm Password</label>
-                            <input type="password" class="form-control" name="password2" placeholder="••••••••"
+                        <div class="col-md-6">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Username</label>
+                            <input type="text" name="username" class="form-control" placeholder="johndoe" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Role</label>
+                            <select name="role" class="form-select form-control" required>
+                                <option value="customer">Customer</option>
+                                <option value="employee">Bank Staff</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Password</label>
+                            <input type="password" name="password1" class="form-control" placeholder="••••••••"
                                 required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-uppercase small fw-bold text-muted">Confirm</label>
+                            <input type="password" name="password2" class="form-control" placeholder="••••••••"
+                                required>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary-custom w-100 py-3 shadow-md">
+                                Register Account <i class="fas fa-user-plus ms-2 small"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small">I am a...</label>
-                        <select class="form-select" name="role">
-                            <option value="customer" selected>Customer</option>
-                            <option value="employee">Bank Employee (Staff)</option>
-                        </select>
-                    </div>
-
-                    <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary-custom btn-lg">
-                            Create Account
-                        </button>
-                    </div>
-
-                    <div class="text-center">
-                        <p class="small text-muted mb-0">Already have an account? <a href="{% url 'login' %}"
-                                class="fw-bold text-primary-custom text-decoration-none">Login here</a></p>
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">Already a member? <a href="{% url 'login' %}"
+                                class="fw-bold text-primary-custom">Log In</a></p>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Decoration Side (Right) -->
+        <div class="auth-left d-none d-lg-flex bg-dark">
+            <h2 class="display-5 fw-bold mb-4">Start Your Journey.</h2>
+            <p class="lead opacity-75 mb-5">Open a savings account in minutes, apply for loans instantly, and manage
+                your wealth like a pro.</p>
+            <div class="glass-card p-4 tilt-effect" style="max-width: 350px;">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-white p-2 rounded-circle me-3">
+                        <i class="fas fa-check text-success"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-white">Instant Approval</h6>
+                        <small class="text-white-50">KYC Verified in seconds</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-white p-2 rounded-circle me-3">
+                        <i class="fas fa-gift text-warning"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold text-white">Welcome Bonus</h6>
+                        <small class="text-white-50">Get $50 on first deposit</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

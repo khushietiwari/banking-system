@@ -1,62 +1,102 @@
-{% extends 'adminpanel/base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Loan Underwriting | Credit Risk Control{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Manage Loans</h2>
-
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>User</th>
-                        <th>Amount</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for loan in loans %}
-                    <tr>
-                        <td>{{ loan.applied_at|date:"M d, Y" }}</td>
-                        <td>{{ loan.user.username }}</td>
-                        <td>₹{{ loan.amount }}</td>
-                        <td>{{ loan.reason|truncatechars:50 }}</td>
-                        <td>
-                            {% if loan.status == 'Approved' %}
-                            <span class="badge bg-success">Approved</span>
-                            {% elif loan.status == 'Pending' %}
-                            <span class="badge bg-warning text-dark">Pending</span>
-                            {% else %}
-                            <span class="badge bg-danger">Rejected</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if loan.status == 'Pending' %}
-                            <div class="btn-group" role="group">
-                                <a href="{% url 'update_loan_status' loan.id 'approve' %}"
-                                    class="btn btn-sm btn-success">
-                                    <i class="fas fa-check"></i>
-                                </a>
-                                <a href="{% url 'update_loan_status' loan.id 'reject' %}" class="btn btn-sm btn-danger">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </div>
-                            {% else %}
-                            <span class="text-muted">-</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center">No loan applications found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="elite-container">
+    <!-- Header -->
+    <header class="elite-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="elite-subtitle">Credit Facilities</span>
+            <h1 class="elite-title">Loan Applications</h1>
+            <p class="text-muted mb-0">Risk assessment and approval pipeline for client credit requests.</p>
         </div>
+        <div class="d-flex gap-3">
+            <div class="elite-badge badge-pending-elite px-3 py-2 d-flex align-items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Action Required: {{ loans|length }} Pending</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loans Table -->
+    <div class="elite-table-container">
+        <table class="elite-table">
+            <thead>
+                <tr>
+                    <th class="ps-4">Submission Date</th>
+                    <th>Client Identifier</th>
+                    <th>Requested Magnitude</th>
+                    <th>Risk Assessment / Reason</th>
+                    <th>Protocol Status</th>
+                    <th class="text-end pe-4">Command Hub</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr>
+                    <td class="ps-4">
+                        <div class="fw-bold text-dark">{{ loan.applied_at|date:"M d, Y" }}</div>
+                        <small class="text-muted font-monospace">{{ loan.id|stringformat:"04d" }}</small>
+                    </td>
+                    <td>
+                        <div class="fw-bold text-primary">
+                            {{ loan.user.username|title }}
+                        </div>
+                        <small class="text-muted">
+                            {{ loan.user.email }}
+                        </small>
+                    </td>
+                    <td>
+                        <span class="fw-800 text-dark">₹{{ loan.amount }}</span>
+                    </td>
+                    <td>
+                        <div class="text-muted small" style="max-width: 300px;">{{ loan.reason|truncatechars:100 }}
+                        </div>
+                    </td>
+                    <td>
+                        {% if loan.status == 'Approved' %}
+                        <span class="elite-badge badge-success-elite">Collateralized</span>
+                        {% elif loan.status == 'Pending' %}
+                        <span class="elite-badge badge-pending-elite">Under Review</span>
+                        {% else %}
+                        <span class="elite-badge badge-danger-elite">Liquidated</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        {% if loan.status == 'Pending' %}
+                        <div class="btn-group border rounded-pill overflow-hidden shadow-sm bg-white">
+                            <a href="{% url 'update_loan_status' loan.id 'approve' %}"
+                                class="btn btn-sm btn-outline-success border-0 px-3" title="Approve Loan">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{% url 'update_loan_status' loan.id 'reject' %}"
+                                class="btn btn-sm btn-outline-danger border-0 px-3" title="Reject Loan">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                        {% else %}
+                        <span class="text-muted small font-monospace">PROCESSED</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="fas fa-hand-holding-usd fa-3x mb-3 opacity-20"></i>
+                        <h6 class="fw-bold">No loan applications found.</h6>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
+
+<style>
+    .fw-800 {
+        font-weight: 800;
+    }
+</style>
 {% endblock %}

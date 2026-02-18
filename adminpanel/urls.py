@@ -12,4 +12,6 @@ urlpatterns = [
     path('transaction/<int:txn_id>/<str:action>/', views.update_transaction_status, name='update_transaction_status'),
     path('loan/<int:loan_id>/<str:action>/', views.update_loan_status, name='update_loan_status'),
     path('kyc/<int:user_id>/<str:action>/', views.update_kyc_status, name='update_kyc_status'),
+    path('staff/', views.manage_staff, name='manage_staff'),
+    path('staff/status/<int:user_id>/<str:action>/', views.update_staff_status, name='update_staff_status'),
 ]

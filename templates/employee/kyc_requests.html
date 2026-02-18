@@ -1,62 +1,94 @@
-{% extends 'employee/base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}KYC Verification{% endblock %}
 
 {% block content %}
-<h2 class="mb-4 fw-bold text-primary-custom">KYC Verification Requests</h2>
+<div class="card-custom border-0 shadow-sm">
+    <div class="card-header-custom bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold text-primary-custom">Pending KYC Requests</h5>
+        <span class="badge bg-warning text-dark rounded-pill px-3">{{ kyc_requests|length }} Pending</span>
+    </div>
 
-<div class="card-custom">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-custom table-hover">
-                <thead>
+            <table class="table table-custom table-hover align-middle mb-0">
+                <thead class="bg-light">
                     <tr>
-                        <th>Date</th>
-                        <th>User</th>
+                        <th class="ps-4">Applicant</th>
+                        <th>Submission Date</th>
                         <th>Document</th>
-                        <th>Current Status</th>
-                        <th>Action</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for kyc in kyc_requests %}
                     <tr>
-                        <td>{{ kyc.submitted_at|date:"M d, Y" }}</td>
-                        <td>
-                            <div class="fw-bold">{{ kyc.user.get_full_name|default:kyc.user.username }}</div>
-                            <small class="text-muted">{{ kyc.user.email }}</small>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary-custom text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width: 40px; height: 40px;">
+                                    {{ kyc.user.first_name|first }}{{ kyc.user.last_name|first }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark">
+                                        {{ kyc.user.get_full_name|default:kyc.user.username }}
+                                    </div>
+                                    <small class="text-muted">
+                                        {{ kyc.user.email }}
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-muted small">
+                            {{ kyc.submitted_at|date:"M d, Y" }}
                         </td>
                         <td>
-                            <a href="{{ kyc.document.url }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                <i class="fas fa-file-download me-1"></i> View Document
+                            {% if kyc.document %}
+                            <a href="{{ kyc.document.url }}" target="_blank"
+                                class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                <i class="fas fa-file-alt me-1"></i> View ID
                             </a>
-                        </td>
-                        <td>
-                            {% if kyc.status == 'Approved' %}
-                            <span class="badge bg-success bg-opacity-10 text-success">Approved</span>
-                            {% elif kyc.status == 'Pending' %}
-                            <span class="badge bg-warning bg-opacity-10 text-warning">Pending Review</span>
                             {% else %}
-                            <span class="badge bg-danger bg-opacity-10 text-danger">Rejected</span>
+                            <span class="text-muted small">No document</span>
                             {% endif %}
                         </td>
                         <td>
+                            {% if kyc.status == 'Approved' %}
+                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Approved</span>
+                            {% elif kyc.status == 'Pending' %}
+                            <span class="badge bg-warning bg-opacity-10 text-dark rounded-pill px-3">Pending
+                                Review</span>
+                            {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
                             {% if kyc.status == 'Pending' %}
-                            <div class="btn-group" role="group">
-                                <a href="{% url 'update_kyc' kyc.user.id 'approve' %}" class="btn btn-sm btn-success">
+                            <div class="btn-group shadow-sm">
+                                <a href="{% url 'update_kyc' kyc.user.id 'approve' %}"
+                                    class="btn btn-sm btn-success px-3" data-bs-toggle="tooltip" title="Approve">
                                     <i class="fas fa-check"></i>
                                 </a>
-                                <a href="{% url 'update_kyc' kyc.user.id 'reject' %}" class="btn btn-sm btn-danger">
+                                <a href="{% url 'update_kyc' kyc.user.id 'reject' %}" class="btn btn-sm btn-danger px-3"
+                                    data-bs-toggle="tooltip" title="Reject">
                                     <i class="fas fa-times"></i>
                                 </a>
                             </div>
                             {% else %}
-                            <span class="text-muted">-</span>
+                            <span class="text-muted small">-</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="5" class="text-center py-5">
-                            <p class="text-muted">No pending KYC requests.</p>
+                            <div class="opacity-25 mb-3">
+                                <i class="fas fa-check-double fa-4x"></i>
+                            </div>
+                            <h5 class="text-muted">All caught up!</h5>
+                            <p class="text-muted small">No pending KYC requests at the moment.</p>
                         </td>
                     </tr>
                     {% endfor %}

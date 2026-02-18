@@ -1,65 +1,78 @@
-{% extends 'base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Pending Loans{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5">
-
-    <!-- Page Header -->
-    <div class="mb-4">
-        <h2 class="fw-bold">Pending Loan Requests</h2>
-        <small class="text-muted">
-            Review and approve pending customer loan applications
-        </small>
+<div class="card-custom border-0 shadow-sm">
+    <div class="card-header-custom bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold text-primary-custom">Loan Approvals</h5>
+        <span class="badge bg-primary-custom bg-opacity-10 text-primary-custom rounded-pill px-3">{{ loans|length }}
+            Pending</span>
     </div>
 
-    <!-- Loan Card -->
-    <div class="card border-0 shadow-lg" style="border-radius:12px;">
-        <div class="card-body p-0">
-
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background:#003366;color:white;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover align-middle mb-0">
+                <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">Customer</th>
-                        <th>Loan Amount</th>
+                        <th class="ps-4">Applicant</th>
+                        <th>Requested Amount</th>
+                        <th>Applied Date</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                {% for loan in loans %}
+                    {% for loan in loans %}
                     <tr>
-                        <td class="ps-4 fw-semibold">
-                            {{ loan.user.username }}
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <img src="https://ui-avatars.com/api/?name={{ loan.user.username }}&size=40"
+                                    class="rounded-circle me-3" alt="User">
+                                <div>
+                                    <div class="fw-bold text-dark">{{ loan.user.get_full_name|default:loan.user.username
+                                        }}</div>
+                                    <small class="text-muted">@{{ loan.user.username }}</small>
+                                </div>
+                            </div>
                         </td>
 
                         <td>
-                            <span class="fw-bold text-success">
-                                ₹ {{ loan.amount }}
+                            <span class="fw-bold text-primary-custom fs-6">
+                                ₹ {{ loan.amount|floatformat:2 }}
                             </span>
                         </td>
 
+                        <td class="text-muted small">
+                            {{ loan.created_at|default:"Now" }}
+                        </td>
+
                         <td class="text-center">
-                            <a href="{% url 'approve_loan' loan.id %}" 
-                               class="btn btn-sm btn-success px-3">
-                                Approve
-                            </a>
+                            <div class="btn-group">
+                                <a href="{% url 'approve_loan' loan.id %}"
+                                    class="btn btn-sm btn-success px-3 shadow-sm rounded-start">
+                                    <i class="fas fa-check me-1"></i> Approve
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger px-3 rounded-end">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
-
-                {% empty %}
+                    {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center py-4 text-muted">
-                            No pending loan requests.
+                        <td colspan="4" class="text-center py-5">
+                            <div class="opacity-25 mb-3">
+                                <i class="fas fa-clipboard-check fa-4x"></i>
+                            </div>
+                            <h5 class="text-muted">All caught up!</h5>
+                            <p class="text-muted small">No pending loan requests at the moment.</p>
                         </td>
                     </tr>
-                {% endfor %}
+                    {% endfor %}
                 </tbody>
-
             </table>
-
         </div>
     </div>
-
 </div>
-
 {% endblock %}

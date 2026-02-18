@@ -1,13 +1,126 @@
-{% extends 'base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Staff Dashboard{% endblock %}
+
 {% block content %}
+<div class="row g-4 mb-4">
+    <!-- Welcome Card -->
+    <div class="col-12">
+        <div class="card-custom bg-primary-custom text-white p-4 border-0 position-relative overflow-hidden">
+            <div class="position-absolute end-0 bottom-0 p-3 opacity-10">
+                <i class="fas fa-briefcase fa-8x"></i>
+            </div>
+            <div class="d-flex align-items-center position-relative">
+                <div class="me-4">
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=fff&color=0F2C59&size=128"
+                        class="rounded-circle border border-4 border-white-50 shadow-sm" width="80" height="80"
+                        alt="Staff">
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-1">Hello, {{ request.user.first_name }}</h2>
+                    <p class="text-white-50 mb-0">Ready to serve our customers today?</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h2>Employee Dashboard</h2>
-
-<div>
-    <h4>Total Customers: {{ total_customers }}</h4>
-    <h4>Pending KYC: {{ pending_kyc }}</h4>
+    <!-- Quick Stats -->
+    <div class="col-md-4">
+        <div class="card-custom bg-white p-4 h-100 border-0 shadow-sm border-start border-4 border-primary-custom">
+            <h6 class="text-muted text-uppercase ls-1 small fw-bold">Total Customers</h6>
+            <h2 class="display-6 fw-bold text-dark my-2">{{ total_customers|default:"0" }}</h2>
+            <small class="text-primary-custom fw-bold">View Directory <i class="fas fa-arrow-right ms-1"></i></small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom bg-white p-4 h-100 border-0 shadow-sm border-start border-4 border-warning">
+            <h6 class="text-muted text-uppercase ls-1 small fw-bold">Pending KYC Reports</h6>
+            <h2 class="display-6 fw-bold text-dark my-2">{{ pending_kyc|default:"0" }}</h2>
+            <a href="{% url 'view_kyc' %}" class="btn btn-sm btn-outline-warning rounded-pill mt-1">Process Queue</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom bg-white p-4 h-100 border-0 shadow-sm border-start border-4 border-success">
+            <h6 class="text-muted text-uppercase ls-1 small fw-bold">Loan Requests</h6>
+            <h2 class="display-6 fw-bold text-dark my-2">{{ pending_loans|default:"0" }}</h2>
+            <a href="{% url 'loan_list' %}" class="btn btn-sm btn-outline-success rounded-pill mt-1">Review
+                Applications</a>
+        </div>
+    </div>
 </div>
 
-<a href="{% url 'verify_kyc' %}">Verify KYC</a>
+<div class="row g-4">
+    <!-- Tasks / Notifications -->
+    <div class="col-lg-8">
+        <div class="card-custom border-0 shadow-sm h-100">
+            <div class="card-header-custom bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-primary-custom">Task Board</h6>
+                <button class="btn btn-sm btn-light rounded-pill"><i class="fas fa-sync-alt me-1"></i> Refresh</button>
+            </div>
+            <div class="list-group list-group-flush">
+                {% if pending_kyc > 0 %}
+                <a href="{% url 'view_kyc' %}" class="list-group-item list-group-item-action py-3 border-light">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-warning text-dark me-3 rounded-pill px-3">High Priority</span>
+                            <div>
+                                <h6 class="mb-0 fw-bold">KYC Verification Pending</h6>
+                                <small class="text-muted">{{ pending_kyc }} customers waiting for approval.</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                </a>
+                {% endif %}
 
+                {% if pending_loans > 0 %}
+                <a href="{% url 'loan_list' %}" class="list-group-item list-group-item-action py-3 border-light">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <span
+                                class="badge bg-success bg-opacity-10 text-success me-3 rounded-pill px-3">Review</span>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Loan Applications</h6>
+                                <small class="text-muted">{{ pending_loans }} new requests received.</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                </a>
+                {% endif %}
+
+                <div class="list-group-item py-4 text-center text-muted">
+                    <small>No other urgent tasks at the moment.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidelines -->
+    <div class="col-lg-4">
+        <div class="card-custom bg-primary-custom text-white border-0 shadow-lg h-100">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4"><i class="fas fa-book me-2"></i> Staff Guidelines</h5>
+                <ul class="list-unstyled mb-0 d-grid gap-3 opacity-75">
+                    <li class="d-flex align-items-start">
+                        <i class="fas fa-check-circle mt-1 me-2 text-warning"></i> Verify customer identity documents
+                        carefully before approval.
+                    </li>
+                    <li class="d-flex align-items-start">
+                        <i class="fas fa-check-circle mt-1 me-2 text-warning"></i> Ensure all loan applications have
+                        valid reason and collateral if applicable.
+                    </li>
+                    <li class="d-flex align-items-start">
+                        <i class="fas fa-check-circle mt-1 me-2 text-warning"></i> Report suspicious transactions to the
+                        fraud department immediately.
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer bg-white bg-opacity-10 border-0 text-center">
+                <a href="#" class="text-white text-decoration-none small fw-bold">View Full Policy Document &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

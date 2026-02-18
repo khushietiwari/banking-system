@@ -1,79 +1,107 @@
-{% extends 'customer/base.html' %}
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Transaction History{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-primary-custom mb-0">Transaction History</h2>
-    <button class="btn btn-outline-custom" onclick="window.print()">
-        <i class="fas fa-download me-2"></i> Download Statement
-    </button>
-</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card-custom border-0 shadow-sm">
+            <div class="card-header-custom bg-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0 fw-bold text-primary-custom">All Transactions</h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-secondary me-2"><i class="fas fa-filter me-1"></i>
+                        Filter</button>
+                    <button class="btn btn-sm btn-outline-primary-custom"><i class="fas fa-download me-1"></i>
+                        Export</button>
+                </div>
+            </div>
 
-<div class="card-custom">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-custom table-hover">
-                <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Reference ID</th>
-                        <th>Description</th>
-                        <th>Type</th>
-                        <th class="text-end">Amount</th>
-                        <th class="text-center">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for txn in transactions %}
-                    <tr>
-                        <td class="text-nowrap">{{ txn.created_at|date:"M d, Y H:i" }}</td>
-                        <td class="font-monospace text-muted small">{{ txn.reference_id|default:"-" }}</td>
-                        <td>
-                            <div class="fw-bold">{{ txn.transaction_type }}</div>
-                            <small class="text-muted">{{ txn.method }}</small>
-                        </td>
-                        <td>
-                            {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}
-                            <span class="badge bg-success bg-opacity-10 text-success">Credit</span>
-                            {% else %}
-                            <span class="badge bg-danger bg-opacity-10 text-danger">Debit</span>
-                            {% endif %}
-                        </td>
-                        <td
-                            class="text-end fw-bold {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}text-success{% else %}text-danger{% endif %}">
-                            {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}+{%
-                            else %}-{% endif %}₹{{ txn.amount|floatformat:2 }}
-                        </td>
-                        <td class="text-center">
-                            {% if txn.status == 'Approved' %}
-                            <i class="fas fa-check-circle text-success" title="Approved"></i>
-                            {% elif txn.status == 'Pending' %}
-                            <i class="fas fa-clock text-warning" title="Pending"></i>
-                            {% else %}
-                            <i class="fas fa-times-circle text-danger" title="Rejected"></i>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center py-5">
-                            <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-state-2130362-1800926.png"
-                                alt="No transactions" style="height: 150px; opacity: 0.5;">
-                            <p class="text-muted mt-3">No transactions found within this period.</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Date & Time</th>
+                                <th>Description</th>
+                                <th>Reference ID</th>
+                                <th>Amount</th>
+                                <th class="text-end pe-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in transactions %}
+                            <tr>
+                                <td class="ps-4">
+                                    <span class="d-block fw-semibold text-dark">{{ txn.created_at|date:"M d, Y" }}</span>
+                                    <small class="text-muted">{{ txn.created_at|date:"H:i A" }}</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}
+                                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                                            <i class="fas fa-arrow-down fa-sm"></i>
+                                        </div>
+                                        {% else %}
+                                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
+                                            <i class="fas fa-arrow-up fa-sm"></i>
+                                        </div>
+                                        {% endif %}
+                                        <div>
+                                            <span class="d-block fw-bold text-dark small">{{ txn.transaction_type }}</span>
+                                            <small class="text-muted" style="font-size: 0.75rem;">Via {{ txn.method }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-muted font-monospace small">#{{ txn.reference_id|default:"-" }}</td>
+                                <td>
+                                    <span
+                                        class="fw-bold {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}text-success{% else %}text-danger{% endif %}">
+                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}+{% else %}-{% endif %}₹{{ txn.amount }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if txn.status == 'Approved' %}
+                                    <span
+                                        class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Success</span>
+                                    {% elif txn.status == 'Pending' %}
+                                    <span
+                                        class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3">Pending</span>
+                                    {% else %}
+                                    <span
+                                        class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Failed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="opacity-25 mb-3">
+                                        <i class="fas fa-history fa-4x"></i>
+                                    </div>
+                                    <h5 class="text-muted">No transactions yet</h5>
+                                    <p class="text-muted small">Your transaction history will appear here.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination (Placeholder) -->
+            <div class="card-footer bg-white border-top border-light py-3">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0 pagination-sm">
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
-    <div class="card-footer bg-white border-top-0 d-flex justify-content-end p-3">
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-sm mb-0">
-                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
     </div>
 </div>
 {% endblock %}

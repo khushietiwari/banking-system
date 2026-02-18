@@ -33,6 +33,11 @@ def employee_dashboard(request):
     pending_loans = Loan.objects.filter(status="Pending").count()
     pending_kyc = KYC.objects.filter(status="Pending").count()
 
+    # Fetch recent activity for "Live Feed"
+    recent_transactions = Transaction.objects.all().order_by('-created_at')[:5]
+    recent_loans = Loan.objects.all().order_by('-applied_at')[:5]
+    recent_kyc = KYC.objects.all().order_by('-submitted_at')[:5]
+
     return render(request, "employee/dashboard.html", {
         "total_customers": total_customers,
         "total_accounts": total_accounts,
@@ -40,6 +45,9 @@ def employee_dashboard(request):
         "pending_transactions": pending_transactions,
         "pending_loans": pending_loans,
         "pending_kyc": pending_kyc,
+        "recent_transactions": recent_transactions,
+        "recent_loans": recent_loans,
+        "recent_kyc": recent_kyc,
     })
 
 

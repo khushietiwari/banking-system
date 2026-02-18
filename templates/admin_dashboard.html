@@ -1,2 +1,172 @@
-<h1>Admin Dashboard</h1>
-<p>Welcome Admin 😏</p>
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Executive Oversight | PrimeTrust Systems{% endblock %}
+
+{% block content %}
+<div class="elite-container">
+    <!-- Executive Header -->
+    <header class="elite-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="elite-subtitle">System Administration</span>
+            <h1 class="elite-title">Dashboard Overview</h1>
+            <p class="text-muted mb-0">Real-time surveillance and operational metrics of the PrimeTrust banking network.
+            </p>
+        </div>
+        <div class="text-end">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-2 bg-white border rounded-pill shadow-sm">
+                <span class="elite-pulse-dot"></span>
+                <span class="small fw-bold text-muted uppercase ls-1">Core Systems Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Key Metrics Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="elite-card stat-card-elite">
+                <span class="stat-label-elite">Total Network Liquidity</span>
+                <span class="stat-value-elite">₹{{ total_balance|floatformat:2 }}</span>
+                <div class="mt-2 small text-success">
+                    <i class="fas fa-caret-up me-1"></i> 2.4% <span class="text-muted">vs last period</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="elite-card stat-card-elite">
+                <span class="stat-label-elite">Verified Client Base</span>
+                <span class="stat-value-elite">{{ total_users }}</span>
+                <div class="mt-2 small text-success">
+                    <i class="fas fa-caret-up me-1"></i> {{ total_users|add:"-2" }} <span class="text-muted">new this
+                        month</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="elite-card stat-card-elite">
+                <span class="stat-label-elite">Active Loan Exposure</span>
+                <span class="stat-value-elite">₹{{ total_loan_amount|default:"0.00" }}</span>
+                <div class="mt-2 small text-warning">
+                    <i class="fas fa-shield-alt me-1"></i> High <span class="text-muted">Risk Profile</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="elite-card stat-card-elite">
+                <span class="stat-label-elite">Pending Internal Audits</span>
+                <span class="stat-value-elite">{{ pending_kyc }}</span>
+                <div class="mt-2 small text-danger">
+                    <i class="fas fa-clock me-1"></i> Urgent <span class="text-muted">Processing required</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Operation Center -->
+        <div class="col-lg-8">
+            <div class="elite-card mb-4 p-0 overflow-hidden">
+                <div
+                    class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center bg-light bg-opacity-50">
+                    <h5 class="mb-0 fw-bold">Recent Network Activity</h5>
+                    <a href="{% url 'manage_transactions' %}" class="small text-decoration-none fw-bold">View Ledger</a>
+                </div>
+                <div class="elite-table-container border-0 rounded-0">
+                    <table class="elite-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Transaction Ref</th>
+                                <th>Account Holder</th>
+                                <th>Amount</th>
+                                <th>Timestamp</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in recent_transactions %}
+                            <tr>
+                                <td class="font-monospace small text-primary fw-bold">#{{ txn.id|stringformat:"05d" }}
+                                </td>
+                                <td>
+                                    <div class="fw-bold">{{ txn.account.user.username }}</div>
+                                    <small class="text-muted">ID: {{ txn.account.account_number }}</small>
+                                </td>
+                                <td>
+                                    <span class="fw-bold 
+                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Credit' %}
+                                            text-success
+                                        {% else %}
+                                            text-danger
+                                        {% endif %}">
+                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Credit' %}
+                                        +
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                        ₹{{ txn.amount }}
+                                    </span>
+                                </td>
+                                <td class="small text-muted">{{ txn.created_at|date:"H:i:s" }}</td>
+                                <td>
+                                    {% if txn.status == 'Approved' %}
+                                    <span class="elite-badge badge-success-elite">Successful</span>
+                                    {% elif txn.status == 'Pending' %}
+                                    <span class="elite-badge badge-pending-elite">Verifying</span>
+                                    {% else %}
+                                    <span class="elite-badge badge-danger-elite">Failed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">No recent activity detected.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Administrative Hub -->
+        <div class="col-lg-4">
+            <div class="elite-card">
+                <h5 class="mb-4 fw-bold">Control Terminals</h5>
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'manage_customers' %}"
+                        class="elite-btn elite-btn-outline w-100 justify-content-between p-3 border-opacity-50">
+                        <span><i class="fas fa-users-cog me-2"></i> Account Registry</span>
+                        <i class="fas fa-chevron-right small opacity-50"></i>
+                    </a>
+                    <a href="{% url 'manage_transactions' %}"
+                        class="elite-btn elite-btn-outline w-100 justify-content-between p-3 border-opacity-50">
+                        <span><i class="fas fa-exchange-alt me-2"></i> Transaction Ledger</span>
+                        <i class="fas fa-chevron-right small opacity-50"></i>
+                    </a>
+                    <a href="{% url 'manage_loans' %}"
+                        class="elite-btn elite-btn-outline w-100 justify-content-between p-3 border-opacity-50">
+                        <span><i class="fas fa-hand-holding-usd me-2"></i> Loan Underwriting</span>
+                        <i class="fas fa-chevron-right small opacity-50"></i>
+                    </a>
+                    <a href="{% url 'manage_kyc' %}"
+                        class="elite-btn elite-btn-outline w-100 justify-content-between p-3 border-opacity-50">
+                        <span><i class="fas fa-user-check me-2"></i> Identity Audit</span>
+                        <i class="fas fa-chevron-right small opacity-50"></i>
+                    </a>
+                    <a href="{% url 'manage_staff' %}"
+                        class="elite-btn elite-btn-outline w-100 justify-content-between p-3 border-opacity-50">
+                        <span><i class="fas fa-shield-alt me-2"></i> Security Council</span>
+                        <i class="fas fa-chevron-right small opacity-50"></i>
+                    </a>
+                </div>
+
+                <div class="p-4 mt-4 bg-light border rounded-4 text-center">
+                    <div class="small text-muted uppercase ls-1 mb-2">System Health</div>
+                    <div class="h3 fw-bold text-success m-0">99.98%</div>
+                    <small class="text-muted">Uptime (Last 24h)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

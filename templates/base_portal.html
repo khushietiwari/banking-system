@@ -5,16 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PrimeTrust Bank{% endblock %}</title>
+    <title>{% block title %}PrimeTrust Portal{% endblock %}</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/portal.css' %}">
@@ -26,54 +23,157 @@
 
     <div class="wrapper">
         <!-- Sidebar -->
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3><i class="fas fa-university me-2"></i> PrimeTrust</h3>
+        <nav id="sidebar" class="d-flex flex-column">
+            <div class="sidebar-header d-flex align-items-center justify-content-between">
+                <a href="{% url 'home' %}" class="text-white text-decoration-none d-flex align-items-center">
+                    <i class="fas fa-university fa-lg me-2 text-warning"></i>
+                    <span class="fw-bold fs-5">PrimeTrust</span>
+                </a>
             </div>
 
-            <div class="p-3 text-center border-bottom border-secondary">
-                <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DAC0A3&color=0F2C59"
-                    class="rounded-circle mb-2" width="60" alt="Avatar">
-                <h6 class="mb-0 text-white">{{ request.user.get_full_name|default:request.user.username }}</h6>
-                <small class="text-white-50">{% block role_badge %}User{% endblock %}</small>
+            <!-- Profile & Control Section -->
+            <div class="px-3 pt-4 pb-2 text-center">
+                <div class="position-relative d-inline-block">
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DAC0A3&color=0F2C59&size=128"
+                        class="rounded-circle border border-3 border-white shadow-sm" width="70" height="70"
+                        alt="Avatar">
+                    <span
+                        class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle p-2"></span>
+                </div>
+                <h6 class="mt-3 mb-0 text-white fw-bold">
+                    {% if request.user.get_full_name %}
+                    {{ request.user.get_full_name|title }}
+                    {% else %}
+                    {{ request.user.username|title }}
+                    {% endif %}
+                </h6>
+                <small class="text-white-50 text-uppercase d-block mb-3"
+                    style="font-size: 0.7rem; letter-spacing: 1px;">
+                    {% if request.user.is_superuser %}
+                    Administrator
+                    {% elif request.user.is_staff %}
+                    Bank Officer
+                    {% else %}
+                    Premium Member
+                    {% endif %}
+                </small>
+
+                <!-- Embedded Terminals for Staff/Admin -->
+                {% if request.user.is_staff or request.user.is_superuser %}
+                <div class="d-flex flex-column gap-1 text-start mt-3 px-2">
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'manage_customers' %}" class="sidebar-link-elite">
+                        <i class="fas fa-users-cog me-2"></i> Account Registry
+                    </a>
+                    <a href="{% url 'manage_transactions' %}" class="sidebar-link-elite">
+                        <i class="fas fa-exchange-alt me-2"></i> Ledger
+                    </a>
+                    <a href="{% url 'manage_loans' %}" class="sidebar-link-elite">
+                        <i class="fas fa-hand-holding-usd me-2"></i> Loans
+                    </a>
+                    {% else %}
+                    <a href="{% url 'customer_list' %}" class="sidebar-link-elite">
+                        <i class="fas fa-users-cog me-2"></i> Account Registry
+                    </a>
+                    <a href="{% url 'view_transactions' %}" class="sidebar-link-elite">
+                        <i class="fas fa-exchange-alt me-2"></i> Ledger
+                    </a>
+                    <a href="{% url 'view_loans' %}" class="sidebar-link-elite">
+                        <i class="fas fa-hand-holding-usd me-2"></i> Loans
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
 
-            <ul class="list-unstyled components">
-                {% block sidebar_menu %}
-                <!-- Dynamic Menu Items Here -->
-                {% endblock %}
+            <hr class="mx-3 opacity-25 my-3">
+
+            <!-- Navigation Links -->
+            <ul class="list-unstyled components flex-grow-1">
+                {% if not request.user.is_staff and not request.user.is_superuser %}
+                <li>
+                    <a href="{% url 'customer_dashboard' %}"
+                        class="{% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'transfer' %}"
+                        class="{% if request.resolver_match.url_name == 'transfer' %}active{% endif %}">
+                        <i class="fas fa-paper-plane"></i> Send Money
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'transaction_history' %}"
+                        class="{% if request.resolver_match.url_name == 'transaction_history' %}active{% endif %}">
+                        <i class="fas fa-history"></i> My History
+                    </a>
+                </li>
+                {% else %}
+                <li>
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'admin_dashboard' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Oversight
+                    </a>
+                    {% else %}
+                    <a href="{% url 'employee_dashboard' %}"
+                        class="{% if request.resolver_match.url_name == 'employee_dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Oversight
+                    </a>
+                    {% endif %}
+                </li>
+                {% endif %}
 
                 <li>
-                    <form action="{% url 'logout' %}" method="post" id="logout-form">
-                        {% csrf_token %}
-                        <a href="#" onclick="document.getElementById('logout-form').submit();">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a>
-                    </form>
+                    <a href="{% url 'manage_profile' %}"
+                        class="{% if request.resolver_match.url_name == 'manage_profile' %}active{% endif %}">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
                 </li>
+                <li>
+                    <a href="javascript:document.getElementById('logout-form').submit();" class="text-danger">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </a>
+                </li>
+
+                {% block sidebar_menu %}
+                {% endblock %}
             </ul>
+
+            <!-- Bottom Section -->
+            <div class="p-3 mt-auto">
+                <div class="glass-card p-3 text-center mb-3 text-white-50 small">
+                    <i class="fas fa-headset fa-2x mb-2 text-white"></i>
+                    <p class="mb-2">Need Help?</p>
+                    <a href="#" class="btn btn-sm btn-outline-light w-100">Contact Support</a>
+                </div>
+
+                <form action="{% url 'logout' %}" method="post" id="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100 fw-bold shadow-sm py-2">
+                        <i class="fas fa-sign-out-alt me-2"></i> Sign Out
+                    </button>
+                </form>
+            </div>
         </nav>
 
         <!-- Page Content -->
-        <div id="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light rounded shadow-sm mb-4">
-                <div class="container-fluid">
-                    <button type="button" id="sidebarCollapse" class="btn btn-primary-custom">
-                        <i class="fas fa-bars"></i>
+        <div id="content" class="elite-content-wrapper">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-portal d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <button onclick="history.back()" class="btn btn-light rounded-circle shadow-sm">
+                        <i class="fas fa-arrow-left text-primary-custom"></i>
                     </button>
+                    <div class="vr opacity-25"></div>
+                    <h4 class="mb-0 fw-bold text-primary-custom">{% block page_title %}Dashboard{% endblock %}</h4>
+                </div>
 
-                    <div class="ms-auto d-flex align-items-center">
-                        <span class="me-3 text-muted"><i class="far fa-clock me-1"></i> {% now "l, jS F Y" %}</span>
-                        <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-bell"></i> <span class="badge bg-danger rounded-pill">3</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">System maintenance scheduled</a></li>
-                                <li><a class="dropdown-item" href="#">New loan offer available</a></li>
-                                <li><a class="dropdown-item" href="#">Security alert: Login from new device</a></li>
-                            </ul>
-                        </div>
+                <div class="d-flex align-items-center gap-4">
+                    <div class="d-none d-md-block text-end">
+                        <span class="d-block text-muted small text-uppercase fw-bold">Server Time</span>
+                        <span class="fw-bold text-dark">{% now "H:i:s" %}</span>
                     </div>
                 </div>
             </nav>
@@ -81,28 +181,29 @@
             <!-- Messages -->
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 mb-4"
+                role="alert">
+                {% if message.tags == 'success' %}<i class="fas fa-check-circle me-2"></i>{% endif %}
+                {% if message.tags == 'error' or message.tags == 'danger' %}<i
+                    class="fas fa-exclamation-circle me-2"></i>{% endif %}
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             {% endfor %}
             {% endif %}
 
+            <!-- Main Page Content -->
             {% block content %}
             {% endblock %}
+
+            <footer class="mt-5 text-center text-muted small">
+                &copy; 2026 PrimeTrust Bank. Secure Environment.
+            </footer>
         </div>
     </div>
 
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('sidebarCollapse').addEventListener('click', function () {
-                document.getElementById('sidebar').classList.toggle('active');
-            });
-        });
-    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

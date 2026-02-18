@@ -1,0 +1,58 @@
+{% extends 'base_portal.html' %}
+{% load static %}
+
+{% block page_title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="elite-card">
+            <div class="elite-header border-0 pb-0 mb-4">
+                <span class="elite-subtitle">Personal Settings</span>
+                <h2 class="elite-title">Update Profile</h2>
+                <p class="text-muted">Revise your personal records on the PrimeTrust banking substrate.</p>
+            </div>
+
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label class="stat-label-elite mb-2 d-block">First Identity Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <div class="text-danger small mt-1">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="stat-label-elite mb-2 d-block">Last Identity Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-5">
+                    <label class="stat-label-elite mb-2 d-block">Electronic Mail Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted d-block mt-2">Used for critical system notifications and OTP
+                        verification.</small>
+                </div>
+
+                <div class="d-flex gap-3 pt-3">
+                    <button type="submit" class="elite-btn elite-btn-primary flex-fill justify-content-center">
+                        <i class="fas fa-save me-2"></i> Commit Changes
+                    </button>
+                    <a href="{% url 'manage_profile' %}"
+                        class="elite-btn elite-btn-outline flex-fill justify-content-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
