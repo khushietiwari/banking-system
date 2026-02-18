@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'accounts',
     'corebank',
     'employee',
+    'adminpanel',
 ]
 
 
@@ -129,6 +130,10 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+
+# Force new cookies to clear stuck browser state
+SESSION_COOKIE_NAME = 'sessionid_v2'
+CSRF_COOKIE_NAME = 'csrftoken_v2'
 
 
 # ---------------- LOGIN / LOGOUT ---------------- #

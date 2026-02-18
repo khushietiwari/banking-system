@@ -1,130 +1,81 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Update Customer</title>
+{% extends 'employee/base.html' %}
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <h2 class="mb-4 fw-bold text-primary-custom">Update Customer Details</h2>
 
-        .container {
-            background: #ffffff;
-            width: 700px;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease-in-out;
-        }
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-user-edit me-2"></i> Edit Information
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
 
-        h2 {
-            text-align: center;
-            color: #2c5364;
-            margin-bottom: 30px;
-        }
+                    <h5 class="fw-bold text-muted mb-3">Personal Information</h5>
+                    <div class="row g-3 mb-4">
+                        {% for field in user_form %}
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
 
-        h3 {
-            background: #f4f6f9;
-            padding: 10px 15px;
-            border-left: 5px solid #2c5364;
-            border-radius: 6px;
-            margin-top: 25px;
-            font-size: 16px;
-            color: #2c5364;
-        }
+                    <h5 class="fw-bold text-muted mb-3">Account Information</h5>
+                    <div class="row g-3 mb-4">
+                        {% for field in account_form %}
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
 
-        form p {
-            margin-bottom: 15px;
-        }
+                    <style>
+                        /* Custom styling for Django form widgets */
+                        input,
+                        select,
+                        textarea {
+                            display: block;
+                            width: 100%;
+                            padding: 0.375rem 0.75rem;
+                            font-size: 1rem;
+                            font-weight: 400;
+                            line-height: 1.5;
+                            color: #212529;
+                            background-color: #fff;
+                            background-clip: padding-box;
+                            border: 1px solid #ced4da;
+                            border-radius: 0.375rem;
+                            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+                        }
 
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 5px;
-        }
+                        input:focus,
+                        select:focus,
+                        textarea:focus {
+                            border-color: var(--primary-color);
+                            outline: 0;
+                            box-shadow: 0 0 0 0.25rem rgba(15, 44, 89, 0.25);
+                        }
+                    </style>
 
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: #2c5364;
-            outline: none;
-            box-shadow: 0 0 6px rgba(44, 83, 100, 0.3);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: #2c5364;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 25px;
-        }
-
-        .btn:hover {
-            background: #203a43;
-            transform: translateY(-2px);
-        }
-
-        .divider {
-            height: 1px;
-            background: #e0e0e0;
-            margin: 20px 0;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-                padding: 25px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-    <h2>✏ Update Customer</h2>
-
-    <form method="post">
-        {% csrf_token %}
-
-        <h3>👤 Personal Information</h3>
-        {{ user_form.as_p }}
-
-        <div class="divider"></div>
-
-        <h3>🏦 Account Information</h3>
-        {{ account_form.as_p }}
-
-        <button type="submit" class="btn">
-            Update Customer
-        </button>
-    </form>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'customer_list' %}" class="btn btn-light border">Cancel</a>
+                        <button type="submit" class="btn btn-primary-custom">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

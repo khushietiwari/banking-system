@@ -75,8 +75,14 @@ def login_view(request):
 
         if user:
             login(request, user)
-            generate_otp(user)
-            return redirect('verify_otp')
+            
+            # ✅ Direct Login - Bypass OTP
+            if user.is_superuser:
+                return redirect('admin_dashboard')
+            elif user.is_staff:
+                return redirect('employee_dashboard')
+            else:
+                return redirect('customer_dashboard')
 
         return render(request, "login.html", {
             "error": "Invalid Credentials ❌"
@@ -93,13 +99,18 @@ def generate_otp(user):
         otp_code=str(otp)
     )
 
-    send_mail(
-        'Your OTP Code',
-        f'Your OTP is {otp}',
-        settings.EMAIL_HOST_USER,
-        [user.email],
-        fail_silently=False,
-    )
+    print(f"DEBUG: OTP for {user.username} is {otp}")
+
+    try:
+        send_mail(
+            'Your OTP Code',
+            f'Your OTP is {otp}',
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(f"Email failed to send: {e}")
 
 
 @login_required
@@ -120,7 +131,9 @@ def verify_otp(request):
                 otp_obj.delete()
 
                 # ✅ Role-based redirection
-                if request.user.is_staff:
+                if request.user.is_superuser:
+                    return redirect('admin_dashboard')
+                elif request.user.is_staff:
                     return redirect('employee_dashboard')
                 else:
                     return redirect('customer_dashboard')

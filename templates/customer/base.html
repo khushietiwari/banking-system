@@ -1,0 +1,26 @@
+{% extends 'base_portal.html' %}
+
+{% block title %}PrimeTrust - Customer Dashboard{% endblock %}
+
+{% block role_badge %}Premium Customer{% endblock %}
+
+{% block sidebar_menu %}
+<li class="{% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+    <a href="{% url 'customer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+</li>
+<li class="{% if 'transfer' in request.path %}active{% endif %}">
+    <a href="{% url 'transfer' %}"><i class="fas fa-paper-plane"></i> Transfers</a>
+</li>
+<li class="{% if 'transactions' in request.path %}active{% endif %}">
+    <a href="{% url 'transaction_history' %}"><i class="fas fa-history"></i> History</a>
+</li>
+<li class="{% if 'loans' in request.path %}active{% endif %}">
+    <a href="{% url 'my_loans' %}"><i class="fas fa-hand-holding-usd"></i> Loans</a>
+</li>
+<li class="{% if 'kyc' in request.path %}active{% endif %}">
+    <a href="{% url 'kyc_status' %}"><i class="fas fa-id-card"></i> KYC Status</a>
+</li>
+<li class="{% if 'profile' in request.path %}active{% endif %}">
+    <a href="{% url 'manage_profile' %}"><i class="fas fa-user-cog"></i> Profile</a>
+</li>
+{% endblock %}

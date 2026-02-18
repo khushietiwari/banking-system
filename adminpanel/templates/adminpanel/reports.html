@@ -1,0 +1,97 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">System Reports</h2>
+
+<div class="row g-4 mb-4">
+    <!-- User Stats -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> User Statistics</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Users
+                        <span class="badge bg-primary">{{ total_users }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Accounts
+                        <span class="badge bg-success">{{ total_accounts }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Active Accounts
+                        <span class="badge bg-info">{{ total_accounts }}</span> <!-- Assuming all active for now -->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Stats -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i> Transactions</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Transactions
+                        <span class="badge bg-secondary">{{ total_transactions }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Approved
+                        <span class="badge bg-success">{{ approved_transactions }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Rejected
+                        <span class="badge bg-danger">{{ rejected_transactions }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total System Balance
+                        <span class="badge bg-warning text-dark">₹{{ total_balance|floatformat:0 }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Stats -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-hand-holding-usd me-2"></i> Loans</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Applications
+                        <span class="badge bg-secondary">{{ total_loans }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Approved
+                        <span class="badge bg-success">{{ approved_loans }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Rejected
+                        <span class="badge bg-danger">{{ rejected_loans }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i> This report is generated in real-time based on the current database state.
+</div>
+
+<div class="text-end">
+    <button onclick="window.print()" class="btn btn-outline-secondary">
+        <i class="fas fa-print me-2"></i> Print Report
+    </button>
+</div>
+
+{% endblock %}

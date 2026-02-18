@@ -1,0 +1,63 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Manage Transactions</h2>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Reference ID</th>
+                        <th>Account</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr>
+                        <td>{{ txn.created_at|date:"M d, Y H:i" }}</td>
+                        <td>{{ txn.reference_id|default:"-" }}</td>
+                        <td>{{ txn.account.account_number }}</td>
+                        <td>{{ txn.transaction_type }}</td>
+                        <td>₹{{ txn.amount }}</td>
+                        <td>
+                            {% if txn.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif txn.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if txn.status == 'Pending' %}
+                            <a href="{% url 'update_transaction_status' txn.id 'approve' %}"
+                                class="btn btn-sm btn-success">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{% url 'update_transaction_status' txn.id 'reject' %}"
+                                class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i>
+                            </a>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No transactions found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

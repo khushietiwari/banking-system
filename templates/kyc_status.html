@@ -1,154 +1,53 @@
-{% extends 'base.html' %}
+{% extends 'customer/base.html' %}
+
 {% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4 fw-bold text-primary-custom">KYC Verification</h2>
 
-<style>
-.kyc-status-wrapper {
-    padding: 40px 60px;
-}
-
-.kyc-title {
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #1f2937;
-}
-
-.kyc-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
-    max-width: 550px;
-}
-
-.kyc-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.kyc-label {
-    font-weight: 500;
-    color: #555;
-}
-
-.kyc-status-badge {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.status-approved {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.status-pending {
-    background: #fef9c3;
-    color: #854d0e;
-}
-
-.status-rejected {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.doc-link {
-    text-decoration: none;
-    color: #003366;
-    font-weight: 500;
-}
-
-.doc-link:hover {
-    text-decoration: underline;
-}
-
-.action-btn {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #003366;
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.action-btn:hover {
-    opacity: 0.9;
-}
-
-.kyc-empty {
-    text-align: center;
-}
-
-.empty-text {
-    margin-bottom: 15px;
-    color: #6b7280;
-}
-</style>
-
-
-<div class="kyc-status-wrapper">
-
-    <div class="kyc-title">
-        KYC Verification Status
-    </div>
-
-    <div class="kyc-card">
-
-        {% if kyc %}
-
-            <div class="kyc-row">
-                <span class="kyc-label">Current Status</span>
-
-                {% if kyc.status == "Approved" %}
-                    <span class="kyc-status-badge status-approved">
-                        ✅ Approved
-                    </span>
-
-                {% elif kyc.status == "Pending" %}
-                    <span class="kyc-status-badge status-pending">
-                        ⏳ Pending Review
-                    </span>
-
-                {% elif kyc.status == "Rejected" %}
-                    <span class="kyc-status-badge status-rejected">
-                        ❌ Rejected
-                    </span>
+        <div class="card-custom">
+            <div class="card-body p-5 text-center">
+                {% if kyc %}
+                {% if kyc.status == 'Approved' %}
+                <div class="mb-4 text-success">
+                    <i class="fas fa-check-circle fa-5x"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Verification Complete</h3>
+                <p class="text-muted">Your KYC documents have been approved. You have full access to all banking
+                    features.</p>
+                <hr class="my-4">
+                <div class="d-flex justify-content-between text-start small text-muted">
+                    <span>Submitted on:</span>
+                    <span class="fw-bold">{{ kyc.submitted_at|date:"M d, Y" }}</span>
+                </div>
+                {% elif kyc.status == 'Pending' %}
+                <div class="mb-4 text-warning">
+                    <i class="fas fa-clock fa-5x"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Verification Pending</h3>
+                <p class="text-muted">We are currently reviewing your documents. This process usually takes 24-48 hours.
+                </p>
+                {% else %}
+                <div class="mb-4 text-danger">
+                    <i class="fas fa-times-circle fa-5x"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Verification Failed</h3>
+                <p class="text-muted">Your KYC documents were rejected. Please upload valid documents and try again.</p>
+                <div class="mt-4">
+                    <a href="{% url 'upload_kyc' %}" class="btn btn-primary-custom">Re-upload Documents</a>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="mb-4 text-primary-custom">
+                    <i class="fas fa-id-card fa-5x"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Submit KYC</h3>
+                <p class="text-muted mb-4">You need to complete KYC verification to unlock transfers and withdrawals.
+                </p>
+                <a href="{% url 'upload_kyc' %}" class="btn btn-primary-custom btn-lg">Start Verification</a>
                 {% endif %}
             </div>
-
-            {% if kyc.document %}
-            <div class="kyc-row">
-                <span class="kyc-label">Uploaded Document</span>
-                <a href="{{ kyc.document.url }}" target="_blank" class="doc-link">
-                    View Document
-                </a>
-            </div>
-            {% endif %}
-
-            {% if kyc.status == "Rejected" %}
-                <a href="{% url 'upload_kyc' %}" class="action-btn">
-                    Re-upload KYC
-                </a>
-            {% endif %}
-
-        {% else %}
-
-            <div class="kyc-empty">
-                <p class="empty-text">No KYC submitted yet.</p>
-                <a href="{% url 'upload_kyc' %}" class="action-btn">
-                    Upload KYC Now
-                </a>
-            </div>
-
-        {% endif %}
-
+        </div>
     </div>
-
 </div>
-
 {% endblock %}

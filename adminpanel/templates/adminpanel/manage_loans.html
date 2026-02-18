@@ -1,0 +1,62 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Manage Loans</h2>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    <tr>
+                        <td>{{ loan.applied_at|date:"M d, Y" }}</td>
+                        <td>{{ loan.user.username }}</td>
+                        <td>₹{{ loan.amount }}</td>
+                        <td>{{ loan.reason|truncatechars:50 }}</td>
+                        <td>
+                            {% if loan.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif loan.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if loan.status == 'Pending' %}
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'update_loan_status' loan.id 'approve' %}"
+                                    class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a href="{% url 'update_loan_status' loan.id 'reject' %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No loan applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

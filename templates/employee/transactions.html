@@ -1,143 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>PrimeTrust Bank • Pending Transactions</title>
+{% extends 'employee/base.html' %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block content %}
+<h2 class="mb-4 fw-bold text-primary-custom">Transaction Verification</h2>
 
-<style>
-
-/* ===== GLOBAL ===== */
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0b1f3a, #102a4d);
-    color: white;
-}
-
-/* ===== CONTAINER ===== */
-.container {
-    margin-top: 50px;
-}
-
-/* ===== TITLE ===== */
-.page-title {
-    font-weight: 700;
-    margin-bottom: 25px;
-}
-
-/* ===== CARD ===== */
-.card {
-    border-radius: 20px !important;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-    border: none;
-}
-
-/* ===== TABLE ===== */
-.table {
-    margin: 0;
-    background: white;
-    color: #102a4d;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-thead {
-    background: linear-gradient(135deg, #102a4d, #1f4068);
-    color: white;
-}
-
-tbody tr {
-    transition: 0.2s ease;
-}
-
-tbody tr:hover {
-    background: #f4f7fb;
-}
-
-/* ===== AMOUNT ===== */
-.amount {
-    font-weight: 700;
-}
-
-/* ===== BUTTONS ===== */
-.btn-success, .btn-danger {
-    border-radius: 10px;
-    font-weight: 500;
-}
-
-/* ===== EMPTY STATE ===== */
-.empty-row {
-    text-align: center;
-    color: #6c757d;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <h3 class="page-title">Pending Transactions</h3>
-
-    <div class="card">
-        <div class="card-body p-0">
-
-            <table class="table table-hover align-middle mb-0">
-
+<div class="card-custom">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
                 <thead>
                     <tr>
-                        <th>User</th>
+                        <th>Date</th>
+                        <th>Account</th>
                         <th>Type</th>
                         <th>Amount</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                {% for txn in transactions %}
+                    {% for txn in transactions %}
                     <tr>
-
-                        <td>{{ txn.account.user.username }}</td>
-
+                        <td>{{ txn.created_at|date:"M d, Y H:i" }}</td>
+                        <td class="font-monospace">{{ txn.account.account_number }}</td>
                         <td>{{ txn.transaction_type }}</td>
-
-                        <td class="amount">
-                            ₹ {{ txn.amount }}
-                        </td>
-
+                        <td class="fw-bold">₹{{ txn.amount|floatformat:2 }}</td>
+                        <td><span class="badge bg-warning text-dark">Pending Review</span></td>
                         <td>
-                            <a href="{% url 'update_transaction' txn.id 'approve' %}" 
-                               class="btn btn-success btn-sm">
-                                Approve
-                            </a>
-
-                            <a href="{% url 'update_transaction' txn.id 'reject' %}" 
-                               class="btn btn-danger btn-sm">
-                                Reject
-                            </a>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'update_transaction' txn.id 'approve' %}"
+                                    class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> Approve
+                                </a>
+                                <a href="{% url 'update_transaction' txn.id 'reject' %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times"></i> Reject
+                                </a>
+                            </div>
                         </td>
-
                     </tr>
-
-                {% empty %}
+                    {% empty %}
                     <tr>
-                        <td colspan="4" class="empty-row py-4">
-                            No pending transactions
+                        <td colspan="6" class="text-center py-5">
+                            <img src="https://cdni.iconscout.com/illustration/premium/thumb/task-completed-4783391-3983288.png"
+                                alt="All caught up" style="height: 150px; opacity: 0.5;">
+                            <p class="text-muted mt-3">All caught up! No pending transactions.</p>
                         </td>
                     </tr>
-                {% endfor %}
+                    {% endfor %}
                 </tbody>
-
             </table>
-
         </div>
     </div>
-
 </div>
-
-</body>
-</html>
+{% endblock %}

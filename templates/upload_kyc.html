@@ -1,162 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>PrimeTrust Bank • Upload KYC</title>
+{% extends 'customer/base.html' %}
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4 fw-bold text-primary-custom">Upload KYC Documents</h2>
 
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-/* ===== GLOBAL ===== */
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0b1f3a, #102a4d);
-    color: white;
-}
-
-/* ===== WRAPPER ===== */
-.content-wrapper {
-    padding: 50px 70px;
-    width: 100%;
-}
-
-/* ===== TITLES ===== */
-.page-title {
-    font-size: 30px;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.page-subtitle {
-    color: #cfd6e4;
-    margin-bottom: 30px;
-}
-
-/* ===== CARD ===== */
-.kyc-card {
-    width: 100%;
-    max-width: 650px;
-    background: white;
-    border-radius: 22px;
-    padding: 35px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
-    color: #102a4d;
-}
-
-/* ===== UPLOAD AREA ===== */
-.upload-area {
-    width: 100%;
-    border: 2px dashed #cbd5e1;
-    border-radius: 16px;
-    padding: 35px;
-    text-align: center;
-    cursor: pointer;
-    background: #f4f7fb;
-    transition: 0.3s ease;
-}
-
-.upload-area:hover {
-    border-color: #1f4068;
-    background: #eef3ff;
-}
-
-/* ===== FILE NAME ===== */
-.file-name {
-    margin-top: 6px;
-    font-size: 13px;
-    color: #6b7280;
-}
-
-/* Hide actual input */
-input[type="file"] {
-    display: none;
-}
-
-/* ===== BUTTON ===== */
-.upload-btn {
-    margin-top: 20px;
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    background: linear-gradient(135deg, #102a4d, #1f4068);
-    color: white;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.upload-btn:hover {
-    background: linear-gradient(135deg, #0b1f3a, #16355f);
-}
-
-/* ===== NOTE ===== */
-.secure-note {
-    margin-top: 12px;
-    font-size: 12px;
-    color: #8892a0;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="content-wrapper">
-
-    <div class="page-title">
-        Upload KYC Document
-    </div>
-
-    <div class="page-subtitle">
-        Complete verification to unlock full banking features.
-    </div>
-
-    <div class="kyc-card">
-
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <label for="fileInput" class="upload-area">
-                📄
-                <strong>Click to upload your document</strong>
-                <div class="file-name" id="file-name">
-                    No file selected
+        <div class="card-custom">
+            <div class="card-body p-4">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Please upload a valid ID proof (Passport, National ID, or Driver's License) to verify your identity.
                 </div>
-            </label>
 
-            <input type="file" id="fileInput" name="document" required>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-            <button type="submit" class="upload-btn">
-                Upload Document
-            </button>
-        </form>
+                    <div class="mb-4">
+                        <label for="document" class="form-label fw-bold">Select Document</label>
+                        <input class="form-control form-control-lg" type="file" id="document" name="document" required
+                            accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="form-text">Supported formats: PDF, JPG, PNG. Max size: 5MB.</div>
+                    </div>
 
-        <div class="secure-note">
-            🔒 Documents are securely encrypted and stored.
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary-custom btn-lg">
+                            Submit for Verification
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
     </div>
-
 </div>
-
-<script>
-    const fileInput = document.getElementById("fileInput");
-    const fileName = document.getElementById("file-name");
-
-    fileInput.addEventListener("change", function() {
-        if (fileInput.files.length > 0) {
-            fileName.textContent = fileInput.files[0].name;
-        }
-    });
-</script>
-
-</body>
-</html>
+{% endblock %}

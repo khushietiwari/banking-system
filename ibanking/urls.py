@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('bank/', include('corebank.urls')),
     path('employee/', include('employee.urls')),
+    path('adminpanel/', include('adminpanel.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

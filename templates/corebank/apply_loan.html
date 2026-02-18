@@ -1,145 +1,41 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>PrimeTrust Bank • Apply Loan</title>
+{% extends 'customer/base.html' %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4 fw-bold text-primary-custom">Apply for Loan</h2>
 
-<style>
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <i class="fas fa-file-signature me-2"></i> Loan Application
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
 
-/* ===== GLOBAL ===== */
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0b1f3a, #102a4d);
-    color: white;
-}
+                    <div class="mb-4">
+                        <label for="amount" class="form-label fw-bold">Loan Amount (₹)</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white border-end-0">₹</span>
+                            <input type="number" step="0.01" class="form-control border-start-0 ps-0" id="amount"
+                                name="amount" placeholder="0.00" required min="1000">
+                        </div>
+                    </div>
 
-/* ===== WRAPPER ===== */
-.page-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 15px;
-}
+                    <div class="mb-4">
+                        <label for="reason" class="form-label fw-bold">Purpose of Loan</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="4"
+                            placeholder="e.g., Home Renovation, Education, Business Expansion..." required></textarea>
+                    </div>
 
-/* ===== CARD ===== */
-.loan-card {
-    background: white;
-    border-radius: 22px;
-    padding: 35px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
-    color: #102a4d;
-}
-
-/* ===== HEADER ===== */
-.loan-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.loan-header h3 {
-    font-weight: 700;
-}
-
-.loan-header small {
-    color: #6c757d;
-}
-
-/* ===== INPUTS ===== */
-.custom-input {
-    height: 52px;
-    border-radius: 10px;
-    border: 1px solid #dde2e7;
-}
-
-.custom-input:focus {
-    border-color: #7f8fa6;
-    box-shadow: 0 0 0 3px rgba(127,143,166,0.2);
-}
-
-/* ===== TEXTAREA ===== */
-textarea.custom-input {
-    height: auto;
-    resize: none;
-}
-
-/* ===== BUTTON ===== */
-.btn-loan {
-    background: linear-gradient(135deg, #102a4d, #1f4068);
-    border: none;
-    height: 52px;
-    border-radius: 12px;
-    font-weight: 600;
-    color: white;
-    transition: 0.3s;
-}
-
-.btn-loan:hover {
-    background: linear-gradient(135deg, #0b1f3a, #16355f);
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="page-wrapper">
-
-    <div class="loan-card">
-
-        <div class="loan-header">
-            <h3>Apply for Loan</h3>
-            <small>
-                Submit your loan request for review and approval
-            </small>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary-custom btn-lg">
+                            Submit Application <i class="fas fa-paper-plane ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form method="post">
-            {% csrf_token %}
-
-            <!-- Amount -->
-            <div class="mb-4">
-                <label class="form-label fw-semibold">
-                    Loan Amount (₹)
-                </label>
-
-                <input type="number"
-                       name="amount"
-                       class="form-control custom-input"
-                       placeholder="Enter Amount"
-                       required>
-            </div>
-
-            <!-- Reason -->
-            <div class="mb-4">
-                <label class="form-label fw-semibold">
-                    Reason
-                </label>
-
-                <textarea name="reason"
-                          rows="4"
-                          class="form-control custom-input"
-                          placeholder="Reason for applying loan"
-                          required></textarea>
-            </div>
-
-            <!-- Button -->
-            <button type="submit" class="btn btn-loan w-100">
-                Apply for Loan 💳
-            </button>
-
-        </form>
-
     </div>
-
 </div>
-
-</body>
-</html>
+{% endblock %}

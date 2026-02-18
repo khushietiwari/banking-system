@@ -17,18 +17,26 @@ def deposit(account, amount):
     try:
         amount = Decimal(amount)
 
+        if account.status != "Active":
+            return "Account Blocked"
+
         if amount <= 0:
             return "Amount must be greater than zero."
 
         account.balance += amount
         account.save()
 
+        Transaction.objects.create(
+            account=account,
+            transaction_type="Deposit",
+            amount=amount,
+            method="Cash"
+        )
+
         return "Deposit successful."
 
     except Exception:
         return "Invalid amount."
-
-
 
 # ==========================
 # 💸 WITHDRAW

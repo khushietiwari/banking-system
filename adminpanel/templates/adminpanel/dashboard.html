@@ -1,0 +1,107 @@
+{% extends 'adminpanel/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Total Users</h6>
+                        <h2 class="mt-2 mb-0">{{ total_users }}</h2>
+                    </div>
+                    <i class="fas fa-users fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Total Accounts</h6>
+                        <h2 class="mt-2 mb-0">{{ total_accounts }}</h2>
+                    </div>
+                    <i class="fas fa-university fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Total Balance</h6>
+                        <h2 class="mt-2 mb-0">₹{{ total_balance|floatformat:0 }}</h2>
+                    </div>
+                    <i class="fas fa-wallet fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Pending Loans</h6>
+                        <h2 class="mt-2 mb-0">{{ pending_loans }}</h2>
+                    </div>
+                    <i class="fas fa-exclamation-circle fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'manage_kyc' %}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-check-circle me-2"></i> Review {{ pending_kyc }} Pending KYC Requests
+                    </a>
+                    <a href="{% url 'manage_loans' %}" class="btn btn-outline-success text-start">
+                        <i class="fas fa-money-check-alt me-2"></i> Review {{ pending_loans }} Loan Applications
+                    </a>
+                    <a href="{% url 'system_reports' %}" class="btn btn-outline-info text-start">
+                        <i class="fas fa-file-download me-2"></i> Generate System Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">System Status</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-success"><i class="fas fa-server me-2"></i> Server Status</span>
+                        <span class="badge bg-success rounded-pill">Online</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-primary"><i class="fas fa-database me-2"></i> Database</span>
+                        <span class="badge bg-primary rounded-pill">Connected</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-info"><i class="fas fa-envelope me-2"></i> Email Service</span>
+                        <span class="badge bg-info rounded-pill">Active</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

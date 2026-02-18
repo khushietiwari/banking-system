@@ -1,217 +1,116 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>PrimeTrust Bank • Employee Dashboard</title>
+{% extends 'employee/base.html' %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-
-/* ===== GLOBAL ===== */
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0b1f3a, #102a4d);
-}
-
-/* ===== LAYOUT ===== */
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar {
-    width: 240px;
-    background: rgba(11, 31, 58, 0.95);
-    padding: 30px 20px;
-    color: white;
-    box-shadow: 5px 0 25px rgba(0,0,0,0.25);
-    transition: 0.3s ease;
-}
-
-/* Hidden Sidebar */
-.sidebar.hidden {
-    margin-left: -240px;
-}
-
-/* ===== SIDEBAR LINKS ===== */
-.sidebar .brand {
-    font-weight: 700;
-    margin-bottom: 30px;
-}
-
-.sidebar a {
-    display: block;
-    color: #cfd6e4;
-    text-decoration: none;
-    padding: 10px 12px;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    transition: 0.3s;
-}
-
-.sidebar a:hover {
-    background: rgba(255,255,255,0.08);
-    color: white;
-}
-
-/* ===== MAIN ===== */
-.main-content {
-    flex: 1;
-    padding: 35px;
-    color: white;
-    transition: 0.3s ease;
-}
-
-/* ===== TOP BAR ===== */
-.top-bar {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-/* Toggle Button */
-.toggle-btn {
-    border: none;
-    background: white;
-    color: #102a4d;
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    margin-right: 15px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.toggle-btn:hover {
-    transform: scale(1.05);
-}
-
-/* ===== ACTION GRID ===== */
-.action-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-/* ===== ACTION BOX ===== */
-.action-box {
-    background: white;
-    border-radius: 20px;
-    padding: 22px;
-    color: #102a4d;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
-    transition: 0.3s;
-}
-
-.action-box:hover {
-    transform: translateY(-4px);
-}
-
-.action-box h5 {
-    font-weight: 600;
-    font-size: 14px;
-    margin-top: 8px;
-    margin-bottom: 6px;
-    color: #6c757d;
-}
-
-.action-box p {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0;
-}
-
-/* ===== COLORS ===== */
-.blue { border-left: 5px solid #1f4068; }
-.green { border-left: 5px solid #28a745; }
-.yellow { border-left: 5px solid #ffc107; }
-.purple { border-left: 5px solid #6f42c1; }
-
-</style>
-</head>
-
-<body>
-
-<div class="dashboard-container">
-
-    <!-- Employee Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <h4 class="brand">Employee Panel</h4>
-
-        <a href="{% url 'employee_dashboard' %}">Dashboard</a>
-        <a href="{% url 'customer_list' %}">Customers</a>
-        <a href="{% url 'view_transactions' %}">Transactions</a>
-        <a href="{% url 'view_loans' %}">Loans</a>
-        <a href="{% url 'view_kyc' %}">KYC Requests</a>
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-primary-custom">Employee Workspace</h2>
+        <p class="text-muted">Overview of pending tasks and daily metrics.</p>
     </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-
-        <div class="top-bar">
-
-            <!-- Toggle Button -->
-            <button class="toggle-btn" onclick="toggleSidebar()">
-                ☰
-            </button>
-
-            <div>
-                <h2>Employee Dashboard 👨‍💼</h2>
-                <small>Manage Banking Operations</small>
-            </div>
-
-        </div>
-
-        <div class="action-grid">
-
-            <div class="action-box blue">
-                👥
-                <h5>Total Customers</h5>
-                <p>{{ total_customers }}</p>
-            </div>
-
-            <div class="action-box green">
-                💰
-                <h5>Total Accounts</h5>
-                <p>{{ total_accounts }}</p>
-            </div>
-
-            <div class="action-box yellow">
-                ⏳
-                <h5>Pending Transactions</h5>
-                <p>{{ pending_transactions }}</p>
-            </div>
-
-            <div class="action-box purple">
-                📄
-                <h5>Pending Loans</h5>
-                <p>{{ pending_loans }}</p>
-            </div>
-
-            <div class="action-box blue">
-                🪪
-                <h5>Pending KYC</h5>
-                <p>{{ pending_kyc }}</p>
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
 
-<script>
-function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("hidden");
-}
-</script>
+<!-- Metrics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card-custom h-100 border-start border-4 border-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-1">Pending KYC</h6>
+                        <h2 class="mb-0 fw-bold">{{ pending_kyc }}</h2>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle">
+                        <i class="fas fa-id-card fa-2x"></i>
+                    </div>
+                </div>
+                <a href="{% url 'view_kyc' %}" class="small text-decoration-none mt-3 d-block">Review Queue <i
+                        class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom h-100 border-start border-4 border-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-1">Loan Apps</h6>
+                        <h2 class="mb-0 fw-bold">{{ pending_loans }}</h2>
+                    </div>
+                    <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle">
+                        <i class="fas fa-file-invoice-dollar fa-2x"></i>
+                    </div>
+                </div>
+                <a href="{% url 'view_loans' %}" class="small text-decoration-none mt-3 d-block">Review Applications <i
+                        class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-custom h-100 border-start border-4 border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted text-uppercase small ls-1">Transactions</h6>
+                        <h2 class="mb-0 fw-bold">{{ pending_transactions }}</h2>
+                    </div>
+                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
+                        <i class="fas fa-exchange-alt fa-2x"></i>
+                    </div>
+                </div>
+                <a href="{% url 'view_transactions' %}" class="small text-decoration-none mt-3 d-block">Verify
+                    Transactions <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
 
-</body>
-</html>
+<!-- Customer Quick Lookup -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fas fa-search me-2"></i> Customer Lookup
+            </div>
+            <div class="card-body">
+                <div class="input-group input-group-lg mb-3">
+                    <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0 ps-0"
+                        placeholder="Search by Account Number, Name, or Phone...">
+                    <button class="btn btn-primary-custom" type="button">Search</button>
+                </div>
+                <div class="alert alert-light text-center text-muted">
+                    Enter a query to find customer details.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <i class="fas fa-users me-2"></i> Quick Stats
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        Total Customers
+                        <span class="badge bg-primary rounded-pill">{{ total_customers }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        Active Accounts
+                        <span class="badge bg-success rounded-pill">{{ total_accounts }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        Total Deposits
+                        <span class="fw-bold">₹{{ total_balance|floatformat:0 }}</span>
+                    </li>
+                </ul>
+                <div class="d-grid mt-3">
+                    <a href="{% url 'create_customer' %}" class="btn btn-outline-custom btn-sm">
+                        <i class="fas fa-plus me-1"></i> Register New Customer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
