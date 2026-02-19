@@ -54,6 +54,139 @@
     --glass-border: 1px solid rgba(255, 255, 255, 0.5);
     --blur: blur(12px);
 }
+/* Smooth lift effect */
+.hover-lift {
+    transition: all 0.25s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Card styling */
+.card-custom {
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* Thin progress bars */
+.thin-progress {
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+}
+
+/* Subtle UI elements */
+.subtle-pill {
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.subtle-block {
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Typography refinement */
+.tiny-label {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+/* Activity rows */
+.activity-item {
+    transition: background 0.2s ease;
+}
+
+.activity-item:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+/* Avatar circle */
+.avatar-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Clamp text */
+.clamp-text {
+    height: 4.5em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Buttons */
+.action-btn {
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Toggle buttons */
+.subtle-toggle .btn {
+    border-radius: 20px !important;
+}
+
+/* Table refinement */
+.audit-table th {
+    font-size: 0.7rem;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.55);
+}
+
+/* Row spacing */
+.audit-row td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+/* Badges */
+.subtle-badge {
+    background: rgba(0,0,0,0.03);
+    font-size: 0.72rem;
+}
+
+/* Status dot */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Button group polish */
+.action-group {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Refresh button */
+.subtle-refresh {
+    transition: all 0.2s ease;
+}
+
+.subtle-refresh:hover {
+    background: rgba(0,0,0,0.04);
+}
+
+/* Icon button */
+.subtle-icon-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* ===== GLOBAL RESET & TYPES ===== */
 body {
