@@ -1,0 +1,89 @@
+{% extends 'base_portal.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <h2 class="mb-4 fw-bold text-primary-custom">Utility Bill Payments</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not selected_type %}
+    <!-- CATEGORY SELECTION -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <a href="?type=electricity" class="text-decoration-none">
+                <div class="card-custom text-center p-4 hover-shadow">
+                    <i class="fas fa-lightbulb fa-3x text-warning mb-3"></i>
+                    <h5>Electricity</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="?type=water" class="text-decoration-none">
+                <div class="card-custom text-center p-4 hover-shadow">
+                    <i class="fas fa-tint fa-3x text-primary mb-3"></i>
+                    <h5>Water</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="?type=mobile" class="text-decoration-none">
+                <div class="card-custom text-center p-4 hover-shadow">
+                    <i class="fas fa-mobile-alt fa-3x text-success mb-3"></i>
+                    <h5>Mobile Prepaid</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a href="?type=broadband" class="text-decoration-none">
+                <div class="card-custom text-center p-4 hover-shadow">
+                    <i class="fas fa-wifi fa-3x text-info mb-3"></i>
+                    <h5>Broadband</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- PAYMENT FORM -->
+    <div class="card-custom p-4 shadow-sm">
+        <h4 class="fw-bold mb-4 text-capitalize">{{ selected_type }} Bill Payment</h4>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="bill_type" value="{{ selected_type }}">
+
+            <div class="mb-3">
+                <label class="form-label">Consumer / Account Number</label>
+                <input type="text" name="consumer_number" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Amount (₹)</label>
+                <input type="number" name="amount" class="form-control" required min="1">
+            </div>
+
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary-custom">
+                    Pay Now
+                </button>
+
+                <a href="{% url 'pay_bills' %}" class="btn btn-light">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
