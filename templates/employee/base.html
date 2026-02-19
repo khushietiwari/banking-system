@@ -3,6 +3,169 @@
 {% block title %}PrimeTrust - Employee Workspace{% endblock %}
 
 {% block role_badge %}Bank Staff{% endblock %}
+/* Smooth lift effect */
+.hover-lift {
+    transition: all 0.25s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Softer card border */
+.card-custom {
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* Thin progress bars */
+.thin-progress {
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+}
+
+/* Subtle header pill */
+.subtle-pill {
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Activity row refinement */
+.activity-item {
+    transition: background 0.2s ease;
+}
+
+.activity-item:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+/* Cleaner icon button */
+.subtle-icon-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Hover depth */
+.hover-lift {
+    transition: all 0.25s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+/* Avatar circle */
+.avatar-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Softer info blocks */
+.subtle-block {
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Tiny labels (more elegant) */
+.tiny-label {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+/* Clamp reason text */
+.clamp-text {
+    height: 4.5em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Buttons feel smoother */
+.action-btn {
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Toggle refinement */
+.subtle-toggle .btn {
+    border-radius: 20px !important;
+}
+/* Smooth elevation */
+.hover-lift {
+    transition: all 0.25s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+}
+
+/* Table refinement */
+.audit-table th {
+    font-size: 0.7rem;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.55);
+}
+
+/* Better row spacing */
+.audit-row td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+/* Subtle badges */
+.subtle-badge {
+    background: rgba(0,0,0,0.03);
+    font-size: 0.72rem;
+}
+
+/* Status dot refinement */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Action buttons */
+.action-btn {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Button group polish */
+.action-group {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Refresh button polish */
+.subtle-refresh {
+    transition: all 0.2s ease;
+}
+
+.subtle-refresh:hover {
+    background: rgba(0,0,0,0.04);
+}
+
 
 {% block sidebar_menu %}
 <li class="{% if request.resolver_match.url_name == 'employee_dashboard' %}active{% endif %}">
