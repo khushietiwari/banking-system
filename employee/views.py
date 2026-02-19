@@ -140,8 +140,16 @@ from corebank.models import KYC
 @login_required
 @user_passes_test(is_employee)
 def view_kyc(request):
+
     kyc_requests = KYC.objects.all()
-    return render(request, "employee/kyc_requests.html", {"kyc_requests": kyc_requests})
+
+    pending_kyc = KYC.objects.filter(status__iexact="Pending").count()
+
+    return render(request, "employee/kyc_requests.html", {
+        "kyc_requests": kyc_requests,
+        "pending_kyc": pending_kyc,
+    })
+
 
 
 @login_required
