@@ -29,8 +29,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#about">About</a></li>
                     <li class="nav-item ms-lg-3">
                         <a class="btn btn-login btn-sm px-4 fw-bold me-2" href="{% url 'login' %}">Login</a>
                     </li>
@@ -73,9 +73,11 @@
                 <div class="col-md-2 offset-md-2">
                     <h6 class="text-uppercase fw-bold text-gold mb-3">Links</h6>
                     <ul class="list-unstyled text-white-50">
-                        <li><a href="#" class="text-white-50 text-decoration-none">Home</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Services</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Contact</a></li>
+                        <li><a href="{% url 'home' %}" class="text-white-50 text-decoration-none">Home</a></li>
+                        <li><a href="{% url 'home' %}#features" class="text-white-50 text-decoration-none">Features</a>
+                        </li>
+                        <li><a href="{% url 'home' %}#about" class="text-white-50 text-decoration-none">About Us</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-md-4">

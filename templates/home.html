@@ -23,7 +23,7 @@
                     <a href="{% url 'register' %}" class="btn btn-primary-custom btn-lg px-5 py-3 shadow-lg">
                         Get Started <i class="fas fa-arrow-right ms-2"></i>
                     </a>
-                    <a href="#" class="btn btn-outline-secondary btn-lg px-5 py-3">
+                    <a href="#about" class="btn btn-outline-secondary btn-lg px-5 py-3">
                         Learn More
                     </a>
                 </div>
@@ -52,9 +52,12 @@
                         style="width: 400px; height: 400px; filter: blur(80px); z-index: -1;"></div>
 
                     <!-- 3D Card Placeholder / Image -->
-                    <div class="glass-card p-4 tilt-effect">
-                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/online-banking-4440049-3686271.png"
-                            alt="Banking App" class="img-fluid rounded-3">
+                    <div class="glass-card p-4 tilt-effect text-center">
+                        <img src="https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?auto=format&fit=crop&q=80&w=800"
+                            alt="Neon Bank" class="img-fluid rounded-3 shadow-lg mb-3"
+                            style="max-height: 250px; object-fit: contain; filter: hue-rotate(180deg) brightness(1.2) drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));">
+                        <h6 class="text-primary-custom fw-bold mb-0">PrimeTrust Digital Vault</h6>
+                        <small class="text-muted">Secure. Modern. Institutional.</small>
                         <div
                             class="d-flex justify-content-between align-items-center mt-4 p-3 bg-white rounded-3 shadow-sm">
                             <div class="d-flex align-items-center gap-3">
@@ -76,7 +79,7 @@
 </section>
 
 <!-- Features Section -->
-<section class="py-5 bg-white">
+<section id="features" class="py-5 bg-white">
     <div class="container py-5">
         <div class="text-center mb-5">
             <h6 class="text-uppercase text-gold fw-bold ls-1">Why Choose Us</h6>
@@ -85,7 +88,7 @@
 
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card-custom h-100 p-4 border-0">
+                <div class="card-custom hover-lift h-100 p-4 border-0">
                     <div
                         class="bg-primary-custom bg-opacity-10 text-primary-custom rounded-circle d-inline-flex p-3 mb-4">
                         <i class="fas fa-shield-alt fa-2x"></i>
@@ -96,7 +99,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card-custom h-100 p-4 border-0">
+                <div class="card-custom hover-lift h-100 p-4 border-0">
                     <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex p-3 mb-4">
                         <i class="fas fa-bolt fa-2x"></i>
                     </div>
@@ -106,13 +109,148 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card-custom h-100 p-4 border-0">
+                <div class="card-custom hover-lift h-100 p-4 border-0">
                     <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3 mb-4">
                         <i class="fas fa-chart-line fa-2x"></i>
                     </div>
                     <h4 class="fw-bold mb-3">Smart Insights</h4>
                     <p class="text-muted">Limitless analytics to help you understand your spending habits and save more.
                     </p>
+                </div>
+            </div>
+            <!-- Added 3 More Features -->
+            <div class="col-md-4">
+                <div class="card-custom hover-lift h-100 p-4 border-0">
+                    <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3 mb-4">
+                        <i class="fas fa-globe fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Global Access</h4>
+                    <p class="text-muted">Access your funds from anywhere in the world with our borderless banking
+                        technology.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom hover-lift h-100 p-4 border-0">
+                    <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex p-3 mb-4">
+                        <i class="fas fa-headset fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">24/7 Priority Support</h4>
+                    <p class="text-muted">Dedicated support team available round the clock to assist you with any
+                        banking needs.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom hover-lift h-100 p-4 border-0">
+                    <div class="bg-dark bg-opacity-10 text-dark rounded-circle d-inline-flex p-3 mb-4">
+                        <i class="fas fa-brain fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">AI-Powered Analytics</h4>
+                    <p class="text-muted">Advanced artificial intelligence that predicts your financial trends and
+                        offers
+                        personalized advice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5 hero-gradient">
+    <div class="container py-5">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6">
+                <h6 class="text-uppercase text-gold fw-bold ls-1 mb-3">The PrimeTrust Story</h6>
+                <h2 class="display-5 fw-bold mb-4 text-primary-custom">Building the Future of Digital Finance</h2>
+                <p class="lead mb-4 text-secondary">
+                    Founded in 2026, PrimeTrust was born from a vision to make banking accessible, transparent, and
+                    extraordinarily secure for everyone, everywhere. We're not just a bank; we're a technological vault
+                    for your future.
+                </p>
+                <div class="row g-4 mb-5">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="bg-primary-custom bg-opacity-10 p-2 rounded-circle">
+                                <i class="fas fa-check text-primary-custom"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1 text-primary-custom">Our Mission</h6>
+                                <p class="small text-muted mb-0">Democratizing elite banking technology for global
+                                    citizens.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="bg-primary-custom bg-opacity-10 p-2 rounded-circle">
+                                <i class="fas fa-check text-primary-custom"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1 text-primary-custom">Our Vision</h6>
+                                <p class="small text-muted mb-0">Becoming the world's most trusted and intelligent
+                                    digital vault.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Added Core Values -->
+                <div class="p-4 bg-white shadow-sm rounded-4 border border-light">
+                    <h5 class="fw-bold mb-4 text-gold"><i class="fas fa-gem me-2"></i> Our Core Values</h5>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="bg-gold p-1 rounded-circle" style="width: 8px; height: 8px;"></div>
+                                <span class="fw-semibold text-primary-custom">Uncompromising Security:</span>
+                                <span class="text-muted small">Every byte is encrypted, every cent is protected.</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="bg-gold p-1 rounded-circle" style="width: 8px; height: 8px;"></div>
+                                <span class="fw-semibold text-primary-custom">Radical Transparency:</span>
+                                <span class="text-muted small">No hidden fees, no opaque terms, just clear
+                                    banking.</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="bg-gold p-1 rounded-circle" style="width: 8px; height: 8px;"></div>
+                                <span class="fw-semibold text-primary-custom">Infinite Innovation:</span>
+                                <span class="text-muted small">Leading with AI to predict and serve your needs.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Image & Impact Stats -->
+                <div class="position-relative">
+                    <div class="overflow-hidden rounded-4 shadow-lg mb-4">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800"
+                            alt="Join PrimeTrust" class="img-fluid">
+                    </div>
+
+                    <!-- Impact Metrics -->
+                    <div class="row g-3">
+                        <div class="col-sm-4">
+                            <div class="bg-white p-3 rounded-3 text-center shadow-sm border border-light">
+                                <div class="h4 fw-bold text-gold mb-0">150+</div>
+                                <div class="tiny-label uppercase text-muted">Countries</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="bg-white p-3 rounded-3 text-center shadow-sm border border-light">
+                                <div class="h4 fw-bold text-gold mb-0">1B+</div>
+                                <div class="tiny-label uppercase text-muted">API Requests</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="bg-white p-3 rounded-3 text-center shadow-sm border border-light">
+                                <div class="h4 fw-bold text-gold mb-0">20+</div>
+                                <div class="tiny-label uppercase text-muted">Global Hubs</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
