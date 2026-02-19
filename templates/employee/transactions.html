@@ -4,76 +4,124 @@
 {% block page_title %}Operational Audit{% endblock %}
 
 {% block content %}
-<div class="card-custom border-0 shadow-sm overflow-hidden">
+
+<div class="card-custom border-0 shadow-sm overflow-hidden hover-lift">
+
+    <!-- Header -->
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
         <div>
             <h5 class="mb-0 fw-bold text-primary-custom">Pending Verification Queue</h5>
-            <p class="text-muted small mb-0">Authorize or decline high-value transactions after manual review.</p>
+            <p class="text-muted small mb-0">
+                Authorize or decline high-value transactions after manual review.
+            </p>
         </div>
-        <button class="btn btn-sm btn-light border rounded-pill px-3"><i class="fas fa-sync-alt me-1"></i> Refresh
-            List</button>
+
+        <button class="btn btn-sm btn-light border rounded-pill px-3 fw-semibold subtle-refresh">
+            <i class="fas fa-sync-alt me-1"></i> Refresh List
+        </button>
     </div>
 
+    <!-- Table -->
     <div class="table-responsive">
-        <table class="table table-custom table-hover align-middle mb-0">
+        <table class="table table-custom table-hover align-middle mb-0 audit-table">
+
             <thead class="bg-light">
                 <tr>
-                    <th class="ps-4">Audit Date</th>
-                    <th>Account Reference</th>
-                    <th>Transaction Type</th>
-                    <th>Audited Amount</th>
-                    <th>Current Status</th>
-                    <th class="text-end pe-4">Verification</th>
+                    <th class="ps-4 tiny-label">Audit Date</th>
+                    <th class="tiny-label">Account Reference</th>
+                    <th class="tiny-label">Transaction Type</th>
+                    <th class="tiny-label">Audited Amount</th>
+                    <th class="tiny-label">Current Status</th>
+                    <th class="text-end pe-4 tiny-label">Verification</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for txn in transactions %}
-                <tr>
+                <tr class="audit-row">
+
+                    <!-- Date -->
                     <td class="ps-4">
-                        <span class="d-block fw-bold text-dark small">{{ txn.created_at|date:"M d, Y" }}</span>
-                        <small class="text-muted">{{ txn.created_at|date:"H:i" }}</small>
+                        <span class="d-block fw-semibold text-dark small">
+                            {{ txn.created_at|date:"M d, Y" }}
+                        </span>
+                        <small class="text-muted">
+                            {{ txn.created_at|date:"H:i" }}
+                        </small>
                     </td>
+
+                    <!-- Account -->
                     <td class="font-monospace">
-                        <span class="text-primary-custom fw-bold">{{ txn.account.account_number }}</span>
+                        <span class="text-primary-custom fw-bold">
+                            {{ txn.account.account_number }}
+                        </span>
                     </td>
+
+                    <!-- Type -->
                     <td>
-                        <span class="badge bg-light text-dark border-0 rounded-pill px-3 fw-bold">
+                        <span class="badge bg-light text-dark rounded-pill px-3 fw-semibold subtle-badge">
                             {{ txn.transaction_type }}
                         </span>
                     </td>
+
+                    <!-- Amount -->
                     <td>
-                        <span class="h6 fw-bold mb-0 text-dark">₹{{ txn.amount|floatformat:2 }}</span>
+                        <span class="fw-bold text-dark">
+                            ₹{{ txn.amount|floatformat:2 }}
+                        </span>
                     </td>
+
+                    <!-- Status -->
                     <td>
-                        <span class="status-indicator bg-warning"></span> <small class="text-warning fw-bold">Manual
-                            Review</small>
+                        <div class="d-flex align-items-center">
+                            <span class="status-indicator bg-warning me-2"></span>
+                            <small class="text-warning fw-semibold">
+                                Manual Review
+                            </small>
+                        </div>
                     </td>
+
+                    <!-- Actions -->
                     <td class="text-end pe-4">
-                        <div class="btn-group shadow-sm">
+                        <div class="btn-group action-group">
+
                             <a href="{% url 'update_transaction' txn.id 'approve' %}"
-                                class="btn btn-sm btn-success px-3" title="Approve">
+                                class="btn btn-sm btn-success px-3 action-btn"
+                                title="Approve">
                                 <i class="fas fa-check"></i>
                             </a>
-                            <a href="{% url 'update_transaction' txn.id 'reject' %}" class="btn btn-sm btn-danger px-3"
+
+                            <a href="{% url 'update_transaction' txn.id 'reject' %}"
+                                class="btn btn-sm btn-danger px-3 action-btn"
                                 title="Reject">
                                 <i class="fas fa-times"></i>
                             </a>
+
                         </div>
                     </td>
+
                 </tr>
+
                 {% empty %}
                 <tr>
                     <td colspan="6" class="text-center py-5">
+
                         <div class="opacity-25 mb-3">
                             <i class="fas fa-check-circle fa-4x text-success"></i>
                         </div>
+
                         <h6 class="text-muted fw-bold">Verification Queue Clear</h6>
-                        <p class="text-muted small">No pending transactions require manual staff authorization.</p>
+                        <p class="text-muted small mb-0">
+                            No pending transactions require manual staff authorization.
+                        </p>
+
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
+
         </table>
     </div>
 </div>
+
 {% endblock %}
