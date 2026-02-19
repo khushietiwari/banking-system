@@ -5,55 +5,71 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="card-custom border-0 shadow-lg">
-            <div class="card-header-custom bg-white py-3">
-                <div class="d-flex align-items-center">
-                    <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
-                        <i class="fas fa-file-signature"></i>
-                    </div>
-                    <h5 class="mb-0 fw-bold text-primary-custom">Loan Application</h5>
-                </div>
+    <div class="col-lg-8">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold text-primary-custom mb-0">
+                <i class="fas fa-file-signature me-2"></i> Loan Application
+            </h3>
+
+            <!-- View Previous Loans Button -->
+            <a href="{% url 'my_loans' %}" class="btn btn-outline-primary shadow-sm">
+                <i class="fas fa-history me-2"></i> View My Loans
+            </a>
+        </div>
+
+        <!-- Loan Form Card -->
+        <div class="card-custom border-0 shadow-lg p-4">
+
+            <!-- Info Box -->
+            <div class="alert alert-info border-0 shadow-sm mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Ensure your profile details are up-to-date. Loan approval is subject to credit verification.
             </div>
 
-            <div class="card-body p-4">
-                <div class="alert alert-light border d-flex align-items-start mb-4">
-                    <i class="fas fa-info-circle text-primary-custom mt-1 me-3"></i>
-                    <div>
-                        <h6 class="fw-bold mb-1">Before you apply</h6>
-                        <small class="text-muted">Ensure your profile details are up-to-date. Loan approval is subject
-                            to credit check and verification.</small>
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Loan Amount -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted text-uppercase small">
+                        Loan Amount (₹)
+                    </label>
+
+                    <div class="input-group input-group-lg shadow-sm">
+                        <span class="input-group-text bg-white border-end-0">₹</span>
+                        <input type="number"
+                               step="0.01"
+                               name="amount"
+                               class="form-control border-start-0 fw-bold"
+                               placeholder="0.00"
+                               required>
                     </div>
                 </div>
 
-                <form method="POST">
-                    {% csrf_token %}
+                <!-- Loan Purpose -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted text-uppercase small">
+                        Purpose of Loan
+                    </label>
 
-                    <div class="mb-4">
-                        <label for="amount" class="form-label fw-bold text-muted text-uppercase small ls-1">Loan Amount
-                            (₹)</label>
-                        <div class="input-group input-group-lg shadow-sm">
-                            <span class="input-group-text bg-white border-end-0 text-muted">₹</span>
-                            <input type="number" step="0.01"
-                                class="form-control border-start-0 ps-0 fw-bold text-primary-custom" id="amount"
-                                name="amount" placeholder="0.00" required min="1000">
-                        </div>
-                    </div>
+                    <textarea name="purpose"
+                              class="form-control shadow-sm"
+                              rows="4"
+                              placeholder="e.g., Home Renovation, Education, Business Expansion..."
+                              required></textarea>
+                </div>
 
-                    <div class="mb-4">
-                        <label for="reason" class="form-label fw-bold text-muted text-uppercase small ls-1">Purpose of
-                            Loan</label>
-                        <textarea class="form-control shadow-sm" id="reason" name="reason" rows="4"
-                            placeholder="e.g., Home Renovation, Education, Business Expansion..." required></textarea>
-                    </div>
+                <!-- Submit Button -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary-custom btn-lg shadow-md py-3">
+                        Submit Application <i class="fas fa-paper-plane ms-2"></i>
+                    </button>
+                </div>
 
-                    <div class="d-grid mt-5">
-                        <button type="submit" class="btn btn-primary-custom btn-lg py-3 shadow-md">
-                            Submit Application <i class="fas fa-paper-plane ms-2"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
+            </form>
+
         </div>
     </div>
 </div>

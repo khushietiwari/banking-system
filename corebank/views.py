@@ -44,20 +44,32 @@ from .models import Account, KYC
 from .models import KYC, Loan
 
 import random
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import Account, KYC, Loan
+
+
 
 @login_required
 def customer_dashboard(request):
-    try:
-        account = request.user.account
-    except Account.DoesNotExist:
-        # Auto-create account if missing (Fix for 500 Error)
-        account = Account.objects.create(
-            user=request.user,
-            account_number=str(random.randint(1000000000, 9999999999)),
-            balance=0.0
-        )
+    # Ensure account exists
+    account, created = Account.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "account_number": str(random.randint(1000000000, 9999999999)),
+            "balance": 0.0,
+            "ifsc_code": "PRIME0001234"
+        }
+    )
 
-    kyc = KYC.objects.filter(user=request.user).first()
+    # Get latest KYC record
+    kyc = KYC.objects.filter(user=request.user).order_by("-submitted_at").first()
+
+    # Clean boolean for template logic
+    kyc_verified = False
+    if kyc and kyc.status == "Approved":
+        kyc_verified = True
+
     loans = Loan.objects.filter(user=request.user)
 
     recent_transactions = account.transactions.order_by("-created_at")[:5]
@@ -68,10 +80,10 @@ def customer_dashboard(request):
         "account_number": account.account_number,
         "ifsc": account.ifsc_code,
         "kyc": kyc,
+        "kyc_verified": kyc_verified,
         "loans": loans,
         "recent_transactions": recent_transactions
     })
-
 
 # ---------------- BALANCE ---------------- #
 
@@ -222,9 +234,46 @@ def add_beneficiary(request):
     })
 
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from decimal import Decimal
+
+
 @login_required
 def pay_bills(request):
-    return render(request, "pay_bills.html")
+    account = request.user.account
+    selected_type = request.GET.get("type")
+
+    if request.method == "POST":
+        bill_type = request.POST.get("bill_type")
+        consumer_number = request.POST.get("consumer_number")
+        amount = Decimal(request.POST.get("amount"))
+
+        if amount > account.balance:
+            messages.error(request, "Insufficient balance.")
+            return redirect("pay_bills")
+
+        # Deduct balance
+        account.balance -= amount
+        account.save()
+
+        # Create transaction
+        Transaction.objects.create(
+            account=account,
+            transaction_type="Bill Payment",
+            amount=amount,
+            method=bill_type.capitalize(),
+            status="Approved",
+        )
+
+        messages.success(request, f"{bill_type.capitalize()} bill paid successfully.")
+        return redirect("pay_bills")
+
+    return render(request, "customer/pay_bills.html", {
+        "selected_type": selected_type
+    })
+
 
 
 @login_required
@@ -378,3 +427,21 @@ def withdraw_view(request):
     return render(request, "withdraw.html", {
         "account": account
     })
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+@login_required
+def support_view(request):
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+
+        # For now just show success message
+        messages.success(request, "Your support request has been submitted successfully.")
+        
+    return render(request, "customer/support.html")
+@login_required
+def my_loans(request):
+    loans = Loan.objects.filter(user=request.user).order_by("-applied_at")
+    return render(request, "corebank/my_loans.html", {"loans": loans})
+

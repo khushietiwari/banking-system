@@ -5,30 +5,58 @@
 
 {% block content %}
 <div class="container-fluid px-0">
+
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
             <span class="elite-subtitle">Account Overview</span>
             <h2 class="fw-bold text-primary-custom mb-0">
                 Welcome back,
                 {% if user.first_name %}
-                {{ user.first_name }}
+                    {{ user.first_name }}
                 {% else %}
-                {{ user.username|title }}
+                    {{ user.username|title }}
                 {% endif %}!
             </h2>
             <p class="text-muted small">
-                System integrity stable. All financial nodes operational.
+                Your account is active and secure.
             </p>
         </div>
+
         <div class="d-flex gap-2">
-            <a href="{% url 'transfer' %}" class="elite-btn elite-btn-primary">
-                <i class="fas fa-paper-plane me-2"></i> Fast Transfer
-            </a>
+            {% if kyc_verified %}
+                <a href="{% url 'transfer' %}" class="elite-btn elite-btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i> Fast Transfer
+                </a>
+            {% else %}
+                <a href="{% url 'kyc_status' %}" class="elite-btn elite-btn-primary">
+                    <i class="fas fa-id-card me-2"></i> Complete KYC
+                </a>
+            {% endif %}
         </div>
     </div>
 
+    <!-- KYC Alert -->
+    {% if not kyc_verified %}
+    <div class="alert alert-warning d-flex align-items-center mb-4 shadow-sm">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <div class="small">
+            {% if kyc_pending %}
+                Your KYC is under review. Some banking features are restricted.
+            {% else %}
+                Your KYC is not completed. Transfers and withdrawals are restricted.
+            {% endif %}
+            <a href="{% url 'kyc_status' %}" class="fw-bold ms-2 text-decoration-underline">
+                View KYC Status
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="row g-4">
         <div class="col-lg-5">
+
+            <!-- Credit Card -->
             <div class="credit-card mb-4" style="background: linear-gradient(135deg, #0f2c59 0%, #1e4d8e 100%);">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="credit-card-chip"></div>
@@ -36,21 +64,23 @@
                         PRIME TRUST | PLATINUM
                     </div>
                 </div>
+
                 <div class="mt-4">
                     <small class="text-white-50 text-uppercase ls-2" style="font-size: 0.65rem;">
-                        Liquidity Index
+                        Available Balance
                     </small>
                     <h2 class="display-5 fw-bold mb-0 text-white">
                         ₹{{ balance|floatformat:2 }}
                     </h2>
                 </div>
+
                 <div class="d-flex justify-content-between align-items-end mt-4">
                     <div>
                         <small class="text-white-50 d-block" style="font-size: 0.7rem;">
                             Identity Number
                         </small>
                         <span class="font-monospace fw-bold fs-5">
-                            {{ account_number }}
+                            ******{{ account_number|slice:"-4:" }}
                         </span>
                     </div>
                     <div class="text-end">
@@ -64,164 +94,134 @@
                 </div>
             </div>
 
-            <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-2">Operational Nodes</h6>
+            <!-- Quick Actions -->
+            <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-2">
+                QUICK ACTIONS
+            </h6>
+
             <div class="row g-3">
+
+                <!-- Send Money -->
                 <div class="col-6">
+                    {% if kyc_verified %}
                     <a href="{% url 'transfer' %}"
                         class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
-                        <div class="bg-primary-custom bg-opacity-10 text-primary-custom rounded-circle p-3 mx-auto mb-3"
-                            style="width: fit-content;">
+                    {% else %}
+                    <a href="{% url 'kyc_status' %}"
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all border border-warning">
+                    {% endif %}
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-paper-plane fa-lg"></i>
                         </div>
-                        <span class="fw-bold text-dark small text-uppercase ls-1">Send Money</span>
+                        <span class="fw-bold text-dark small text-uppercase ls-1">
+                            Send Money
+                        </span>
                     </a>
                 </div>
+
+                <!-- Transactions -->
                 <div class="col-6">
                     <a href="{% url 'transaction_history' %}"
                         class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
-                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 mx-auto mb-3"
-                            style="width: fit-content;">
-                            <i class="fas fa-file-invoice-dollar fa-lg"></i>
+                        <div class="bg-purple bg-opacity-10 text-purple rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-receipt fa-lg"></i>
                         </div>
-                        <span class="fw-bold text-dark small text-uppercase ls-1">Ledger</span>
+                        <span class="fw-bold text-dark small text-uppercase ls-1">
+                            Transactions
+                        </span>
                     </a>
                 </div>
+
+                <!-- Deposit -->
+                <div class="col-6">
+                    <a href="{% url 'deposit' %}"
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-wallet fa-lg"></i>
+                        </div>
+                        <span class="fw-bold text-dark small text-uppercase ls-1">
+                            Deposit
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Loans -->
                 <div class="col-6">
                     <a href="{% url 'apply_loan' %}"
                         class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
                         <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-3 mx-auto mb-3"
-                            style="width: fit-content;">
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-landmark fa-lg"></i>
                         </div>
-                        <span class="fw-bold text-dark small text-uppercase ls-1">Loans</span>
+                        <span class="fw-bold text-dark small text-uppercase ls-1">
+                            Loans
+                        </span>
                     </a>
                 </div>
+
+                <!-- Bill Payment -->
+                <div class="col-6">
+                    <a href="{% url 'pay_bills' %}"
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        <div class="bg-orange bg-opacity-10 text-orange rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-file-invoice fa-lg"></i>
+                        </div>
+                        <span class="fw-bold text-dark small text-uppercase ls-1">
+                            Bill Payment
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Security -->
                 <div class="col-6">
                     <a href="{% url 'manage_profile' %}"
                         class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
-                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 mx-auto mb-3"
-                            style="width: fit-content;">
+                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-user-shield fa-lg"></i>
                         </div>
-                        <span class="fw-bold text-dark small text-uppercase ls-1">Security</span>
+                        <span class="fw-bold text-dark small text-uppercase ls-1">
+                            Security
+                        </span>
                     </a>
                 </div>
+
+                <!-- KYC Status Card -->
+                <div class="col-6">
+                    {% if kyc_verified %}
+                    <div class="elite-card text-center h-100 p-4 border border-success">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-check-circle fa-lg"></i>
+                        </div>
+                        <span class="fw-bold text-success small text-uppercase ls-1">
+                            KYC Verified
+                        </span>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'kyc_status' %}"
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 border border-warning hover-shadow transition-all">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-id-card fa-lg"></i>
+                        </div>
+                        <span class="fw-bold text-warning small text-uppercase ls-1">
+                            KYC Required
+                        </span>
+                    </a>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
 
-        <div class="col-lg-7">
-            <div class="elite-card h-100">
-                <div class="elite-header border-0 pb-3 mb-0 d-flex justify-content-between align-items-center">
-                    <div>
-                        <span class="elite-subtitle">Transaction Log</span>
-                        <h4 class="elite-title mb-0">Recent Activity</h4>
-                    </div>
-                    <a href="{% url 'transaction_history' %}" class="elite-btn elite-btn-outline btn-sm">Full
-                        History</a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table align-middle mb-0">
-                        <thead>
-                            <tr class="text-uppercase small ls-1 text-muted">
-                                <th class="ps-0">Node</th>
-                                <th>Reference</th>
-                                <th>Timestamp</th>
-                                <th>Volume</th>
-                                <th class="text-end">Verification</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for txn in recent_transactions %}
-                            <tr>
-                                <td class="ps-0">
-                                    <div class="d-flex align-items-center">
-                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}
-                                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
-                                            <i class="fas fa-arrow-down fa-sm"></i>
-                                        </div>
-                                        {% else %}
-                                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
-                                            <i class="fas fa-arrow-up fa-sm"></i>
-                                        </div>
-                                        {% endif %}
-                                        <div>
-                                            <span class="d-block fw-bold text-dark small">
-                                                {{ txn.transaction_type }}
-                                            </span>
-                                            <small class="text-muted" style="font-size: 0.7rem;">
-                                                {{ txn.method }}
-                                            </small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-muted font-monospace small">
-                                    #{{ txn.reference_id|default:"-"|slice:":8" }}
-                                </td>
-                                <td class="text-muted small">
-                                    {{ txn.created_at|date:"M d, Y" }}
-                                </td>
-                                <td>
-                                    <span class="fw-bold 
-                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}
-                                            text-success
-                                        {% else %}
-                                            text-danger
-                                        {% endif %}">
-                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}
-                                        +
-                                        {% else %}
-                                        -
-                                        {% endif %}
-                                        ₹{{ txn.amount }}
-                                    </span>
-                                </td>
-                                <td class="text-end">
-                                    {% if txn.status == 'Approved' %}
-                                    <span
-                                        class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">
-                                        Cleared
-                                    </span>
-                                    {% elif txn.status == 'Pending' %}
-                                    <span
-                                        class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3">
-                                        Awaiting
-                                    </span>
-                                    {% else %}
-                                    <span
-                                        class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3">
-                                        Void
-                                    </span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <div class="opacity-10 mb-3"><i class="fas fa-inbox fa-4x"></i></div>
-                                    <p class="text-muted small mb-0">No network data packets detected.</p>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <!-- Recent Activity column unchanged -->
+         <div class="col-lg-7"> <div class="elite-card h-100"> <div class="elite-header border-0 pb-3 mb-0 d-flex justify-content-between align-items-center"> <div> <span class="elite-subtitle">Transaction Log</span> <h4 class="elite-title mb-0">Recent Activity</h4> </div> <a href="{% url 'transaction_history' %}" class="elite-btn elite-btn-outline btn-sm"> Full History </a> </div> <div class="table-responsive"> <table class="table align-middle mb-0"> <thead> <tr class="text-uppercase small ls-1 text-muted"> <th class="ps-0">TYPE</th> <th>Reference</th> <th>DATE</th> <th>AMOUNT</th> <th class="text-end">STATUS</th> </tr> </thead> <tbody> {% for txn in recent_transactions %} <tr> <td class="ps-0"> <div class="d-flex align-items-center"> {% if txn.transaction_type in 'Deposit Credit Transfer Received' %} <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3"> <i class="fas fa-arrow-down fa-sm"></i> </div> {% else %} <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3"> <i class="fas fa-arrow-up fa-sm"></i> </div> {% endif %} <div> <span class="d-block fw-bold text-dark small"> {{ txn.transaction_type }} </span> <small class="text-muted" style="font-size: 0.7rem;"> {{ txn.method }} </small> </div> </div> </td> <td class="text-muted font-monospace small"> #{{ txn.reference_id|default:"-"|slice:":4" }} </td> <td class="text-muted small"> {{ txn.created_at|date:"M d, Y" }} </td> <td> <span class="fw-bold {% if txn.transaction_type in 'Deposit Credit Transfer Received' %} text-success {% else %} text-danger {% endif %}"> {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}+{% else %}-{% endif %} ₹{{ txn.amount }} </span> </td> <td class="text-end"> {% if txn.status == 'Approved' %} <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">Cleared</span> {% elif txn.status == 'Pending' %} <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3">Awaiting</span> {% else %} <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3">Void</span> {% endif %} </td> </tr> {% empty %} <tr> <td colspan="5" class="text-center py-5"> <div class="opacity-10 mb-3"><i class="fas fa-inbox fa-4x"></i></div> <p class="text-muted small mb-0">No network data packets detected.</p> </td> </tr> {% endfor %} </tbody> </table> </div> </div> </div>
+
     </div>
 </div>
-
-<style>
-    .ls-1 {
-        letter-spacing: 1px;
-    }
-
-    .ls-2 {
-        letter-spacing: 2px;
-    }
-
-    .hover-shadow:hover {
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-        border-color: var(--elite-accent) !important;
-    }
-</style>
 {% endblock %}

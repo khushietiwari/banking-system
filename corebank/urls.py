@@ -18,5 +18,8 @@ path('upload-kyc/', views.upload_kyc, name="upload_kyc"),
 path('kyc-status/', views.kyc_status, name="kyc_status"),
 path('deposit/', views.deposit_view, name="deposit"),
 path('withdraw/', views.withdraw_view, name="withdraw"),
+path("support/", views.support_view, name="support"),
+
+
 
 ]
