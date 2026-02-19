@@ -605,14 +605,23 @@ a {
 }
 
 .stat-card-elite {
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 120px;
+    overflow: hidden;
 }
 
 .stat-value-elite {
-    font-size: 2rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--elite-primary);
     display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.04em;
 }
 
 .stat-label-elite {
@@ -622,6 +631,7 @@ a {
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
 /* Sidebar Elite Links */
 .sidebar-link-elite {
     padding: 12px 20px;
