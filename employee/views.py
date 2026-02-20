@@ -218,7 +218,23 @@ def update_card_request(request, request_id, action):
     
     if action == "approve":
         card_request.status = "Approved"
-        messages.success(request, f"{card_request.card_type} request for {card_request.user.username} approved.")
+        
+        # ✅ Generate Virtual Card Details
+        import random
+        from datetime import datetime, timedelta
+        
+        # Generate 16 digit number in 4-4-4-4 format
+        num = [str(random.randint(1000, 9999)) for _ in range(4)]
+        card_request.card_number = " - ".join(num)
+        
+        # Generate Expiry (5 years from now)
+        expiry = datetime.now() + timedelta(days=5*365)
+        card_request.expiry_date = expiry.strftime("%m/%y")
+        
+        # Generate 3 digit CVV
+        card_request.cvv = str(random.randint(100, 999))
+        
+        messages.success(request, f"{card_request.card_type} request for {card_request.user.username} approved. Virtual card generated.")
     elif action == "reject":
         card_request.status = "Rejected"
         messages.warning(request, f"{card_request.card_type} request for {card_request.user.username} rejected.")

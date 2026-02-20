@@ -118,6 +118,11 @@ class CardRequest(models.Model):
     reason = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
     applied_at = models.DateTimeField(auto_now_add=True)
+    
+    # Virtual Card Details
+    card_number = models.CharField(max_length=20, blank=True, null=True)
+    expiry_date = models.CharField(max_length=10, blank=True, null=True)
+    cvv = models.CharField(max_length=4, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.card_type} - {self.status}"
