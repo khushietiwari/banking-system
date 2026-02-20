@@ -2,9 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from decimal import Decimal
-from .models import Account, Transaction, Beneficiary
-from .services import deposit, withdraw
-from .models import Loan
+from .models import Account, Transaction, Beneficiary, Loan, CardRequest
 from django.contrib.messages import get_messages
 import uuid
 from django.db import transaction
@@ -15,6 +13,12 @@ from .forms import UserProfileForm
 
 @login_required
 def apply_loan(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     if request.method == "POST":
         amount = request.POST.get("amount")
         reason = request.POST.get("reason")
@@ -52,6 +56,12 @@ from .models import Account, KYC, Loan
 
 @login_required
 def customer_dashboard(request):
+    # ✅ Redirect Staff and Superusers to their correct dashboards
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     # Ensure account exists
     account, created = Account.objects.get_or_create(
         user=request.user,
@@ -89,6 +99,12 @@ def customer_dashboard(request):
 
 @login_required
 def view_balance(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = Account.objects.filter(user=request.user).first()
 
     if not account:
@@ -113,6 +129,12 @@ from django.db import transaction
 
 @login_required
 def transfer_view(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = request.user.account
     beneficiaries = Beneficiary.objects.filter(account=account)
 
@@ -184,6 +206,12 @@ def transfer_view(request):
 
 @login_required
 def transaction_history(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = Account.objects.get(user=request.user)
     transactions = account.transactions.all().order_by("-created_at")
 
@@ -196,6 +224,12 @@ def transaction_history(request):
 
 @login_required
 def add_beneficiary(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = Account.objects.get(user=request.user)
     message = None
 
@@ -242,6 +276,12 @@ from decimal import Decimal
 
 @login_required
 def pay_bills(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = request.user.account
     selected_type = request.GET.get("type")
 
@@ -323,6 +363,12 @@ def upload_kyc(request):
 
 @login_required
 def kyc_status(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     kyc = KYC.objects.filter(user=request.user).first()
     return render(request, "kyc_status.html", {"kyc": kyc})
 from .models import Account, Transaction, KYC
@@ -346,6 +392,12 @@ from .models import Account, Transaction, KYC
 
 @login_required
 def deposit_view(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = request.user.account
 
     if account.status == "Frozen":
@@ -388,6 +440,12 @@ from .models import Account, Transaction, KYC
 
 @login_required
 def withdraw_view(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     account = request.user.account
 
     # Block if frozen
@@ -442,6 +500,56 @@ def support_view(request):
     return render(request, "customer/support.html")
 @login_required
 def my_loans(request):
+    # ✅ Redirect Staff and Superusers
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
     loans = Loan.objects.filter(user=request.user).order_by("-applied_at")
     return render(request, "corebank/my_loans.html", {"loans": loans})
 
+@login_required
+def apply_debit_card(request):
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
+    if request.method == "POST":
+        reason = request.POST.get("reason", "")
+        CardRequest.objects.create(
+            user=request.user,
+            card_type="Debit",
+            reason=reason
+        )
+        messages.success(request, "Debit card application submitted successfully!")
+        return redirect('customer_dashboard')
+
+    return render(request, "corebank/apply_debit_card.html")
+
+
+@login_required
+def apply_credit_card(request):
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_staff:
+        return redirect('employee_dashboard')
+
+    if request.method == "POST":
+        reason = request.POST.get("reason", "")
+        CardRequest.objects.create(
+            user=request.user,
+            card_type="Credit",
+            reason=reason
+        )
+        messages.success(request, "Credit card application submitted successfully!")
+        return redirect('customer_dashboard')
+
+    return render(request, "corebank/apply_credit_card.html")
+
+
+@login_required
+def view_card_status(request):
+    card_requests = CardRequest.objects.filter(user=request.user).order_by('-applied_at')
+    return render(request, "corebank/card_status.html", {"card_requests": card_requests})

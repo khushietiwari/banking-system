@@ -22,7 +22,7 @@
 <div class="row g-4 mb-5">
 
     <!-- KYC Pending -->
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card-custom h-100 p-4 border-start border-3 border-warning hover-lift">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
@@ -44,8 +44,31 @@
         </div>
     </div>
 
+    <!-- Card Requests -->
+    <div class="col-md-3">
+        <div class="card-custom h-100 p-4 border-start border-3 border-danger hover-lift">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h6 class="text-muted text-uppercase small fw-semibold ls-1 mb-2">Card Requests</h6>
+                    <h1 class="display-5 fw-bold text-dark mb-1">{{ pending_cards }}</h1>
+                    <small class="text-danger fw-semibold">
+                        <i class="fas fa-credit-card me-1"></i> Pending Approval
+                    </small>
+                </div>
+                <div class="icon-box-admin bg-danger bg-opacity-10 text-danger">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'view_card_requests' %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    Check Now
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Loan Applications -->
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card-custom h-100 p-4 border-start border-3 border-info hover-lift">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
@@ -68,7 +91,7 @@
     </div>
 
     <!-- Pending Transactions -->
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card-custom h-100 p-4 border-start border-3 border-success hover-lift">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
@@ -189,27 +212,27 @@
     <div class="col-lg-4">
         <div class="card-custom bg-primary-custom text-white h-100 p-4 hover-lift">
 
-            <h5 class="fw-bold mb-4">Branch Overview</h5>
+            <h5 class="fw-bold mb-4 text-white">Branch Overview</h5>
 
             <div class="mb-4">
-                <small class="text-white-50 text-uppercase ls-1">Total Customers</small>
-                <h2 class="display-6 fw-bold mb-1">{{ total_customers }}</h2>
+                <small class="text-white text-uppercase ls-1">Total Customers</small>
+                <h2 class="display-6 fw-bold mb-1 text-white">{{ total_customers }}</h2>
                 <div class="progress thin-progress">
                     <div class="progress-bar bg-gold" style="width: 75%"></div>
                 </div>
             </div>
 
             <div class="mb-4">
-                <small class="text-white-50 text-uppercase ls-1">Active Accounts</small>
-                <h2 class="display-6 fw-bold mb-1">{{ total_accounts }}</h2>
+                <small class="text-white text-uppercase ls-1">Active Accounts</small>
+                <h2 class="display-6 fw-bold mb-1 text-white">{{ total_accounts }}</h2>
                 <div class="progress thin-progress">
                     <div class="progress-bar bg-success" style="width: 60%"></div>
                 </div>
             </div>
 
             <div class="mb-5">
-                <small class="text-white-50 text-uppercase ls-1">Total Vault</small>
-                <h2 class="display-6 fw-bold mb-1">₹{{ total_balance|floatformat:0 }}</h2>
+                <small class="text-white text-uppercase ls-1">Total Vault</small>
+                <h2 class="display-6 fw-bold mb-1 text-white">₹{{ total_balance|floatformat:0 }}</h2>
                 <div class="progress thin-progress">
                     <div class="progress-bar bg-info" style="width: 85%"></div>
                 </div>

@@ -200,6 +200,8 @@ body {
     color: var(--gray-800);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    overflow: hidden;
 }
 
 h1,
@@ -279,10 +281,35 @@ a {
     max-width: var(--sidebar-width);
     background: linear-gradient(180deg, var(--primary-900) 0%, var(--primary-800) 100%);
     color: var(--white);
-    min-height: 100vh;
+    height: 100vh;
     position: fixed;
     z-index: 100;
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+#sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid transparent;
+    background-clip: padding-box;
 }
 
 #sidebar .sidebar-header {
@@ -338,7 +365,27 @@ a {
     margin-left: var(--sidebar-width);
     /* Offset for fixed sidebar */
     padding: 30px;
-    min-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+#content::-webkit-scrollbar {
+    width: 6px;
+}
+
+#content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+#content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.1);
 }
 
 /* --- Top Navbar (In Portal) --- */

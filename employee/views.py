@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 from corebank.models import Account
 from .forms import CustomerForm,CustomerUpdateForm, AccountUpdateForm
 
@@ -19,7 +20,7 @@ from corebank.models import Transaction, Loan, KYC
 
 from django.db.models import Sum
 from django.contrib.auth.models import User
-from corebank.models import Account, Transaction, Loan, KYC
+from corebank.models import Account, Transaction, Loan, KYC, CardRequest
 
 @login_required
 @user_passes_test(is_employee)
@@ -32,6 +33,7 @@ def employee_dashboard(request):
     pending_transactions = Transaction.objects.filter(status="Pending").count()
     pending_loans = Loan.objects.filter(status="Pending").count()
     pending_kyc = KYC.objects.filter(status="Pending").count()
+    pending_cards = CardRequest.objects.filter(status="Pending").count()
 
     # Fetch recent activity for "Live Feed"
     recent_transactions = Transaction.objects.all().order_by('-created_at')[:5]
@@ -45,6 +47,7 @@ def employee_dashboard(request):
         "pending_transactions": pending_transactions,
         "pending_loans": pending_loans,
         "pending_kyc": pending_kyc,
+        "pending_cards": pending_cards,
         "recent_transactions": recent_transactions,
         "recent_loans": recent_loans,
         "recent_kyc": recent_kyc,
@@ -201,3 +204,24 @@ def update_transaction(request, txn_id, action):
 
     txn.save()
     return redirect("view_transactions")
+@login_required
+@user_passes_test(is_employee)
+def view_card_requests(request):
+    card_requests = CardRequest.objects.all().order_by('-applied_at')
+    return render(request, "employee/card_requests.html", {"card_requests": card_requests})
+
+
+@login_required
+@user_passes_test(is_employee)
+def update_card_request(request, request_id, action):
+    card_request = get_object_or_404(CardRequest, id=request_id)
+    
+    if action == "approve":
+        card_request.status = "Approved"
+        messages.success(request, f"{card_request.card_type} request for {card_request.user.username} approved.")
+    elif action == "reject":
+        card_request.status = "Rejected"
+        messages.warning(request, f"{card_request.card_type} request for {card_request.user.username} rejected.")
+    
+    card_request.save()
+    return redirect("view_card_requests")
