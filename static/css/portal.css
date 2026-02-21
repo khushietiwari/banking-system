@@ -200,6 +200,9 @@ body {
     color: var(--gray-800);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+}
+
+.portal-body {
     height: 100vh;
     overflow: hidden;
 }

@@ -8,30 +8,41 @@
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <span class="elite-subtitle">Account Overview</span>
-            <h2 class="fw-bold text-primary-custom mb-0">
-                Welcome back,
-                {% if user.first_name %}
-                    {{ user.first_name }}
+        <div class="d-flex align-items-center">
+            <div class="me-4">
+                {% if request.user.profile.profile_picture %}
+                <img src="{{ request.user.profile.profile_picture.url }}"
+                    class="rounded-circle border border-4 border-white shadow-sm" width="80" height="80" alt="Profile">
                 {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DAC0A3&color=0F2C59&size=128"
+                    class="rounded-circle border border-4 border-white shadow-sm" width="80" height="80" alt="Avatar">
+                {% endif %}
+            </div>
+            <div>
+                <span class="elite-subtitle">Account Overview</span>
+                <h2 class="fw-bold text-primary-custom mb-0">
+                    Welcome back,
+                    {% if user.first_name %}
+                    {{ user.first_name }}
+                    {% else %}
                     {{ user.username|title }}
-                {% endif %}!
-            </h2>
-            <p class="text-muted small">
-                Your account is active and secure.
-            </p>
+                    {% endif %}!
+                </h2>
+                <p class="text-muted small mb-0">
+                    Your account is active and secure.
+                </p>
+            </div>
         </div>
 
         <div class="d-flex gap-2">
             {% if kyc_verified %}
-                <a href="{% url 'transfer' %}" class="elite-btn elite-btn-primary">
-                    <i class="fas fa-paper-plane me-2"></i> Fast Transfer
-                </a>
+            <a href="{% url 'transfer' %}" class="elite-btn elite-btn-primary">
+                <i class="fas fa-paper-plane me-2"></i> Fast Transfer
+            </a>
             {% else %}
-                <a href="{% url 'kyc_status' %}" class="elite-btn elite-btn-primary">
-                    <i class="fas fa-id-card me-2"></i> Complete KYC
-                </a>
+            <a href="{% url 'kyc_status' %}" class="elite-btn elite-btn-primary">
+                <i class="fas fa-id-card me-2"></i> Complete KYC
+            </a>
             {% endif %}
         </div>
     </div>
@@ -42,9 +53,9 @@
         <i class="fas fa-exclamation-triangle me-2"></i>
         <div class="small">
             {% if kyc_pending %}
-                Your KYC is under review. Some banking features are restricted.
+            Your KYC is under review. Some banking features are restricted.
             {% else %}
-                Your KYC is not completed. Transfers and withdrawals are restricted.
+            Your KYC is not completed. Transfers and withdrawals are restricted.
             {% endif %}
             <a href="{% url 'kyc_status' %}" class="fw-bold ms-2 text-decoration-underline">
                 View KYC Status
@@ -105,27 +116,27 @@
                 <div class="col-6">
                     {% if kyc_verified %}
                     <a href="{% url 'transfer' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
-                    {% else %}
-                    <a href="{% url 'kyc_status' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all border border-warning">
-                    {% endif %}
-                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mx-auto mb-3"
-                             style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-paper-plane fa-lg"></i>
-                        </div>
-                        <span class="fw-bold text-dark small text-uppercase ls-1">
-                            Send Money
-                        </span>
-                    </a>
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        {% else %}
+                        <a href="{% url 'kyc_status' %}"
+                            class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all border border-warning">
+                            {% endif %}
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mx-auto mb-3"
+                                style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                                <i class="fas fa-paper-plane fa-lg"></i>
+                            </div>
+                            <span class="fw-bold text-dark small text-uppercase ls-1">
+                                Send Money
+                            </span>
+                        </a>
                 </div>
 
                 <!-- Transactions -->
                 <div class="col-6">
                     <a href="{% url 'transaction_history' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
                         <div class="bg-purple bg-opacity-10 text-purple rounded-circle p-3 mx-auto mb-3"
-                             style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-receipt fa-lg"></i>
                         </div>
                         <span class="fw-bold text-dark small text-uppercase ls-1">
@@ -137,9 +148,9 @@
                 <!-- Deposit -->
                 <div class="col-6">
                     <a href="{% url 'deposit' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
                         <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mx-auto mb-3"
-                             style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-wallet fa-lg"></i>
                         </div>
                         <span class="fw-bold text-dark small text-uppercase ls-1">
@@ -151,9 +162,9 @@
                 <!-- Loans -->
                 <div class="col-6">
                     <a href="{% url 'apply_loan' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
                         <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-3 mx-auto mb-3"
-                             style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-landmark fa-lg"></i>
                         </div>
                         <span class="fw-bold text-dark small text-uppercase ls-1">
@@ -165,9 +176,9 @@
                 <!-- Bill Payment -->
                 <div class="col-6">
                     <a href="{% url 'pay_bills' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
                         <div class="bg-orange bg-opacity-10 text-orange rounded-circle p-3 mx-auto mb-3"
-                             style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-file-invoice fa-lg"></i>
                         </div>
                         <span class="fw-bold text-dark small text-uppercase ls-1">
@@ -179,9 +190,9 @@
                 <!-- Security -->
                 <div class="col-6">
                     <a href="{% url 'manage_profile' %}"
-                       class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 hover-shadow transition-all">
                         <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle p-3 mx-auto mb-3"
-                             style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
                             <i class="fas fa-user-shield fa-lg"></i>
                         </div>
                         <span class="fw-bold text-dark small text-uppercase ls-1">
@@ -193,26 +204,26 @@
                 <!-- KYC Status Card -->
                 <div class="col-6">
                     {% if kyc_verified %}
-                        <div class="elite-card text-center h-100 p-4 border border-success">
-                            <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mx-auto mb-3"
-                                 style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
-                                <i class="fas fa-check-circle fa-lg"></i>
-                            </div>
-                            <span class="fw-bold text-success small text-uppercase ls-1">
-                                KYC Verified
-                            </span>
+                    <div class="elite-card text-center h-100 p-4 border border-success">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-check-circle fa-lg"></i>
                         </div>
+                        <span class="fw-bold text-success small text-uppercase ls-1">
+                            KYC Verified
+                        </span>
+                    </div>
                     {% else %}
-                        <a href="{% url 'kyc_status' %}"
-                           class="elite-card text-center d-block text-decoration-none h-100 p-4 border border-warning hover-shadow transition-all">
-                            <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 mx-auto mb-3"
-                                 style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
-                                <i class="fas fa-id-card fa-lg"></i>
-                            </div>
-                            <span class="fw-bold text-warning small text-uppercase ls-1">
-                                KYC Required
-                            </span>
-                        </a>
+                    <a href="{% url 'kyc_status' %}"
+                        class="elite-card text-center d-block text-decoration-none h-100 p-4 border border-warning hover-shadow transition-all">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 mx-auto mb-3"
+                            style="width: 60px; height: 60px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-id-card fa-lg"></i>
+                        </div>
+                        <span class="fw-bold text-warning small text-uppercase ls-1">
+                            KYC Required
+                        </span>
+                    </a>
                     {% endif %}
                 </div>
 
@@ -249,13 +260,13 @@
                                 <td class="ps-0">
                                     <div class="d-flex align-items-center">
                                         {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}
-                                            <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
-                                                <i class="fas fa-arrow-down fa-sm"></i>
-                                            </div>
+                                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                                            <i class="fas fa-arrow-down fa-sm"></i>
+                                        </div>
                                         {% else %}
-                                            <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
-                                                <i class="fas fa-arrow-up fa-sm"></i>
-                                            </div>
+                                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
+                                            <i class="fas fa-arrow-up fa-sm"></i>
+                                        </div>
                                         {% endif %}
                                         <div>
                                             <span class="d-block fw-bold text-dark small">
@@ -277,19 +288,24 @@
                                 </td>
 
                                 <td>
-                                    <span class="fw-bold {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}text-success{% else %}text-danger{% endif %}">
-                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}+{% else %}-{% endif %}
+                                    <span
+                                        class="fw-bold {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}text-success{% else %}text-danger{% endif %}">
+                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}+{% else
+                                        %}-{% endif %}
                                         ₹{{ txn.amount }}
                                     </span>
                                 </td>
 
                                 <td class="text-end">
                                     {% if txn.status == 'Approved' %}
-                                        <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">Cleared</span>
+                                    <span
+                                        class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">Cleared</span>
                                     {% elif txn.status == 'Pending' %}
-                                        <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3">Awaiting</span>
+                                    <span
+                                        class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3">Awaiting</span>
                                     {% else %}
-                                        <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3">Void</span>
+                                    <span
+                                        class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3">Void</span>
                                     {% endif %}
                                 </td>
                             </tr>

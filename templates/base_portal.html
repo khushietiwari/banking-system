@@ -19,7 +19,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body class="portal-body">
 
     <div class="wrapper">
         <!-- Sidebar -->
@@ -34,9 +34,15 @@
             <!-- Profile & Control Section -->
             <div class="px-3 pt-4 pb-2 text-center">
                 <div class="position-relative d-inline-block">
+                    {% if request.user.profile.profile_picture %}
+                    <img src="{{ request.user.profile.profile_picture.url }}"
+                        class="rounded-circle border border-3 border-white shadow-sm" width="70" height="70"
+                        alt="Avatar">
+                    {% else %}
                     <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=DAC0A3&color=0F2C59&size=128"
                         class="rounded-circle border border-3 border-white shadow-sm" width="70" height="70"
                         alt="Avatar">
+                    {% endif %}
                     <span
                         class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle p-2"></span>
                 </div>

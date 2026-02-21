@@ -8,7 +8,8 @@ import uuid
 from django.db import transaction
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
-from .forms import UserProfileForm
+from accounts.models import UserProfile
+from .forms import UserAccountForm, ProfilePictureForm
 
 
 @login_required
@@ -327,15 +328,25 @@ def manage_profile(request):
 
 @login_required
 def edit_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        account_form = UserAccountForm(request.POST, instance=request.user)
+        picture_form = ProfilePictureForm(request.POST, request.FILES, instance=profile)
+        
+        if account_form.is_valid() and picture_form.is_valid():
+            account_form.save()
+            picture_form.save()
             messages.success(request, "Profile updated successfully! ✅")
             return redirect('manage_profile')
     else:
-        form = UserProfileForm(instance=request.user)
-    return render(request, "edit_profile.html", {'form': form})
+        account_form = UserAccountForm(instance=request.user)
+        picture_form = ProfilePictureForm(instance=profile)
+        
+    return render(request, "edit_profile.html", {
+        'account_form': account_form,
+        'picture_form': picture_form
+    })
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'password_change.html'
