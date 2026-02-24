@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
+import csv
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from decimal import Decimal
@@ -219,6 +221,30 @@ def transaction_history(request):
     return render(request, "transactions.html", {
         "transactions": transactions
     })
+
+
+@login_required
+def export_transactions(request):
+    account = get_object_or_404(Account, user=request.user)
+    transactions = account.transactions.all().order_by("-created_at")
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="transactions.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'Reference ID', 'Type', 'Method', 'Amount', 'Status'])
+
+    for txn in transactions:
+        writer.writerow([
+            txn.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            txn.reference_id,
+            txn.transaction_type,
+            txn.method,
+            txn.amount,
+            txn.status
+        ])
+
+    return response
 
 
 # ---------------- BENEFICIARY ---------------- #

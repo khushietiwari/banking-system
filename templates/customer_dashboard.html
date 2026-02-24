@@ -290,9 +290,7 @@
                                 <td>
                                     <span
                                         class="fw-bold {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}text-success{% else %}text-danger{% endif %}">
-                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}+{% else
-                                        %}-{% endif %}
-                                        ₹{{ txn.amount }}
+                                        {% if txn.transaction_type in 'Deposit Credit Transfer Received' %}+{% else %}-{% endif %}₹{{ txn.amount }}
                                     </span>
                                 </td>
 

@@ -82,8 +82,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'khushietiwari28112005@gmail.com'
+EMAIL_HOST_USER = 'primetrustbank49@gmail.com'
 EMAIL_HOST_PASSWORD = 'fhipaeaynnuyjoqy'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # ---------------- PASSWORD VALIDATION ---------------- #
