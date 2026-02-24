@@ -74,15 +74,11 @@ def login_view(request):
         user = authenticate(username=username, password=password)
 
         if user:
-            login(request, user)
-            
-            # ✅ Direct Login - Bypass OTP
-            if user.is_superuser:
-                return redirect('admin_dashboard')
-            elif user.is_staff:
-                return redirect('employee_dashboard')
-            else:
-                return redirect('customer_dashboard')
+            # Store user ID in session for 2FA step
+            request.session['pending_user_id'] = user.id
+            generate_otp(user)
+            messages.info(request, "An OTP has been sent to your registered email and phone.")
+            return redirect('verify_otp')
 
         return render(request, "login.html", {
             "error": "Invalid Credentials ❌"
@@ -94,52 +90,72 @@ def login_view(request):
 def generate_otp(user):
     otp = random.randint(100000, 999999)
 
+    # Delete any previous OTPs for this user
+    OTP.objects.filter(user=user).delete()
+
     OTP.objects.create(
         user=user,
         otp_code=str(otp)
     )
 
     print(f"DEBUG: OTP for {user.username} is {otp}")
+    
+    # Safely get phone number from profile if it exists
+    profile = getattr(user, 'profile', None)
+    phone = profile.phone if profile else 'N/A'
+    print(f"[SMS] Simulated SMS to {phone}: Your PrimeTrust OTP is {otp}. Valid for 60 seconds.")
 
     try:
+        # Use settings.EMAIL_HOST_USER explicitly as from_email
         send_mail(
-            'Your OTP Code',
-            f'Your OTP is {otp}',
+            'Your PrimeTrust OTP Code',
+            f'Hello {user.username},\n\nYour OTP for secure login is: {otp}\n\nThis code will expire in 60 seconds.\n\nRegards,\nPrimeTrust Bank',
             settings.EMAIL_HOST_USER,
             [user.email],
             fail_silently=False,
         )
+        print(f"Email sent successfully to {user.email} from {settings.EMAIL_HOST_USER}")
     except Exception as e:
         print(f"Email failed to send: {e}")
 
 
-@login_required
 def verify_otp(request):
+    user_id = request.session.get('pending_user_id')
+    if not user_id:
+        messages.error(request, "Please log in first.")
+        return redirect('login')
+
+    user = User.objects.get(id=user_id)
+
     if request.method == "POST":
         entered_otp = request.POST['otp']
-        otp_obj = OTP.objects.filter(user=request.user).last()
+        otp_obj = OTP.objects.filter(user=user).last()
 
         if otp_obj:
             expiry_time = otp_obj.created_at + timedelta(seconds=60)
 
             if timezone.now() > expiry_time:
                 return render(request, "verify_otp.html", {
-                    "error": "OTP Expired"
+                    "error": "OTP Expired. Please try logging in again."
                 })
 
             if otp_obj.otp_code == entered_otp:
                 otp_obj.delete()
+                
+                # Finalize login
+                login(request, user)
+                request.session.pop('pending_user_id', None)
 
                 # ✅ Role-based redirection
-                if request.user.is_superuser:
+                if user.is_superuser:
                     return redirect('admin_dashboard')
-                elif request.user.is_staff:
+                elif user.is_staff:
                     return redirect('employee_dashboard')
                 else:
                     return redirect('customer_dashboard')
 
         return render(request, "verify_otp.html", {
-            "error": "Invalid OTP"
+            "error": "Invalid OTP ❌"
         })
 
     return render(request, "verify_otp.html")
