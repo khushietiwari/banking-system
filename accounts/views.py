@@ -161,6 +161,18 @@ def verify_otp(request):
     return render(request, "verify_otp.html")
 
 
+def resend_otp(request):
+    user_id = request.session.get('pending_user_id')
+    if not user_id:
+        messages.error(request, "Session expired. Please log in again.")
+        return redirect('login')
+
+    user = User.objects.get(id=user_id)
+    generate_otp(user)
+    messages.success(request, "A new OTP has been sent to your registered email and phone.")
+    return redirect('verify_otp')
+
+
 def logout_view(request):
     logout(request)
     return redirect('login')

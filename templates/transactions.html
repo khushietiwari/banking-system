@@ -13,8 +13,7 @@
                     <button class="btn btn-sm btn-outline-secondary me-2"><i class="fas fa-filter me-1"></i>
                         Filter</button>
                     <a href="{% url 'export_transactions' %}" class="btn btn-sm btn-outline-primary-custom"><i
-                            class="fas fa-download me-1"></i>
-                        Export</a>
+                            class="fas fa-download me-1"></i> Export</a>
                 </div>
             </div>
 
@@ -34,14 +33,12 @@
                             {% for txn in transactions %}
                             <tr>
                                 <td class="ps-4">
-                                    <span class="d-block fw-semibold text-dark">{{ txn.created_at|date:"M d, Y"
-                                        }}</span>
+                                    <span class="d-block fw-semibold text-dark">{{ txn.created_at|date:"M d, Y" }}</span>
                                     <small class="text-muted">{{ txn.created_at|date:"H:i A" }}</small>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer
-                                        Received' %}
+                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}
                                         <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
                                             <i class="fas fa-arrow-down fa-sm"></i>
                                         </div>
@@ -51,10 +48,16 @@
                                         </div>
                                         {% endif %}
                                         <div>
-                                            <span class="d-block fw-bold text-dark small">{{ txn.transaction_type
-                                                }}</span>
-                                            <small class="text-muted" style="font-size: 0.75rem;">Via {{ txn.method
-                                                }}</small>
+                                            <span class="d-block fw-bold text-dark small">
+                                                {% if txn.transaction_type == 'Transfer Sent' %}
+                                                To {{ txn.counterparty|default:"External Account" }}
+                                                {% elif txn.transaction_type == 'Transfer Received' %}
+                                                From {{ txn.counterparty|default:"External Account" }}
+                                                {% else %}
+                                                {{ txn.transaction_type }}
+                                                {% endif %}
+                                            </span>
+                                            <small class="text-muted" style="font-size: 0.75rem;">Via {{ txn.method }}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -62,8 +65,7 @@
                                 <td>
                                     <span
                                         class="fw-bold {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}text-success{% else %}text-danger{% endif %}">
-                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer
-                                        Received' %}+{% else %}-{% endif %}₹{{ txn.amount }}
+                                        {% if txn.transaction_type == 'Deposit' or txn.transaction_type == 'Transfer Received' %}+{% else %}-{% endif %}₹{{ txn.amount }}
                                     </span>
                                 </td>
                                 <td class="text-end pe-4">

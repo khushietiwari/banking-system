@@ -1,45 +1,53 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
-from django.db.models import Sum
-from corebank.models import Account, Transaction, Loan, KYC
 from django.contrib import messages
+from django.db.models import Sum
 
-def is_superuser(user):
-    return user.is_superuser
+from corebank.models import Account, Transaction, Loan, KYC
+from accounts.models import UserProfile
 
-@login_required
-@user_passes_test(is_superuser)
+
+# ADMIN ACCESS CONTROL
+from django.http import HttpResponseForbidden
+
+def admin_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and hasattr(request.user, "profile") and request.user.profile.role.lower() == "admin":
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("You are not authorized to access this page.")
+    return wrapper
+
+# ADMIN DASHBOARD
+
+@admin_required
 def admin_dashboard(request):
-    total_users = User.objects.filter(is_superuser=False).count()
-    total_accounts = Account.objects.count()
-    total_balance = Account.objects.aggregate(Sum("balance"))["balance__sum"] or 0
-    pending_loans = Loan.objects.filter(status="Pending").count()
-    pending_kyc = KYC.objects.filter(status="Pending").count()
-    
-    # Fetch recent data for "Live" feel
-    recent_users = User.objects.filter(is_superuser=False).order_by('-date_joined')[:5]
-    recent_transactions = Transaction.objects.all().order_by('-created_at')[:5]
 
     context = {
-        "total_users": total_users,
-        "total_accounts": total_accounts,
-        "total_balance": total_balance,
-        "pending_loans": pending_loans,
-        "pending_kyc": pending_kyc,
-        "recent_users": recent_users,
-        "recent_transactions": recent_transactions,
+        "total_users": User.objects.count(),
+        "total_accounts": Account.objects.count(),
+        "active_accounts": Account.objects.filter(status="Active").count(),
+        "blocked_accounts": Account.objects.filter(status="Blocked").count(),
+        "pending_loans": Loan.objects.filter(status="Pending").count(),
+        "pending_kyc": KYC.objects.filter(status="Pending").count(),
+        "total_transactions": Transaction.objects.count(),
     }
-    return render(request, "admin_dashboard.html", context)
 
-@login_required
-@user_passes_test(is_superuser)
+    return render(request, "adminpanel/dashboard.html", context)
+
+
+
+#  MANAGE USERS
+
+
+@admin_required
 def manage_customers(request):
-    customers = User.objects.filter(is_superuser=False)
-    return render(request, "adminpanel/manage_accounts.html", {"customers": customers})
+    customers = User.objects.filter(is_superuser=False).select_related("profile")
+    return render(request, "adminpanel/manage_customers.html", {"customers": customers})
 
-@login_required
-@user_passes_test(is_superuser)
+
+@admin_required
 def delete_customer(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if not user.is_superuser:
@@ -49,35 +57,89 @@ def delete_customer(request, user_id):
         messages.error(request, "Cannot delete superuser.")
     return redirect('manage_customers')
 
-@login_required
-@user_passes_test(is_superuser)
-def manage_transactions(request):
-    transactions = Transaction.objects.all().order_by('-created_at')
-    return render(request, "adminpanel/manage_transactions.html", {"transactions": transactions})
 
-@login_required
-@user_passes_test(is_superuser)
+# MANAGE ACCOUNTS
+
+
+@admin_required
+def manage_accounts(request):
+    accounts = Account.objects.select_related("user").all()
+    return render(request, "adminpanel/manage_accounts.html", {"accounts": accounts})
+
+
+@admin_required
+def block_account(request, account_id):
+    account = get_object_or_404(Account, id=account_id)
+    account.status = "Blocked"
+    account.save()
+    messages.success(request, "Account blocked successfully.")
+    return redirect("manage_accounts")
+
+
+@admin_required
+def activate_account(request, account_id):
+    account = get_object_or_404(Account, id=account_id)
+    account.status = "Active"
+    account.save()
+    messages.success(request, "Account activated successfully.")
+    return redirect("manage_accounts")
+
+
+
+# MANAGE TRANSACTIONS
+
+
+@admin_required
+def manage_transactions(request):
+    transactions = Transaction.objects.select_related("account").order_by("-created_at")
+    return render(request, "adminpanel/manage_transactions.html", {
+        "transactions": transactions
+    })
+
+
+@admin_required
 def update_transaction_status(request, txn_id, action):
     txn = get_object_or_404(Transaction, id=txn_id)
     if action == "approve" and txn.status == "Pending":
        txn.status = "Approved"
-       # Logic to update balance if needed (e.g. for held transactions)
-       # For now assuming simple status update
        txn.save()
+       messages.success(request, "Transaction approved.")
     elif action == "reject" and txn.status == "Pending":
        txn.status = "Rejected"
-       # Revert balance if necessary
        txn.save()
+       messages.success(request, "Transaction rejected.")
     return redirect('manage_transactions')
 
-@login_required
-@user_passes_test(is_superuser)
+
+@admin_required
+def approve_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction.status = "Approved"
+    transaction.save()
+    messages.success(request, "Transaction approved.")
+    return redirect("manage_transactions")
+
+
+@admin_required
+def reject_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction.status = "Rejected"
+    transaction.save()
+    messages.success(request, "Transaction rejected.")
+    return redirect("manage_transactions")
+
+
+
+# LOAN MANAGEMENT
+
+
+@admin_required
 def manage_loans(request):
-    loans = Loan.objects.all().order_by('-applied_at')
+    loans = Loan.objects.select_related("user").all()
     return render(request, "adminpanel/manage_loans.html", {"loans": loans})
 
-@login_required
-@user_passes_test(is_superuser)
+
+@admin_required
 def update_loan_status(request, loan_id, action):
     loan = get_object_or_404(Loan, id=loan_id)
     if action == "approve" and loan.status == "Pending":
@@ -101,14 +163,36 @@ def update_loan_status(request, loan_id, action):
         messages.success(request, "Loan Rejected.")
     return redirect('manage_loans')
 
-@login_required
-@user_passes_test(is_superuser)
-def manage_kyc(request):
-    kyc_requests = KYC.objects.all().order_by('-submitted_at')
-    return render(request, "adminpanel/manage_kyc.html", {"kyc_requests": kyc_requests})
 
-@login_required
-@user_passes_test(is_superuser)
+@admin_required
+def approve_loan(request, loan_id):
+    loan = get_object_or_404(Loan, id=loan_id)
+    loan.status = "Approved"
+    loan.save()
+    messages.success(request, "Loan approved successfully.")
+    return redirect("manage_loans")
+
+
+@admin_required
+def reject_loan(request, loan_id):
+    loan = get_object_or_404(Loan, id=loan_id)
+    loan.status = "Rejected"
+    loan.save()
+    messages.success(request, "Loan rejected.")
+    return redirect("manage_loans")
+
+
+
+# KYC MANAGEMENT
+
+
+@admin_required
+def manage_kyc(request):
+    kycs = KYC.objects.select_related("user").all()
+    return render(request, "adminpanel/manage_kyc.html", {"kycs": kycs})
+
+
+@admin_required
 def update_kyc_status(request, user_id, action):
     kyc = get_object_or_404(KYC, user__id=user_id)
     if action == "approve":
@@ -120,39 +204,34 @@ def update_kyc_status(request, user_id, action):
     kyc.save()
     return redirect('manage_kyc')
 
-@login_required
-@user_passes_test(is_superuser)
-def system_reports(request):
-    total_users = User.objects.count()
-    total_accounts = Account.objects.count()
-    total_balance = Account.objects.aggregate(Sum("balance"))["balance__sum"] or 0
-    total_transactions = Transaction.objects.count()
-    approved_transactions = Transaction.objects.filter(status="Approved").count()
-    rejected_transactions = Transaction.objects.filter(status="Rejected").count()
-    total_loans = Loan.objects.count()
-    approved_loans = Loan.objects.filter(status="Approved").count()
-    rejected_loans = Loan.objects.filter(status="Rejected").count()
 
-    context = {
-        "total_users": total_users,
-        "total_accounts": total_accounts,
-        "total_balance": total_balance,
-        "total_transactions": total_transactions,
-        "approved_transactions": approved_transactions,
-        "rejected_transactions": rejected_transactions,
-        "total_loans": total_loans,
-        "approved_loans": approved_loans,
-        "rejected_loans": rejected_loans,
-    }
-    return render(request, "adminpanel/reports.html", context)
-@login_required
-@user_passes_test(is_superuser)
+@admin_required
+def approve_kyc(request, kyc_id):
+    kyc = get_object_or_404(KYC, id=kyc_id)
+    kyc.status = "Approved"
+    kyc.save()
+    messages.success(request, "KYC approved successfully.")
+    return redirect("manage_kyc")
+
+
+@admin_required
+def reject_kyc(request, kyc_id):
+    kyc = get_object_or_404(KYC, id=kyc_id)
+    kyc.status = "Rejected"
+    kyc.save()
+    messages.success(request, "KYC rejected.")
+    return redirect("manage_kyc")
+
+
+# STAFF MANAGEMENT
+
+@admin_required
 def manage_staff(request):
     staff_members = User.objects.filter(is_staff=True, is_superuser=False)
     return render(request, "adminpanel/manage_staff.html", {"staff_members": staff_members})
 
-@login_required
-@user_passes_test(is_superuser)
+
+@admin_required
 def update_staff_status(request, user_id, action):
     user = get_object_or_404(User, id=user_id)
     if action == "promote":
@@ -163,3 +242,28 @@ def update_staff_status(request, user_id, action):
         messages.success(request, f"{user.username} demoted from Staff.")
     user.save()
     return redirect('manage_staff')
+
+
+#  SYSTEM REPORTS
+
+
+@admin_required
+def system_reports(request):
+
+    total_balance = Account.objects.aggregate(total=Sum("balance"))["total"] or 0
+
+    context = {
+        "total_users": User.objects.count(),
+        "total_accounts": Account.objects.count(),
+        "total_balance": total_balance,
+
+        "total_transactions": Transaction.objects.count(),
+        "approved_transactions": Transaction.objects.filter(status="Approved").count(),
+        "rejected_transactions": Transaction.objects.filter(status="Rejected").count(),
+
+        "total_loans": Loan.objects.count(),
+        "approved_loans": Loan.objects.filter(status="Approved").count(),
+        "rejected_loans": Loan.objects.filter(status="Rejected").count(),
+    }
+
+    return render(request, "adminpanel/reports.html", context)

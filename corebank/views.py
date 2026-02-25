@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 import csv
 from django.contrib.auth.decorators import login_required
@@ -46,14 +46,7 @@ def my_loans(request):
 
 # ---------------- DASHBOARD ---------------- #
 
-from .models import Account, KYC
-
-from .models import KYC, Loan
-
 import random
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import Account, KYC, Loan
 
 
 
@@ -126,9 +119,6 @@ def view_balance(request):
     return render(request, "view_balance.html", context)
 
 # ---------------- TRANSFER ---------------- #
-
-from decimal import Decimal
-from django.db import transaction
 
 @login_required
 def transfer_view(request):
@@ -216,7 +206,25 @@ def transaction_history(request):
         return redirect('employee_dashboard')
 
     account = Account.objects.get(user=request.user)
-    transactions = account.transactions.all().order_by("-created_at")
+    transactions = list(account.transactions.all().order_by("-created_at"))
+
+    # Fetch all other transactions with these reference IDs to avoid N+1 queries
+    ref_ids = [t.reference_id for t in transactions if t.reference_id]
+    related_txns = Transaction.objects.filter(
+        reference_id__in=ref_ids
+    ).exclude(account=account).select_related('account__user')
+
+    # Map reference_id to counterparty name
+    name_map = {}
+    for rt in related_txns:
+        full_name = f"{rt.account.user.first_name} {rt.account.user.last_name}".strip()
+        name_map[rt.reference_id] = full_name or rt.account.user.username
+
+    for txn in transactions:
+        if "Transfer" in txn.transaction_type:
+            txn.counterparty = name_map.get(txn.reference_id)
+        else:
+            txn.counterparty = None
 
     return render(request, "transactions.html", {
         "transactions": transactions
@@ -295,10 +303,7 @@ def add_beneficiary(request):
     })
 
 
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from decimal import Decimal
+
 
 
 @login_required
@@ -408,24 +413,10 @@ def kyc_status(request):
 
     kyc = KYC.objects.filter(user=request.user).first()
     return render(request, "kyc_status.html", {"kyc": kyc})
-from .models import Account, Transaction, KYC
-from django.contrib import messages
 
-
-from decimal import Decimal
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Account, Transaction, KYC
 
 
 # ---------------- DEPOSIT ---------------- #
-
-from decimal import Decimal
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Account, Transaction, KYC
 
 @login_required
 def deposit_view(request):
@@ -468,12 +459,6 @@ def deposit_view(request):
 
 
 # ---------------- WITHDRAW ---------------- #
-
-from decimal import Decimal
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Account, Transaction, KYC
 
 @login_required
 def withdraw_view(request):
@@ -522,8 +507,7 @@ def withdraw_view(request):
     return render(request, "withdraw.html", {
         "account": account
     })
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+
 
 @login_required
 def support_view(request):
