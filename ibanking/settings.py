@@ -3,13 +3,18 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING
-SECRET_KEY = 'django-insecure-rs#^u5)5kmtcnq9x(x0*#m#u$_+#qx($5t!o@%c!yed1a*68di'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-local-development-key'
+)
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # ✅ FIXED
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = os.environ.get(
+    'ALLOWED_HOSTS',
+    '127.0.0.1,localhost'
+).split(',')
 
 
 # ---------------- INSTALLED APPS ---------------- #
@@ -32,6 +37,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,15 +83,15 @@ DATABASES = {
 
 # ---------------- EMAIL CONFIG ---------------- #
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'primetrustbank49@gmail.com'
-EMAIL_HOST_PASSWORD = 'akqdiwfmgvpzemmb'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 
 # ---------------- PASSWORD VALIDATION ---------------- #
 
@@ -114,13 +120,13 @@ USE_TZ = True
 
 
 # ---------------- STATIC FILES ---------------- #
+STATIC_URL = '/static/'
 
-STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
@@ -154,7 +160,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # ---------------- RECAPTCHA ---------------- #
 
-RECAPTCHA_PUBLIC_KEY = '6Lfk3GgsAAAAAM7XPSxS3MJukw3AJrLQTZfCSrMn'
-RECAPTCHA_PRIVATE_KEY = '6Lfk3GgsAAAAAP5cMt4_p9Rqjv5W2brWynGkp4Ci'
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY', '')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY', '')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
